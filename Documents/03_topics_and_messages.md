@@ -3,7 +3,7 @@
 ## 1. 통신 설계 원칙
 
 1. **인식 결과는 통합 메시지로 발행**: 인식 담당자가 만드는 모든 인식 결과는 하나의 커스텀 메시지(`Perception`)로 묶어 단일 토픽으로 발행한다. 비활성 인식기는 0/false로 채운다.
-2. **주행 offset도 통합 토픽으로 발행**: 차선/라바콘/좌회전 offset을 같은 토픽 `/ericar/driving_offset`에 발행한다. control은 모드와 무관하게 같은 방식으로 처리.
+2. **주행 offset도 통합 토픽으로 발행**: 차선/라바콘/좌회전 offset을 같은 토픽 `/ericar/driving_offset`에 발행한다. control은 모드에 따라 처리.
 3. **main이 single source of truth**: 모드, 스테이지, 활성 인식기 목록, 목표 차선은 모두 main이 발행.
 4. **QoS는 best-effort + depth=10**: 실시간성이 중요하고, 메시지는 30Hz로 빠르게 갱신되므로 신뢰성보다 최신성이 우선.
 5. **prefix는 `/ericar/`**: 팀 네임스페이스. 단, 시뮬레이터 제어 토픽 `/xycar_motor`는 예외(시뮬레이터 규약).
