@@ -4,7 +4,7 @@
 
 - **대회**: 제 9회 국민대학교 자율주행 경진대회 (2026)
 - **단계**: 예선 (Qualifier)
-- **팀명**: Eri-car
+- **팀명**: ERI-CAR
 - **환경**:
   - WSL2, Ubuntu 22.04, ROS2 Humble
   - 시뮬레이터: Windows 호스트에서 실행
