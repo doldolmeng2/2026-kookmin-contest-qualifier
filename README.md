@@ -137,8 +137,3 @@ rqt_graph
 - 책임 영역과 인터페이스는 [`Documents/04_part_responsibilities.md`](Documents/04_part_responsibilities.md)에 명시됨
 
 ---
-
-## 참고 자료
-
-- 대회 공식 자료: 상위 폴더의 `과제1번설명.pdf`, `대회소개.pdf`, `시뮬레이터사용법.pdf`
-- ROS2 Humble 문서: https://docs.ros.org/en/humble/
