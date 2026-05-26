@@ -119,9 +119,9 @@ rqt_graph
 - [x] 토픽 / 메시지 설계
 - [x] 패키지 구조 결정
 - [x] 파트별 책임 분배
+- [x] `ericar_msgs` 패키지 구현
 
 ### 진행 예정
-- [ ] `ericar_msgs` 패키지 구현
 - [ ] A 파트: 인식 노드 구현
 - [ ] B 파트: 차선/라바콘/좌회전 노드 구현
 - [ ] C 파트: main + control 노드 구현
@@ -133,7 +133,7 @@ rqt_graph
 ## 팀
 
 **Team ERICAR**
-- 3인 협업 (인식 / 주행 / 메인+제어)
+- 5인 3-part 협업 (인식 / 주행 / 메인+제어)
 - 책임 영역과 인터페이스는 [`Documents/04_part_responsibilities.md`](Documents/04_part_responsibilities.md)에 명시됨
 
 ---
