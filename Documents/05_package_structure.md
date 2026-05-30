@@ -5,10 +5,13 @@
 ```
 ~/xycar_ws/
 └── src/
-    ├── ericar_msgs/              # 공용 메시지 패키지
-    ├── ericar_perception/        # A 담당: 인식
-    ├── ericar_driving/           # B 담당: 차선/라바콘/좌회전
-    └── ericar_main_control/      # C 담당: main + control
+    ├── ericar              # 공용 메시지 패키지
+        ├── perception/        # A 담당: 인식
+        ├── driving/           # B 담당: 차선/라바콘/좌회전
+        ├── main/           # B 담당: 차선/라바콘/좌회전
+        ├── function/           # B 담당: 차선/라바콘/좌회전
+        └── msgs/      # C 담당: main + control
+          
 ```
 
 워크스페이스 이름은 기존 관례에 맞춰 `xycar_ws`를 유지한다.
