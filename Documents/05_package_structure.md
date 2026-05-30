@@ -10,7 +10,7 @@
         ├── driving/           # B 담당: 차선/라바콘/좌회전
         ├── main/           # B 담당: 차선/라바콘/좌회전
         ├── function/           # B 담당: 차선/라바콘/좌회전
-        └── msgs/      # C 담당: main + control
+        └── ericar_msgs/      # C 담당: main + control
           
 ```
 
