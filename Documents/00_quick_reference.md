@@ -114,7 +114,7 @@ source ~/xycar_ws/install/setup.bash
 export ROS_DOMAIN_ID=7
 
 # 실행
-ros2 launch ericar_main_control all.launch.py
+ros2 launch main all.launch.py
 
 # 디버깅
 ros2 topic list

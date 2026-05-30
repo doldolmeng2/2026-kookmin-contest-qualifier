@@ -5,13 +5,12 @@
 ```
 ~/xycar_ws/
 └── src/
-    ├── ericar              # 공용 메시지 패키지
-        ├── perception/        # A 담당: 인식
-        ├── driving/           # B 담당: 차선/라바콘/좌회전
-        ├── main/           # B 담당: 차선/라바콘/좌회전
-        ├── function/           # B 담당: 차선/라바콘/좌회전
-        └── ericar_msgs/      # C 담당: main + control
-          
+    └── ericar/
+        ├── perception/     # A 담당: 인식
+        ├── driving/        # B 담당: 차선/라바콘/좌회전
+        ├── main/           # C 담당: 상태 머신 + 제어
+        ├── function/       # 센서 뷰어 + 수동 조종
+        └── ericar_msgs/    # 공용 메시지 패키지
 ```
 
 워크스페이스 이름은 기존 관례에 맞춰 `xycar_ws`를 유지한다.
@@ -70,16 +69,16 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 ament_package()
 ```
 
-### 2-2. `ericar_perception` (A 담당)
+### 2-2. `perception` (A 담당)
 
 ```
-ericar_perception/
+perception/
 ├── package.xml
 ├── setup.py
 ├── setup.cfg
 ├── resource/
-│   └── ericar_perception
-├── ericar_perception/
+│   └── perception
+├── perception/
 │   ├── __init__.py
 │   ├── perception_node.py        # 메인 노드
 │   └── detectors/                # 인식기 모듈들
@@ -99,7 +98,7 @@ ericar_perception/
 ```xml
 <?xml version="1.0"?>
 <package format="3">
-  <name>ericar_perception</name>
+  <name>perception</name>
   <version>0.0.1</version>
   <description>Perception node for ERICAR</description>
   <maintainer email="ktypet13@hanyang.ac.kr">ericar</maintainer>
@@ -116,16 +115,16 @@ ericar_perception/
 </package>
 ```
 
-### 2-3. `ericar_driving` (B 담당)
+### 2-3. `driving` (B 담당)
 
 ```
-ericar_driving/
+driving/
 ├── package.xml
 ├── setup.py
 ├── setup.cfg
 ├── resource/
-│   └── ericar_driving
-├── ericar_driving/
+│   └── driving
+├── driving/
 │   ├── __init__.py
 │   ├── driving_node.py           # 메인 노드
 │   ├── lane_detector.py          # 차선 인식
@@ -135,23 +134,43 @@ ericar_driving/
     └── driving.launch.py
 ```
 
-### 2-4. `ericar_main_control` (C 담당)
+### 2-4. `main` (C 담당)
 
 ```
-ericar_main_control/
+main/
 ├── package.xml
 ├── setup.py
 ├── setup.cfg
 ├── resource/
-│   └── ericar_main_control
-├── ericar_main_control/
+│   └── main
+├── main/
 │   ├── __init__.py
 │   ├── main_node.py              # 상태 머신
 │   ├── control_node.py           # 제어 (또는 main_node 안에 통합)
 │   └── stage_config.py           # STAGE_TO_MODE, STAGE_PERCEPTIONS 정의
 └── launch/
-    ├── main_control.launch.py
+    ├── main.launch.py
     └── all.launch.py             # 전체 시스템 통합 launch
+```
+
+### 2-5. `function` (센서 뷰어 + 수동 조종)
+
+```
+function/
+├── package.xml
+├── setup.py
+├── setup.cfg
+├── resource/
+│   └── function
+├── function/
+│   ├── __init__.py
+│   ├── cam_viewer.py             # 카메라 뷰어
+│   ├── lidar_viewer.py           # LiDAR 뷰어
+│   ├── imu_viewer.py             # IMU 뷰어
+│   ├── motor_viewer.py           # 모터 뷰어
+│   └── manual_control.py         # 수동 조종
+└── launch/
+    └── function.launch.py
 ```
 
 ---
@@ -167,9 +186,10 @@ cbs         # colcon build --symlink-install
 ### 특정 패키지만 빌드
 ```bash
 cbp ericar_msgs
-cbp ericar_perception
-cbp ericar_driving
-cbp ericar_main_control
+cbp perception
+cbp driving
+cbp main
+cbp function
 ```
 
 ### 메시지 변경 시
@@ -199,18 +219,21 @@ export ROS_DOMAIN_ID=7
 ### 개별 노드 실행
 ```bash
 # 인식 노드
-ros2 run ericar_perception perception_node
+ros2 run perception perception_node
 
 # 주행 노드
-ros2 run ericar_driving driving_node
+ros2 run driving driving_node
 
 # main + control 노드
-ros2 run ericar_main_control main_node
+ros2 run main main_node
+
+# 수동 조종
+ros2 run function manual_control
 ```
 
 ### Launch로 전체 실행
 ```bash
-ros2 launch ericar_main_control all.launch.py
+ros2 launch main all.launch.py
 ```
 
 `all.launch.py` 예시:
@@ -221,21 +244,21 @@ from launch_ros.actions import Node
 def generate_launch_description():
     return LaunchDescription([
         Node(
-            package='ericar_perception',
+            package='perception',
             executable='perception_node',
             name='ericar_perception',
             output='screen',
         ),
         Node(
-            package='ericar_driving',
+            package='driving',
             executable='driving_node',
             name='ericar_driving',
             output='screen',
         ),
         Node(
-            package='ericar_main_control',
+            package='main',
             executable='main_node',
-            name='ericar_main_control',
+            name='ericar_main',
             output='screen',
         ),
     ])

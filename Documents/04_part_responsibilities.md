@@ -4,13 +4,14 @@
 
 | 파트 | 패키지 | 담당 영역 |
 |------|--------|-----------|
-| A | `ericar_perception` | 모든 인식 (신호등, 보행자, 차량, 노면 표시 등) |
-| B | `ericar_driving` | 차선 인식 + 라바콘 인식 + 좌회전 offset 계산 |
-| C | `ericar_main_control` | 상태 머신(main) + 최종 제어(control) |
+| A | `perception` | 모든 인식 (신호등, 보행자, 차량, 노면 표시 등) |
+| B | `driving` | 차선 인식 + 라바콘 인식 + 좌회전 offset 계산 |
+| C | `main` | 상태 머신(main) + 최종 제어(control) |
+| - | `function` | 센서 뷰어 + 수동 조종 (테스트/디버깅용) |
 
 ---
 
-## A. 인식 담당 (`ericar_perception`)
+## A. 인식 담당 (`perception`)
 
 ### 책임
 모든 인식 관련 처리. 카메라/LiDAR/IMU 등 센서 데이터를 받아 `Perception` 메시지로 통합 발행.
@@ -87,7 +88,7 @@
 
 ---
 
-## B. 주행 담당 (`ericar_driving`)
+## B. 주행 담당 (`driving`)
 
 ### 책임
 차선/라바콘/좌회전에 따른 주행 offset 계산. `DrivingOffset` 메시지로 단일 토픽 발행.
@@ -162,7 +163,7 @@
 
 ---
 
-## C. main + control 담당 (`ericar_main_control`)
+## C. main + control 담당 (`main`)
 
 ### 책임
 - **main**: 상태 머신(스테이지 + 모드 관리), lap 카운트, 차선 변경 결정, 인식 활성화 관리
@@ -356,6 +357,35 @@ cbp() {
 - [ ] offset 부호 규칙 (좌+/우-? 또는 반대?)
 - [ ] 모드별 속도 값 튜닝
 - [ ] target_lane 1차선/2차선 어느 쪽이 안쪽인지 (안쪽=1, 바깥=2 권장)
+
+---
+
+## D. 센서 뷰어 + 수동 조종 (`function`)
+
+### 책임
+대회 준비 및 디버깅용 유틸리티 패키지. 각 센서 데이터를 시각적으로 확인하고, 차량을 수동으로 조종할 수 있다.
+
+### 구현해야 할 노드
+
+| 노드 | 구독 토픽 | 기능 |
+|------|----------|------|
+| `cam_viewer` | 카메라 토픽 | 카메라 영상 실시간 표시 |
+| `lidar_viewer` | LiDAR 토픽 | LiDAR 포인트클라우드 시각화 |
+| `imu_viewer` | IMU 토픽 | IMU 데이터 (yaw 등) 표시 |
+| `motor_viewer` | `/xycar_motor` | 현재 모터 명령 표시 |
+| `manual_control` | (키보드 입력) | 키보드로 `/xycar_motor` 직접 발행 |
+
+### 실행
+```bash
+# 개별 뷰어
+ros2 run function cam_viewer
+ros2 run function lidar_viewer
+ros2 run function imu_viewer
+ros2 run function motor_viewer
+
+# 수동 조종
+ros2 run function manual_control
+```
 
 ---
 
