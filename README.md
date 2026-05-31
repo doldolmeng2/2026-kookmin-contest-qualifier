@@ -35,14 +35,70 @@ Windows 호스트의 시뮬레이터와 TCP로 통신하며, 카메라/IMU/LiDAR
 └──────────────────┘                           └──────────────────┘
 ```
 
-### 패키지 구성 (총 4개)
+### 패키지 구성
+
+모든 팀 패키지는 `src/ericar/` 아래에 위치한다.
+
+```
+src/ericar/
+├── ericar_msgs/   # 공용 커스텀 메시지 (ament_cmake)
+├── main/          # 상태 머신 + 제어 (ament_python)
+├── driving/       # 차선 / 라바콘 / 좌회전 (ament_python)
+├── perception/    # 인식 (ament_python)
+└── function/      # 유틸리티 노드 모음 (ament_python)
+```
+
+#### 핵심 패키지
 
 | 패키지 | 담당 | 책임 |
 |--------|------|------|
 | `ericar_msgs` | 공용 | 커스텀 메시지 정의 |
-| `ericar_perception` | A | 모든 인식 (신호등, 보행자, 차량, 노면 표시 등) |
-| `ericar_driving` | B | 차선 / 라바콘 / 좌회전 offset 계산 |
-| `ericar_main_control` | C | 상태 머신(main) + 최종 제어(control) |
+| `perception` | A | 모든 인식 (신호등, 보행자, 차량, 노면 표시 등) |
+| `driving` | B | 차선 / 라바콘 / 좌회전 offset 계산 |
+| `main` | C | 상태 머신(main) + 최종 제어(control) |
+
+#### function 패키지 (유틸리티)
+
+개발·디버깅용 독립 노드 모음. 자율주행 로직과 무관하게 단독 실행 가능.
+
+| 노드 | 실행 명령 | 설명 |
+|------|-----------|------|
+| `imu_visualizer` | `ros2 run function imu_visualizer` | `/imu` 구독 → OpenCV 나침반 창 (yaw 방향 화살표) |
+| `lidar_visualizer` | `ros2 run function lidar_visualizer` | `/scan` 구독 → OpenCV 부감 시각화, `max_range` 파라미터로 표시 거리 조절 |
+| `camera_viewer` | `ros2 run function camera_viewer` | `/usb_cam/image_raw/front` 구독 → OpenCV 카메라 창 |
+| `manual_control` | `ros2 run function manual_control` | wsad 키보드 수동 조종 → `xycar_motor` 발행 |
+
+**lidar_visualizer 파라미터**
+```bash
+# 최대 표시 거리를 8m로 설정 (기본값 5.0m)
+ros2 run function lidar_visualizer --ros-args -p max_range:=8.0
+```
+
+**manual_control 키 맵**
+
+| 키 | 동작 |
+|----|------|
+| `w` | speed +5 (홀드 시 0.05초마다 반복) |
+| `s` | speed -5 |
+| `a` | angle -5 (좌) |
+| `d` | angle +5 (우) |
+| `r` | speed / angle 리셋 |
+| `q` | 종료 |
+
+> 동시 입력 지원 (예: `w + a` → 가속 + 좌회전 동시 적용)
+
+**function 패키지 의존성**
+
+```
+python3-opencv, python3-cv-bridge   # 시각화
+python3-pynput                      # manual_control 키보드 입력
+sensor_msgs, xycar_msgs, rclpy      # ROS2
+```
+
+pynput 미설치 시:
+```bash
+pip install pynput
+```
 
 ---
 
@@ -117,14 +173,15 @@ rqt_graph
 - [x] 미션 분석 및 lap별 흐름 정리
 - [x] 모드 / 스테이지 설계
 - [x] 토픽 / 메시지 설계
-- [x] 패키지 구조 결정
+- [x] 패키지 구조 결정 (`src/ericar/` 하위 5개 패키지)
 - [x] 파트별 책임 분배
-- [x] `ericar_msgs` 패키지 구현
+- [x] `ericar_msgs` 패키지 구현 (Perception / DrivingOffset / ControlState / ActivePerceptions)
+- [x] `function` 패키지 구현 (imu_visualizer / lidar_visualizer / camera_viewer / manual_control)
 
 ### 진행 예정
-- [ ] A 파트: 인식 노드 구현
-- [ ] B 파트: 차선/라바콘/좌회전 노드 구현
-- [ ] C 파트: main + control 노드 구현
+- [ ] A 파트: `perception` 인식 노드 구현
+- [ ] B 파트: `driving` 차선/라바콘/좌회전 노드 구현
+- [ ] C 파트: `main` 상태 머신 + control 노드 구현
 - [ ] 통합 테스트 (시뮬레이터 연동)
 - [ ] 미정 사항 결정 (offset 부호, 속도 튜닝 등 — `07_design_decisions.md` 하단 참조)
 
