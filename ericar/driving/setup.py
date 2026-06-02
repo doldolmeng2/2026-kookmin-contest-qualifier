@@ -23,7 +23,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'driving_node = driving.driving_node:main',
+            'driving = driving.driving:main',
         ],
     },
 )
