@@ -27,6 +27,7 @@ setup(
             'lidar_visualizer = function.lidar_visualizer:main',
             'camera_viewer    = function.camera_viewer:main',
             'manual_control   = function.manual_control:main',
+            'hsv_tuner        = function.hsv_tuner:main',
         ],
     },
 )
