@@ -19,6 +19,7 @@ from rclpy.qos import qos_profile_sensor_data
 from std_msgs.msg import Int32, Int32MultiArray, Float32, Bool
 from sensor_msgs.msg import Image, LaserScan, Imu
 from cv_bridge import CvBridge
+from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 
 # 로직 모듈 (구현은 추후 팀원이 채움)
 from driving.lane_detection import LaneDetector
@@ -62,6 +63,14 @@ class Driving(Node):
         self._lane_change_sent = False
 
         # ---- 구독 ----
+	qos_reliable = QoSProfile(
+   	     reliability=ReliabilityPolicy.RELIABLE,
+   	     history=HistoryPolicy.KEEP_LAST,
+             depth=10,
+	)
+	self.create_subscription(
+    	    Image, '/usb_cam/image_raw/front',
+    	    self._front_cb, qos_reliable)
         self.create_subscription(
             Image, '/usb_cam/image_raw/front',
             self._front_cb, qos_profile_sensor_data)
