@@ -7,7 +7,7 @@ class LaneDetector:
     def __init__(self):
         self.roi_y_ratio = 0.6
         self.lane1_target_x = 480   # 1차선 주행 시 노란선 목표 x (튜닝 필요)
-        self.lane2_target_x = 185   # 2차선 주행 시 노란선 목표 x (튜닝 필요)
+        self.lane2_target_x = 217   # 2차선 주행 시 노란선 목표 x (튜닝 필요)
         self.offset_history = deque(maxlen=10)
         self.last_offset = 0.0
 
