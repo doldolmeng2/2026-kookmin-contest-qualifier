@@ -24,7 +24,8 @@ class Driving(Node):
         self._lane = LaneDetector()
         self._cone = ConeDriver()
         self._turn = LeftTurner()
-
+	self._turn_done_pub = self.create_publisher(Bool, '/driving/turn_done', 10)
+	self._turn_reached = False
         self._img_front = None
         self._scan = None
         self._yaw = 0.0
@@ -73,7 +74,7 @@ class Driving(Node):
             self._lane_change_sent = False
         if new_mode == MODE_LEFT_TURN:
             self._turn.start(self._stage[STAGE_TURN_TYPE], self._yaw)
-
+            self._turn_reached = False
     def _tick(self):
         offset = None
         if self._mode == MODE_CONE:
@@ -87,6 +88,10 @@ class Driving(Node):
             self._check_lane_change_done(offset)
         elif self._mode == MODE_LEFT_TURN:
             offset = self._turn.compute_offset(self._yaw)
+	    if self._turn.reached(self._yaw) and not self._turn_reached:
+                self._turn_done_pub.publish(Bool(data=True))
+                self._turn_reached = True
+                self.get_logger().info('left turn done')
         if offset is not None:
             self._publish_offset(offset)
 
