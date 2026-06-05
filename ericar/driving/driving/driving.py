@@ -77,7 +77,7 @@ class Driving(Node):
     def _tick(self):
         offset = None
         if self._mode == MODE_CONE:
-            offset = self._cone.compute_offset(self._scan)
+            offset = self._cone.compute_offset(self._img_front)
         elif self._mode in (MODE_LANE, MODE_FOLLOW):
             lane_target = self._stage[STAGE_LANE_TARGET]
             offset = self._lane.compute_offset(self._img_front, lane_target)
