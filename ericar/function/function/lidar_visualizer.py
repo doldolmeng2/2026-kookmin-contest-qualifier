@@ -12,7 +12,7 @@ class LidarVisualizer(Node):
 
     def __init__(self):
         super().__init__('lidar_visualizer')
-        self.declare_parameter('max_range', 5.0)
+        self.declare_parameter('max_range', 8.0)
 
         self._ranges = []
         self._angle_min = 0.0
