@@ -1,61 +1,48 @@
 #!/usr/bin/env python3
-import cv2
-import numpy as np
-from collections import deque
+import math
 
-IMAGE_WIDTH = 640
-IMAGE_CENTER = IMAGE_WIDTH // 2  # 320
-ROI_TOP_RATIO = 0.4  # 상단 50% 버림
+CONE_FRONT_ANGLE_DEG = 90.0
+CONE_RANGE_MIN       = 0.18
+CONE_RANGE_MAX       = 2.0
+CONE_MIN_POINTS      = 6
+CONE_OFFSET_SCALE    = 1.0
 
 class ConeDriver:
     def __init__(self):
-        self.offset_history = deque(maxlen=10)
         self.last_offset = 0.0
 
-    def compute_offset(self, image):
-        if image is None:
-            return 0.0
-
-        h, w = image.shape[:2]
-        roi_top = int(h * ROI_TOP_RATIO)
-        roi = image[roi_top:h, :]
-
-        # BGR → HSV
-        hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
-
-        # 주황색 마스킹
-        lower_orange = np.array([5, 150, 150])
-        upper_orange = np.array([20, 255, 255])
-        mask = cv2.inRange(hsv, lower_orange, upper_orange)
-
-        # 좌/우 분리
-        left_mask  = mask[:, :IMAGE_CENTER]
-        right_mask = mask[:, IMAGE_CENTER:]
-
-        left_pixels  = np.where(left_mask > 0)
-        right_pixels = np.where(right_mask > 0)
-
-        left_detected  = len(left_pixels[1]) >= 10
-        right_detected = len(right_pixels[1]) >= 10
-
-        if left_detected and right_detected:
-            left_x  = float(np.mean(left_pixels[1]))
-            right_x = float(np.mean(right_pixels[1])) + IMAGE_CENTER
-            midpoint = (left_x + right_x) / 2.0
-            offset = (midpoint - IMAGE_CENTER) / IMAGE_CENTER
-        elif left_detected:
-            left_x = float(np.mean(left_pixels[1]))
-            offset = (left_x - IMAGE_CENTER * 0.5) / IMAGE_CENTER
-        elif right_detected:
-            right_x = float(np.mean(right_pixels[1])) + IMAGE_CENTER
-            offset = (right_x - IMAGE_CENTER * 1.5) / IMAGE_CENTER
-        else:
+    def compute_offset(self, scan_msg):
+        if scan_msg is None:
             return self.last_offset
 
-        offset = max(-1.0, min(1.0, offset))
+        angle_limit = math.radians(CONE_FRONT_ANGLE_DEG)
+        points = []
+        angle = scan_msg.angle_min
+        for dist in scan_msg.ranges:
+            norm_angle = angle
+            if norm_angle > math.pi:
+                norm_angle -= 2.0 * math.pi
+            if (math.isfinite(dist)
+                    and CONE_RANGE_MIN <= dist <= CONE_RANGE_MAX
+                    and abs(norm_angle) <= angle_limit):
+                x = dist * math.cos(norm_angle)
+                y = dist * math.sin(norm_angle)
+                if x > 0.0:
+                    points.append((x, y))
+            angle += scan_msg.angle_increment
 
-        self.offset_history.append(offset)
-        smoothed = float(np.mean(self.offset_history))
-        self.last_offset = smoothed
+        left  = sorted([p for p in points if p[1] > 0.0],  key=lambda p: p[0])
+        right = sorted([p for p in points if p[1] <= 0.0], key=lambda p: p[0])
 
-        return smoothed
+        if len(points) < CONE_MIN_POINTS:
+            return self.last_offset
+        if len(left) < 2 or len(right) < 2:
+            return self.last_offset
+
+        n = 4
+        left_rep_y  = sum(p[1] for p in left[:n])  / min(n, len(left))
+        right_rep_y = sum(p[1] for p in right[:n]) / min(n, len(right))
+        corridor_center_y = (left_rep_y + right_rep_y) * 0.5
+        offset = max(-1.0, min(1.0, -corridor_center_y / CONE_OFFSET_SCALE))
+        self.last_offset = offset
+        return offset

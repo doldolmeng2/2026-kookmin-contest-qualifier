@@ -131,7 +131,7 @@ class Driving(Node):
 
         if self._mode == MODE_CONE:
             # 라바콘 구간: 카메라 기반 주황색 검출로 중앙 offset 계산
-            offset = self._cone.compute_offset(self._img_front)
+            offset = self._cone.compute_offset(self._scan)  # 라이다 기반으로 변경
         elif self._mode in (MODE_LANE, MODE_FOLLOW):
             lane_target = self._stage[STAGE_LANE_TARGET]
             offset = self._lane.compute_offset(self._img_front, lane_target)

@@ -71,6 +71,8 @@ class Main(Node):
         self._status = [0] * STATUS_LEN
         self._offset = 0.0
         self._lane_change_done = False
+        self._turn_done = False          # /driving/turn_done 수신 플래그
+        self._lane_change_reason = 'obstacle'  # 'obstacle' | 'turn'
         self._yaw = 0.0
         self._motor_angle = 0.0
         self._motor_speed = 0.0
@@ -81,6 +83,8 @@ class Main(Node):
         self.create_subscription(Float32, '/driving/offset', self._offset_cb, 10)
         self.create_subscription(
             Bool, '/driving/lane_change_done', self._lane_change_cb, 10)
+        self.create_subscription(
+            Bool, '/driving/turn_done', self._turn_done_cb, 10)
         self.create_subscription(Imu, '/imu', self._imu_cb, qos_profile_sensor_data)
         self.create_subscription(
             XycarMotor, '/xycar_motor', self._motor_cb, 10)
@@ -110,6 +114,9 @@ class Main(Node):
 
     def _lane_change_cb(self, msg):
         self._lane_change_done = msg.data
+
+    def _turn_done_cb(self, msg):
+        self._turn_done = msg.data
 
     def _imu_cb(self, msg):
         self._yaw = self._quat_to_yaw(msg.orientation)
@@ -141,10 +148,13 @@ class Main(Node):
             self._fsm_lane()
 
         elif self._mode == MODE_LANE_CHANGE:
-            # 차선 변경 완료 → 2차선 저속 추종
+            # 차선 변경 완료 → reason에 따라 다음 모드 결정
             if self._lane_change_done:
                 self._lane_change_done = False
-                self._set_mode(MODE_FOLLOW)
+                if self._lane_change_reason == 'turn':
+                    self._set_mode(MODE_LANE)
+                else:
+                    self._set_mode(MODE_FOLLOW)
 
         elif self._mode == MODE_FOLLOW:
             # 라이다 왼쪽 미감지(추월 완료) → 1차선 복귀
@@ -171,6 +181,7 @@ class Main(Node):
         # lap1: 1차선 주행 중 방해차량 → 차선 변경
         if s[IDX_OBSTACLE_FRONT] == 1 and self._stage[STAGE_LANE_TARGET] == 0:
             self._stage[STAGE_LANE_TARGET] = 1   # 2차선으로
+            self._lane_change_reason = 'obstacle'
             self._set_mode(MODE_LANE_CHANGE)
             return
 
@@ -205,13 +216,15 @@ class Main(Node):
 
     def _after_left_turn(self):
         if self._stage[STAGE_TURN_TYPE] == 0:
-            # 좌회전A 완료 → 2차선 숏컷 주행
+            # 좌회전A 완료 → 2차선으로 차선 변경
             self._stage[STAGE_LANE_TARGET] = 1
-            self._set_mode(MODE_LANE)
+            self._lane_change_reason = 'turn'
+            self._set_mode(MODE_LANE_CHANGE)
         else:
-            # 좌회전B 완료 → 1차선 복귀
+            # 좌회전B 완료 → 1차선으로 차선 변경
             self._stage[STAGE_LANE_TARGET] = 0
-            self._set_mode(MODE_LANE)
+            self._lane_change_reason = 'turn'
+            self._set_mode(MODE_LANE_CHANGE)
 
     # ------------------------------------------------------------------
     # 전환 조건 헬퍼 (구현은 추후; 자리만 잡음)
@@ -225,7 +238,10 @@ class Main(Node):
         return False
 
     def _left_turn_reached(self):
-        # TODO(team): 좌회전 목표 yaw 도달 판정
+        # /driving/turn_done 수신 시 완료 판정
+        if self._turn_done:
+            self._turn_done = False
+            return True
         return False
 
     def _consume_lap_line(self):
