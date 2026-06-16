@@ -22,7 +22,7 @@ MODE_WAIT, MODE_CONE, MODE_LANE, MODE_LEFT_TURN, \
 # 모드별 offset → angle 비례 계수 (angle = offset * ratio, -100~100 로 clip)
 MODE_RATIO = {
     MODE_WAIT:         0.0,
-    MODE_CONE:        80.0,
+    MODE_CONE:       100.0,
     MODE_LANE:        70.0,
     MODE_LEFT_TURN:  100.0,
     MODE_LANE_CHANGE: 70.0,

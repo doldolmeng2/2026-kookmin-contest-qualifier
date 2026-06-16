@@ -1,56 +1,98 @@
 #!/usr/bin/env python3
-"""차선 인식 → 조향 오프셋 계산.
-
-driving.py 에서 import 해서 사용한다. ROS 토픽은 다루지 않고,
-"카메라 이미지 + 목표 차선 → offset(float)" 변환만 책임진다.
-
-offset 부호 약속:
-    음수 = 좌측으로 조향 필요, 양수 = 우측으로 조향 필요 (control 의 비례식과 합의 필요)
-"""
-
 import cv2
 import numpy as np
-
+from collections import deque
 
 class LaneDetector:
-
     def __init__(self):
-        # TODO(team): ROI, 색/엣지 임계값, 차선 폭(px), 차선별 기준 x 등 파라미터
-        self.roi_y_ratio = 0.6        # 화면 아래쪽 비율부터 ROI
-        self.lane1_center_x = None    # 1차선 주행 시 목표 중심 x
-        self.lane2_center_x = None    # 2차선 주행 시 목표 중심 x
+        self.roi_y_ratio = 0.6          # 상단 60% 버림
+        self.lane1_target_x = 453       # 1차선 주행 시 노란선 목표 x
+        self.lane2_target_x = 217       # 2차선 주행 시 노란선 목표 x
+        self.scurve_target_x = 320      # S자 구간: 이미지 중앙 (중앙선 위 주행)
+        self.offset_history = deque(maxlen=5)  # smoothing (5개로 줄여 반응 빠르게)
+        self.last_offset = 0.0
+        self.is_scurve = False          # S자 구간 여부
+
+        # 1차선 사다리꼴 ROI 비율 (ROI 기준)
+        # 노란선이 오른쪽에 있으므로 사다리꼴도 오른쪽에 설정
+        self.trap_top_left   = 0.35    # ROI 상단 왼쪽 x 비율
+        self.trap_top_right  = 0.85    # ROI 상단 오른쪽 x 비율
+        self.trap_bot_left   = 0.50    # ROI 하단 왼쪽 x 비율
+        self.trap_bot_right  = 1.10    # ROI 하단 오른쪽 x 비율 (화면 밖 허용)
 
     def compute_offset(self, image, lane_target):
-        """차선을 인식해 목표 중심과 현재 위치의 오차를 offset 으로 반환.
-
-        Args:
-            image: BGR 이미지 (없으면 None)
-            lane_target: 0=1차선, 1=2차선
-        Returns:
-            float offset, 또는 인식 실패 시 0.0 (직진 유지)
-        """
         if image is None:
             return 0.0
 
-        # TODO(team): 실제 차선 검출 파이프라인
-        # 1) ROI 자르기
-        # 2) 색/엣지 마스크
-        # 3) 좌/우 차선 픽셀 → 차선 중심 x 추정
-        # 4) lane_target 에 따라 목표 중심 선택
-        # 5) (목표 중심 - 화면 중심) 정규화 → offset
-        lane_center_x = self._estimate_lane_center(image, lane_target)
-        if lane_center_x is None:
-            return 0.0
+        h, w = image.shape[:2]
+        roi_top = int(h * self.roi_y_ratio)
+        roi = image[roi_top:h, :]
+        roi_h, roi_w = roi.shape[:2]
 
-        img_center_x = image.shape[1] / 2.0
-        offset = (lane_center_x - img_center_x) / img_center_x  # -1 ~ 1 정규화
-        return float(offset)
+        # BGR → HSV 변환
+        hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
 
-    def _estimate_lane_center(self, image, lane_target):
-        # TODO(team): 차선 중심 x 추정 구현
-        return None
+        # 노란색 마스킹
+        lower_yellow = np.array([20, 100, 100])
+        upper_yellow = np.array([35, 255, 255])
+        mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
 
-    # 참고용 유틸 (추후 사용)
+        # 노이즈 제거
+        mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8))
+        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN,  np.ones((3, 3), np.uint8))
+
+        # 1차선 주행 시 사다리꼴 ROI 적용 → S자 감지
+        if lane_target == 0:
+            trap_mask = self._make_trapezoid_mask(roi_h, roi_w)
+            masked = cv2.bitwise_and(mask, trap_mask)
+            yellow_pixels = np.where(masked > 0)
+
+            if len(yellow_pixels[1]) < 30:
+                # 사다리꼴 안에 노란선 없음 → S자 구간으로 판단
+                self.is_scurve = True
+            else:
+                self.is_scurve = False
+
+            if self.is_scurve:
+                # S자 구간: 전체 마스크에서 노란선 찾아 중앙으로 유도
+                all_pixels = np.where(mask > 0)
+                if len(all_pixels[1]) < 30:
+                    return self.last_offset
+                mean_x = float(np.mean(all_pixels[1]))
+                target_x = self.scurve_target_x
+            else:
+                mean_x = float(np.mean(yellow_pixels[1]))
+                target_x = self.lane1_target_x
+        else:
+            # 2차선: 사다리꼴 없이 전체 ROI
+            yellow_pixels = np.where(mask > 0)
+            if len(yellow_pixels[1]) < 30:
+                return self.last_offset
+            mean_x = float(np.mean(yellow_pixels[1]))
+            target_x = self.lane2_target_x
+
+        # offset 계산 (-1 ~ 1 정규화)
+        img_center_x = w / 2.0
+        offset = (mean_x - target_x) / img_center_x
+
+        # smoothing
+        self.offset_history.append(offset)
+        smoothed = float(np.mean(self.offset_history))
+        self.last_offset = smoothed
+        return smoothed
+
+    def _make_trapezoid_mask(self, roi_h, roi_w):
+        """1차선 주행용 사다리꼴 마스크 생성"""
+        mask = np.zeros((roi_h, roi_w), dtype=np.uint8)
+        points = np.array([
+            [int(roi_w * self.trap_top_left),  0],
+            [int(roi_w * self.trap_top_right), 0],
+            [int(roi_w * self.trap_bot_right), roi_h - 1],
+            [int(roi_w * self.trap_bot_left),  roi_h - 1],
+        ], dtype=np.int32)
+        cv2.fillPoly(mask, [points], 255)
+        return mask
+
     def _apply_roi(self, image):
         h = image.shape[0]
         y0 = int(h * self.roi_y_ratio)
