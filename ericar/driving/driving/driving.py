@@ -19,6 +19,9 @@ from std_msgs.msg import Int32, Int32MultiArray, Float32, Bool
 from sensor_msgs.msg import Image, LaserScan, Imu
 from cv_bridge import CvBridge
 
+import cv2
+import numpy as np
+
 # 로직 모듈
 from driving.lane_detection import LaneDetector
 from driving.rubbercone import ConeDriver
@@ -36,6 +39,15 @@ STAGE_TURN_TYPE = 1     # 0=좌회전A(진입), 1=좌회전B(탈출)
 
 # 차선 변경 완료로 볼 offset 허용 범위
 LANE_CHANGE_DONE_TOL = 0.1
+
+# 차선 변경 직후 offset이 일시적으로 0에 가까워지는 오검출을 막는다.
+LANE_CHANGE_MIN_FRAMES = 15
+LANE_CHANGE_STABLE_FRAMES = 6
+
+# 라바콘 구간 종료 판정에 사용하는 연속 프레임 수
+# driving 노드가 30Hz이므로 18프레임은 약 0.6초이다.
+CONE_MISSING_FRAMES = 18
+LANE_VISIBLE_FRAMES = 12
 
 class Driving(Node):
     def __init__(self):
@@ -56,9 +68,17 @@ class Driving(Node):
         self._mode = MODE_WAIT
         self._stage = [0, 0]
         self._lane_change_sent = False
+        self._lane_change_ticks = 0
+        self._lane_change_stable_count = 0
 
         # 좌회전 완료 중복 발행 방지 플래그
         self._turn_reached = False
+
+        # 라바콘 구간 종료 판정 상태
+        self._cone_seen_once = False
+        self._cone_missing_count = 0
+        self._lane_visible_count = 0
+        self._cone_done_sent = False
 
         # 카메라 구독 시 RELIABLE QoS 사용 (시뮬레이터 발행자가 RELIABLE이므로)
         qos_reliable = QoSProfile(
@@ -88,6 +108,10 @@ class Driving(Node):
         self._turn_done_pub = self.create_publisher(
             Bool, '/driving/turn_done', 10)
 
+
+        # 라바콘 통과 후 차선 주행으로 전환할 때 main에 한 번 발행한다.
+        self._cone_done_pub = self.create_publisher(
+            Bool, '/driving/cone_done', 10)
         # 계산 + 발행 주기 (30Hz)
         self.create_timer(1.0 / 30.0, self._tick)
         self.get_logger().info('driving node ready')
@@ -115,8 +139,17 @@ class Driving(Node):
             self._stage = list(msg.data)
 
     def _on_mode_enter(self, new_mode):
+        if new_mode == MODE_CONE:
+            # 새 라바콘 미션에 진입할 때 종료 판정 상태를 초기화한다.
+            self._cone_seen_once = False
+            self._cone_missing_count = 0
+            self._lane_visible_count = 0
+            self._cone_done_sent = False
+
         if new_mode == MODE_LANE_CHANGE:
             self._lane_change_sent = False
+            self._lane_change_ticks = 0
+            self._lane_change_stable_count = 0
         if new_mode == MODE_LEFT_TURN:
             # turn_type 에 따라 목표 yaw 설정
             self._turn.start(self._stage[STAGE_TURN_TYPE], self._yaw)
@@ -132,6 +165,9 @@ class Driving(Node):
         if self._mode == MODE_CONE:
             # 라바콘 구간: 카메라 기반 주황색 검출로 중앙 offset 계산
             offset = self._cone.compute_offset(self._scan)  # 라이다 기반으로 변경
+
+            # 기존 조향 계산 이후 라바콘 구간 종료 조건을 확인한다.
+            self._check_cone_done()
         elif self._mode in (MODE_LANE, MODE_FOLLOW):
             lane_target = self._stage[STAGE_LANE_TARGET]
             offset = self._lane.compute_offset(self._img_front, lane_target)
@@ -151,16 +187,128 @@ class Driving(Node):
         if offset is not None:
             self._publish_offset(offset)
 
+
+    def _check_cone_done(self):
+        """라바콘 통로가 사라지고 차선이 나타나면 완료 신호를 발행한다."""
+        if self._cone_done_sent:
+            return
+
+        # ConeDriver는 현재 프레임에서 좌우 클러스터를 찾으면
+        # 해당 방향의 age를 0으로 갱신한다.
+        left_age = int(getattr(self._cone, 'left_age', 999))
+        right_age = int(getattr(self._cone, 'right_age', 999))
+
+        # 좌우 라바콘이 같은 프레임에서 모두 검출되어야
+        # 실제 라바콘 통로를 한 번 통과한 것으로 인정한다.
+        cone_pair_visible = left_age == 0 and right_age == 0
+
+        if cone_pair_visible:
+            if not self._cone_seen_once:
+                self.get_logger().info('좌우 라바콘 통로 최초 감지')
+
+            self._cone_seen_once = True
+            self._cone_missing_count = 0
+
+        elif self._cone_seen_once:
+            self._cone_missing_count += 1
+
+        if self._is_lane_visible():
+            self._lane_visible_count += 1
+        else:
+            self._lane_visible_count = 0
+
+        # 라바콘 통로를 실제로 한 번 감지한 뒤,
+        # 좌우 라바콘 쌍이 약 0.6초 동안 사라지고
+        # 노란 차선이 연속으로 검출될 때 차선 모드로 전환한다.
+        if (
+            self._cone_seen_once
+            and self._cone_missing_count >= CONE_MISSING_FRAMES
+            and self._lane_visible_count >= LANE_VISIBLE_FRAMES
+        ):
+            self._cone_done_pub.publish(Bool(data=True))
+            self._cone_done_sent = True
+
+            self.get_logger().info(
+                '라바콘 구간 종료 감지: '
+                f'cone_missing={self._cone_missing_count}, '
+                f'lane_visible={self._lane_visible_count}'
+            )
+
+    def _is_lane_visible(self):
+        """차선 전환 판정용으로 노란 차선의 존재 여부만 확인한다."""
+        if self._img_front is None:
+            return False
+
+        image = self._img_front
+        height = image.shape[0]
+
+        # 기존 LaneDetector와 동일하게 영상 아래쪽 40%를 사용한다.
+        roi_top = int(height * 0.6)
+        roi = image[roi_top:height, :]
+
+        hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+
+        lower_yellow = np.array([20, 100, 100], dtype=np.uint8)
+        upper_yellow = np.array([35, 255, 255], dtype=np.uint8)
+
+        mask = cv2.inRange(
+            hsv,
+            lower_yellow,
+            upper_yellow,
+        )
+
+        mask = cv2.morphologyEx(
+            mask,
+            cv2.MORPH_CLOSE,
+            np.ones((5, 5), dtype=np.uint8),
+        )
+
+        mask = cv2.morphologyEx(
+            mask,
+            cv2.MORPH_OPEN,
+            np.ones((3, 3), dtype=np.uint8),
+        )
+
+        ys, xs = np.where(mask > 0)
+
+        if len(xs) < 80:
+            return False
+
+        # 점 형태의 노란 물체보다 세로로 이어진 차선을 우선한다.
+        vertical_span = int(np.max(ys) - np.min(ys))
+
+        return vertical_span >= 25
+
     def _check_lane_change_done(self, offset):
         if self._lane_change_sent or offset is None:
             return
-        # offset 이 목표 차선 기준 정렬 범위에 들어오면 완료로 판단
-        if abs(offset) < LANE_CHANGE_DONE_TOL:
-            self._lane_change_pub.publish(Bool(data=True))
-            self._lane_change_sent = True
-            self.get_logger().info('lane change done')
 
-    # ------------------------------------------------------------------
+        self._lane_change_ticks += 1
+
+        # 새 목표 차선이 적용되기 전에 들어온 이전 offset은 무시한다.
+        if self._lane_change_ticks < LANE_CHANGE_MIN_FRAMES:
+            return
+
+        if abs(offset) < LANE_CHANGE_DONE_TOL:
+            self._lane_change_stable_count += 1
+        else:
+            self._lane_change_stable_count = 0
+
+        if (
+            self._lane_change_stable_count
+            >= LANE_CHANGE_STABLE_FRAMES
+        ):
+            self._lane_change_pub.publish(
+                Bool(data=True)
+            )
+            self._lane_change_sent = True
+
+            self.get_logger().info(
+                'lane change done: '
+                f'offset={offset:+.3f}, '
+                f'stable={self._lane_change_stable_count}'
+            )
+
     def _publish_offset(self, offset):
         self._offset_pub.publish(Float32(data=float(offset)))
 

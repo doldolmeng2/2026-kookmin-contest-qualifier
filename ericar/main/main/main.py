@@ -1,31 +1,33 @@
 #!/usr/bin/env python3
-"""main 노드 — 상태머신 + 디버그 시각화.
+"""
+main 노드 — 상태머신 + 디버그 시각화.
 
 역할:
-  - /perception/status, /driving/offset, /driving/lane_change_done, /imu 를 구독
-  - 주행 시퀀스(README) 에 따라 모드/스테이지 전환
-  - /main/mode, /main/stage 발행 (driving, perception, control 이 참조)
-  - 디버그용 OpenCV 창에 현재 상태를 시각화
-    (모드 텍스트 / stage / perception 상황 / xycar_motor angle·speed / lap / offset)
+- /perception/status, /driving/offset, /driving/*_done, /imu 구독
+- 인식 결과와 주행 완료 이벤트에 따라 모드/스테이지 전환
+- /main/mode, /main/stage 발행
+- 디버그 창에 현재 상태와 모터 명령 표시
 
-실제 모터 명령(/xycar_motor) 발행은 control.py 가 담당한다.
-main 은 디버그 창에서 모터값을 보기 위해 /xycar_motor 를 '구독'만 한다.
+실제 모터 명령(/xycar_motor)은 control.py가 담당한다.
 """
 
-import rclpy
-from rclpy.node import Node
-from rclpy.qos import qos_profile_sensor_data
+import math
 
 import cv2
 import numpy as np
+import rclpy
 
-from std_msgs.msg import Int32, Int32MultiArray, Float32, Bool
+from rclpy.node import Node
+from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import Imu
+from std_msgs.msg import Bool, Float32, Int32, Int32MultiArray
 from xycar_msgs.msg import XycarMotor
+
 
 # ---------------------------------------------------------------------------
 # 모드 정의
 # ---------------------------------------------------------------------------
+
 MODE_WAIT, MODE_CONE, MODE_LANE, MODE_LEFT_TURN, \
     MODE_LANE_CHANGE, MODE_FOLLOW, MODE_SIGNAL_WAIT = range(7)
 
@@ -39,277 +41,724 @@ MODE_NAME = {
     MODE_SIGNAL_WAIT: 'SIGNAL_WAIT',
 }
 
-# stage 인덱스
-STAGE_LANE_TARGET = 0   # 0=1차선, 1=2차선
-STAGE_TURN_TYPE = 1     # 0=좌회전A(진입), 1=좌회전B(탈출)
 
+# ---------------------------------------------------------------------------
+# stage 정의
+# ---------------------------------------------------------------------------
+
+STAGE_LANE_TARGET = 0  # 0=1차선, 1=2차선
+STAGE_TURN_TYPE = 1    # 0=좌회전A(진입), 1=좌회전B(탈출)
+
+
+# ---------------------------------------------------------------------------
 # /perception/status 인덱스
-IDX_START_SIGNAL, IDX_TRAFFIC_SIGNAL, IDX_OBSTACLE_FRONT, IDX_OBSTACLE_PASSED, \
-    IDX_POLICE_DETECTED, IDX_SHORTCUT_EXIT, IDX_LAP_LINE = range(7)
-STATUS_LEN = 7
+# ---------------------------------------------------------------------------
+
+IDX_START_SIGNAL = 0
+IDX_TRAFFIC_SIGNAL = 1
+IDX_OBSTACLE_FRONT = 2
+IDX_OBSTACLE_PASSED = 3
+IDX_POLICE_DETECTED = 4
+IDX_SHORTCUT_EXIT = 5
+IDX_LAP_LINE = 6
+IDX_PEDESTRIAN = 7
+IDX_MERGE_CLEAR = 8
+IDX_TRAFFIC_PRESENT = 9
+
+STATUS_LEN = 10
 
 STATUS_LABEL = [
-    'start_signal', 'traffic_signal', 'obstacle_front', 'obstacle_passed',
-    'police_detected', 'shortcut_exit', 'lap_line',
+    'start_signal',
+    'traffic_signal',
+    'obstacle_front',
+    'obstacle_passed',
+    'police_detected',
+    'shortcut_exit',
+    'lap_line',
+    'pedestrian',
+    'merge_clear',
+    'traffic_present',
 ]
 
+TRAFFIC_WAIT = 0
 TRAFFIC_GREEN = 1
 TRAFFIC_LEFT = 2
 
+# 연속 프레임 기반 디바운스 값
+TRAFFIC_PRESENT_FRAMES = 3
+PEDESTRIAN_CLEAR_FRAMES = 8
+SIGNAL_COOLDOWN_FRAMES = 60
+
 
 class Main(Node):
-
     def __init__(self):
         super().__init__('main')
 
+        # ------------------------------------------------------------------
         # 상태
+        # ------------------------------------------------------------------
+
         self._mode = MODE_WAIT
         self._stage = [0, 0]
         self._lap = 0
 
-        # 입력 버퍼
+        # 방해차량 인식이 완성되기 전까지 기본적으로 비활성화한다.
+        self._enable_obstacle_mission = bool(
+            self.declare_parameter(
+                'enable_obstacle_mission',
+                False,
+            ).value
+        )
+
+        # 디버그 창이 필요 없거나 WSL에서 Qt 경고가 많을 때 끌 수 있다.
+        self._show_debug = bool(
+            self.declare_parameter(
+                'show_debug',
+                True,
+            ).value
+        )
+
+        # ------------------------------------------------------------------
+        # 입력 버퍼와 이벤트
+        # ------------------------------------------------------------------
+
         self._status = [0] * STATUS_LEN
         self._offset = 0.0
+
         self._lane_change_done = False
-        self._turn_done = False          # /driving/turn_done 수신 플래그
-        self._lane_change_reason = 'obstacle'  # 'obstacle' | 'turn'
+        self._turn_done = False
+        self._cone_done = False
+        self._lap_line_event = False
+
+        self._lane_change_reason = 'obstacle'
+        self._follow_phase = 'passing'
+
         self._yaw = 0.0
         self._motor_angle = 0.0
         self._motor_speed = 0.0
 
-        # ---- 구독 ----
-        self.create_subscription(
-            Int32MultiArray, '/perception/status', self._status_cb, 10)
-        self.create_subscription(Float32, '/driving/offset', self._offset_cb, 10)
-        self.create_subscription(
-            Bool, '/driving/lane_change_done', self._lane_change_cb, 10)
-        self.create_subscription(
-            Bool, '/driving/turn_done', self._turn_done_cb, 10)
-        self.create_subscription(Imu, '/imu', self._imu_cb, qos_profile_sensor_data)
-        self.create_subscription(
-            XycarMotor, '/xycar_motor', self._motor_cb, 10)
+        # 보행자 정지 후 복귀할 모드
+        self._wait_reason = None
+        self._resume_mode = MODE_LANE
+        self._pedestrian_clear_count = 0
 
-        # ---- 발행 ----
-        self._mode_pub = self.create_publisher(Int32, '/main/mode', 10)
-        self._stage_pub = self.create_publisher(Int32MultiArray, '/main/stage', 10)
+        # 트랙 신호등 및 경로 선택 상태
+        self._traffic_present_count = 0
+        self._signal_cooldown_frames = 0
+        self._police_seen_this_lap = False
+        self._shortcut_active = False
 
-        # 상태머신 주기 (30Hz)
-        self.create_timer(1.0 / 30.0, self._fsm_tick)
-        # 디버그 창 갱신 주기 (15Hz)
-        self.create_timer(1.0 / 15.0, self._debug_tick)
+        # ------------------------------------------------------------------
+        # 구독
+        # ------------------------------------------------------------------
 
-        # 첫 모드 발행
+        self.create_subscription(
+            Int32MultiArray,
+            '/perception/status',
+            self._status_cb,
+            10,
+        )
+
+        self.create_subscription(
+            Float32,
+            '/driving/offset',
+            self._offset_cb,
+            10,
+        )
+
+        self.create_subscription(
+            Bool,
+            '/driving/lane_change_done',
+            self._lane_change_cb,
+            10,
+        )
+
+        self.create_subscription(
+            Bool,
+            '/driving/turn_done',
+            self._turn_done_cb,
+            10,
+        )
+
+        self.create_subscription(
+            Bool,
+            '/driving/cone_done',
+            self._cone_done_cb,
+            10,
+        )
+
+        self.create_subscription(
+            Imu,
+            '/imu',
+            self._imu_cb,
+            qos_profile_sensor_data,
+        )
+
+        self.create_subscription(
+            XycarMotor,
+            '/xycar_motor',
+            self._motor_cb,
+            10,
+        )
+
+        # ------------------------------------------------------------------
+        # 발행
+        # ------------------------------------------------------------------
+
+        self._mode_pub = self.create_publisher(
+            Int32,
+            '/main/mode',
+            10,
+        )
+
+        self._stage_pub = self.create_publisher(
+            Int32MultiArray,
+            '/main/stage',
+            10,
+        )
+
+        # 상태머신 주기
+        self.create_timer(
+            1.0 / 30.0,
+            self._fsm_tick,
+        )
+
+        # 다른 노드가 늦게 실행돼도 현재 상태를 받을 수 있도록 반복 발행한다.
+        self.create_timer(
+            0.1,
+            self._publish_mode_stage,
+        )
+
+        if self._show_debug:
+            self.create_timer(
+                1.0 / 15.0,
+                self._debug_tick,
+            )
+
         self._publish_mode_stage()
-        self.get_logger().info('main node ready')
+
+        self.get_logger().info(
+            'main node ready '
+            f'(obstacle_mission={self._enable_obstacle_mission}, '
+            f'debug={self._show_debug})'
+        )
 
     # ==================================================================
     # 콜백
     # ==================================================================
+
     def _status_cb(self, msg):
-        if len(msg.data) >= STATUS_LEN:
-            self._status = list(msg.data[:STATUS_LEN])
+        if len(msg.data) < STATUS_LEN:
+            self.get_logger().warn(
+                f'perception status 길이 부족: '
+                f'{len(msg.data)} < {STATUS_LEN}'
+            )
+            return
+
+        new_status = list(msg.data[:STATUS_LEN])
+
+        previous_lap_line = self._status[IDX_LAP_LINE]
+        current_lap_line = new_status[IDX_LAP_LINE]
+
+        # 출발선이 여러 프레임 유지돼도 0→1 순간만 이벤트로 저장한다.
+        if current_lap_line == 1 and previous_lap_line == 0:
+            self._lap_line_event = True
+
+        self._status = new_status
 
     def _offset_cb(self, msg):
-        self._offset = msg.data
+        self._offset = float(msg.data)
 
     def _lane_change_cb(self, msg):
-        self._lane_change_done = msg.data
+        if msg.data:
+            self._lane_change_done = True
 
     def _turn_done_cb(self, msg):
-        self._turn_done = msg.data
+        if msg.data:
+            self._turn_done = True
+
+    def _cone_done_cb(self, msg):
+        if msg.data:
+            self._cone_done = True
 
     def _imu_cb(self, msg):
         self._yaw = self._quat_to_yaw(msg.orientation)
 
     def _motor_cb(self, msg):
-        self._motor_angle = msg.angle
-        self._motor_speed = msg.speed
+        self._motor_angle = float(msg.angle)
+        self._motor_speed = float(msg.speed)
 
     # ==================================================================
-    # 상태머신 (README '전체 주행 시퀀스' 골격)
+    # 상태머신
     # ==================================================================
+
     def _fsm_tick(self):
-        s = self._status
-        prev_mode, prev_stage = self._mode, list(self._stage)
+        previous_mode = self._mode
+        previous_stage = list(self._stage)
+
+        if self._signal_cooldown_frames > 0:
+            self._signal_cooldown_frames -= 1
+
+        # 경찰차는 현재 lap에서 한 번이라도 검출되면 유지한다.
+        if self._status[IDX_POLICE_DETECTED] == 1:
+            self._police_seen_this_lap = True
+
+        if self._status[IDX_TRAFFIC_PRESENT] == 1:
+            self._traffic_present_count += 1
+        else:
+            self._traffic_present_count = 0
+
+        # 주행 중 위험 보행자는 모드 처리보다 우선한다.
+        if self._handle_pedestrian():
+            self._publish_if_changed(previous_mode, previous_stage)
+            return
 
         if self._mode == MODE_WAIT:
-            # 초록불 → 라바콘 주행
-            if s[IDX_START_SIGNAL] == 1:
-                self._set_mode(MODE_CONE)
+            if self._status[IDX_START_SIGNAL] == 1:
+                self._set_mode(
+                    MODE_CONE,
+                    '출발 초록불 감지',
+                )
 
         elif self._mode == MODE_CONE:
-            # 아스팔트 진입 완료 → 1차선 차선주행
-            # TODO(team): 아스팔트 진입 완료 판정 조건
             if self._cone_finished():
                 self._stage[STAGE_LANE_TARGET] = 0
-                self._set_mode(MODE_LANE)
+                self._stage[STAGE_TURN_TYPE] = 0
+                self._signal_cooldown_frames = SIGNAL_COOLDOWN_FRAMES
+
+                self._set_mode(
+                    MODE_LANE,
+                    '라바콘 종료 및 차선 안정 검출',
+                )
 
         elif self._mode == MODE_LANE:
             self._fsm_lane()
 
         elif self._mode == MODE_LANE_CHANGE:
-            # 차선 변경 완료 → reason에 따라 다음 모드 결정
-            if self._lane_change_done:
-                self._lane_change_done = False
-                if self._lane_change_reason == 'turn':
-                    self._set_mode(MODE_LANE)
-                else:
-                    self._set_mode(MODE_FOLLOW)
+            self._fsm_lane_change()
 
         elif self._mode == MODE_FOLLOW:
-            # 라이다 왼쪽 미감지(추월 완료) → 1차선 복귀
-            # TODO(team): 왼쪽 라이다 미감지 판정 (obstacle_passed 활용 가능)
-            if s[IDX_OBSTACLE_PASSED] == 1:
-                self._stage[STAGE_LANE_TARGET] = 0
-                self._set_mode(MODE_LANE)
+            self._fsm_follow()
 
         elif self._mode == MODE_SIGNAL_WAIT:
             self._fsm_signal_wait()
 
         elif self._mode == MODE_LEFT_TURN:
-            # 목표 yaw 도달 → 다음 단계
-            # TODO(team): driving.turn 의 reached 판정과 동기화 (별도 토픽 or yaw 직접 비교)
             if self._left_turn_reached():
                 self._after_left_turn()
 
-        # 변화가 있으면 발행
-        if self._mode != prev_mode or self._stage != prev_stage:
-            self._publish_mode_stage()
+        self._publish_if_changed(previous_mode, previous_stage)
 
     def _fsm_lane(self):
         s = self._status
-        # lap1: 1차선 주행 중 방해차량 → 차선 변경
-        if s[IDX_OBSTACLE_FRONT] == 1 and self._stage[STAGE_LANE_TARGET] == 0:
-            self._stage[STAGE_LANE_TARGET] = 1   # 2차선으로
-            self._lane_change_reason = 'obstacle'
-            self._set_mode(MODE_LANE_CHANGE)
-            return
 
-        # 2차선 숏컷 주행 중 지름길 출구 감지 → 좌회전B(탈출)
-        if self._stage[STAGE_LANE_TARGET] == 1 and s[IDX_SHORTCUT_EXIT] == 1:
+        # 지름길 주행 중 정면 도로가 끝나면 좌회전B로 탈출한다.
+        if (
+            self._shortcut_active
+            and self._stage[STAGE_LANE_TARGET] == 1
+            and s[IDX_SHORTCUT_EXIT] == 1
+        ):
             self._stage[STAGE_TURN_TYPE] = 1
-            self._set_mode(MODE_LEFT_TURN)
+
+            self._set_mode(
+                MODE_LEFT_TURN,
+                '지름길 출구 감지',
+            )
             return
 
-        # 신호등 앞 도달 → 신호 대기
-        # TODO(team): 신호등 앞 도달 판정 (위치/거리). 우선 traffic_signal 수신으로 대체 가능.
+        # 첫 외곽 lap을 마친 뒤부터 트랙 신호등 경로 선택을 수행한다.
         if self._reached_traffic_light():
-            self._set_mode(MODE_SIGNAL_WAIT)
+            self._wait_reason = 'signal'
+
+            self._set_mode(
+                MODE_SIGNAL_WAIT,
+                '트랙 신호등 감지',
+            )
             return
 
-        # 출발선 통과 → lap++
-        if s[IDX_LAP_LINE] == 1:
+        # 방해차량 미션은 인식 파트 완성 후 파라미터로 활성화한다.
+        if (
+            self._enable_obstacle_mission
+            and not self._shortcut_active
+            and self._stage[STAGE_LANE_TARGET] == 0
+            and s[IDX_OBSTACLE_FRONT] == 1
+        ):
+            if s[IDX_MERGE_CLEAR] == 1:
+                self._stage[STAGE_LANE_TARGET] = 1
+                self._lane_change_reason = 'obstacle'
+
+                self._set_mode(
+                    MODE_LANE_CHANGE,
+                    '방해차량 감지 및 우측 합류 가능',
+                )
+            else:
+                # 우측 차선이 열릴 때까지 1차선에서 저속으로 따라간다.
+                self._follow_phase = 'waiting_merge'
+
+                self._set_mode(
+                    MODE_FOLLOW,
+                    '방해차량 감지, 합류 가능 시점 대기',
+                )
+            return
+
+        if self._lap_line_event:
             self._lap += 1
             self._consume_lap_line()
 
-    def _fsm_signal_wait(self):
+            # 새로운 lap에서는 경찰차 경로 판단을 다시 수행한다.
+            self._police_seen_this_lap = False
+            self._signal_cooldown_frames = SIGNAL_COOLDOWN_FRAMES
+
+            self.get_logger().info(
+                f'lap 증가: {self._lap}'
+            )
+
+    def _fsm_lane_change(self):
+        if not self._lane_change_done:
+            return
+
+        self._lane_change_done = False
+
+        if self._lane_change_reason == 'obstacle':
+            self._follow_phase = 'passing'
+
+            self._set_mode(
+                MODE_FOLLOW,
+                '2차선 진입 완료, 방해차량 추월 시작',
+            )
+        else:
+            self._set_mode(
+                MODE_LANE,
+                '1차선 복귀 완료',
+            )
+
+    def _fsm_follow(self):
         s = self._status
-        sig = s[IDX_TRAFFIC_SIGNAL]
-        if sig == TRAFFIC_LEFT:
-            # 좌회전 → 지름길 진입
-            self._stage[STAGE_TURN_TYPE] = 0
-            self._set_mode(MODE_LEFT_TURN)
-        elif sig == TRAFFIC_GREEN:
-            # 직진 → 1차선 차선주행 복귀
+
+        if self._follow_phase == 'waiting_merge':
+            if s[IDX_MERGE_CLEAR] == 1:
+                self._stage[STAGE_LANE_TARGET] = 1
+                self._lane_change_reason = 'obstacle'
+
+                self._set_mode(
+                    MODE_LANE_CHANGE,
+                    '우측 차선 합류 가능',
+                )
+            return
+
+        # 2차선에서 옆 방해차량을 지나친 뒤 1차선으로 복귀한다.
+        if s[IDX_OBSTACLE_PASSED] == 1:
             self._stage[STAGE_LANE_TARGET] = 0
-            self._set_mode(MODE_LANE)
+            self._lane_change_reason = 'return'
+
+            self._set_mode(
+                MODE_LANE_CHANGE,
+                '방해차량 추월 완료, 1차선 복귀',
+            )
+
+    def _fsm_signal_wait(self):
+        if self._wait_reason == 'pedestrian':
+            # 보행자 해제 처리는 _handle_pedestrian에서 수행한다.
+            return
+
+        signal = self._status[IDX_TRAFFIC_SIGNAL]
+
+        if self._police_seen_this_lap:
+            # 경찰차가 있으면 지름길을 사용하지 않고 초록불 직진한다.
+            if signal == TRAFFIC_GREEN:
+                self._stage[STAGE_LANE_TARGET] = 0
+                self._shortcut_active = False
+                self._wait_reason = None
+                self._signal_cooldown_frames = SIGNAL_COOLDOWN_FRAMES
+
+                self._set_mode(
+                    MODE_LANE,
+                    '경찰차 감지 상태에서 직진 초록불',
+                )
+
+        else:
+            # 경찰차가 없으면 좌회전 신호에 지름길로 진입한다.
+            if signal == TRAFFIC_LEFT:
+                self._stage[STAGE_TURN_TYPE] = 0
+                self._shortcut_active = True
+                self._wait_reason = None
+
+                self._set_mode(
+                    MODE_LEFT_TURN,
+                    '경찰차 미검출 및 좌회전 신호',
+                )
 
     def _after_left_turn(self):
-        if self._stage[STAGE_TURN_TYPE] == 0:
-            # 좌회전A 완료 → 2차선으로 차선 변경
-            self._stage[STAGE_LANE_TARGET] = 1
-            self._lane_change_reason = 'turn'
-            self._set_mode(MODE_LANE_CHANGE)
-        else:
-            # 좌회전B 완료 → 1차선으로 차선 변경
-            self._stage[STAGE_LANE_TARGET] = 0
-            self._lane_change_reason = 'turn'
-            self._set_mode(MODE_LANE_CHANGE)
+        turn_type = self._stage[STAGE_TURN_TYPE]
 
-    # ------------------------------------------------------------------
-    # 전환 조건 헬퍼 (구현은 추후; 자리만 잡음)
-    # ------------------------------------------------------------------
+        if turn_type == 0:
+            # 좌회전A 완료 후 지름길 2차선 기준으로 차선 주행한다.
+            self._stage[STAGE_LANE_TARGET] = 1
+            self._shortcut_active = True
+            reason = '좌회전A 완료, 지름길 진입'
+
+        else:
+            # 좌회전B 완료 후 외곽 1차선 기준으로 복귀한다.
+            self._stage[STAGE_LANE_TARGET] = 0
+            self._shortcut_active = False
+            reason = '좌회전B 완료, 외곽 1차선 복귀'
+
+        self._signal_cooldown_frames = SIGNAL_COOLDOWN_FRAMES
+
+        self._set_mode(
+            MODE_LANE,
+            reason,
+        )
+
+    # ==================================================================
+    # 공통 안전 처리
+    # ==================================================================
+
+    def _handle_pedestrian(self):
+        pedestrian_danger = (
+            self._status[IDX_PEDESTRIAN] == 1
+        )
+
+        moving_modes = (
+            MODE_LANE,
+            MODE_LANE_CHANGE,
+            MODE_FOLLOW,
+        )
+
+        if self._mode in moving_modes and pedestrian_danger:
+            self._resume_mode = self._mode
+            self._wait_reason = 'pedestrian'
+            self._pedestrian_clear_count = 0
+
+            self._set_mode(
+                MODE_SIGNAL_WAIT,
+                '전방 위험 보행자 감지',
+            )
+            return True
+
+        if (
+            self._mode == MODE_SIGNAL_WAIT
+            and self._wait_reason == 'pedestrian'
+        ):
+            if pedestrian_danger:
+                self._pedestrian_clear_count = 0
+            else:
+                self._pedestrian_clear_count += 1
+
+            if (
+                self._pedestrian_clear_count
+                >= PEDESTRIAN_CLEAR_FRAMES
+            ):
+                resume_mode = self._resume_mode
+
+                self._wait_reason = None
+                self._pedestrian_clear_count = 0
+
+                self._set_mode(
+                    resume_mode,
+                    '보행자 위험 해제',
+                )
+
+            return True
+
+        return False
+
+    # ==================================================================
+    # 전환 조건 헬퍼
+    # ==================================================================
+
     def _cone_finished(self):
-        # TODO(team): 라바콘 구간 종료(아스팔트 진입) 판정
+        if self._cone_done:
+            self._cone_done = False
+            self.get_logger().info(
+                '라바콘 종료 이벤트 수신'
+            )
+            return True
+
         return False
 
     def _reached_traffic_light(self):
-        # TODO(team): 신호등 앞 도달 판정
-        return False
+        if self._lap < 1:
+            return False
+
+        if self._shortcut_active:
+            return False
+
+        if self._signal_cooldown_frames > 0:
+            return False
+
+        return (
+            self._traffic_present_count
+            >= TRAFFIC_PRESENT_FRAMES
+        )
 
     def _left_turn_reached(self):
-        # /driving/turn_done 수신 시 완료 판정
         if self._turn_done:
             self._turn_done = False
             return True
+
         return False
 
     def _consume_lap_line(self):
-        # lap_line 래치 소비 (중복 카운트 방지)
-        self._status[IDX_LAP_LINE] = 0
+        self._lap_line_event = False
 
-    # ------------------------------------------------------------------
-    def _set_mode(self, mode):
-        if mode != self._mode:
-            self.get_logger().info(
-                f'mode: {MODE_NAME.get(self._mode)} -> {MODE_NAME.get(mode)}')
+    # ==================================================================
+    # 모드 및 stage 발행
+    # ==================================================================
+
+    def _set_mode(self, mode, reason=''):
+        if mode == self._mode:
+            return
+
+        suffix = f' / 이유: {reason}' if reason else ''
+
+        self.get_logger().info(
+            f'mode: {MODE_NAME.get(self._mode)} '
+            f'-> {MODE_NAME.get(mode)}{suffix}'
+        )
+
         self._mode = mode
 
+    def _publish_if_changed(
+        self,
+        previous_mode,
+        previous_stage,
+    ):
+        if (
+            self._mode != previous_mode
+            or self._stage != previous_stage
+        ):
+            self._publish_mode_stage()
+
     def _publish_mode_stage(self):
-        self._mode_pub.publish(Int32(data=int(self._mode)))
-        m = Int32MultiArray()
-        m.data = [int(v) for v in self._stage]
-        self._stage_pub.publish(m)
+        # driving이 새 mode를 받을 때 최신 stage가 준비되도록 stage부터 발행한다.
+        stage_msg = Int32MultiArray()
+        stage_msg.data = [
+            int(value) for value in self._stage
+        ]
+        self._stage_pub.publish(stage_msg)
+
+        self._mode_pub.publish(
+            Int32(data=int(self._mode))
+        )
 
     # ==================================================================
     # 디버그 시각화
     # ==================================================================
+
     def _debug_tick(self):
-        img = np.zeros((360, 460, 3), dtype=np.uint8)
+        image = np.zeros(
+            (500, 500, 3),
+            dtype=np.uint8,
+        )
+
         white = (255, 255, 255)
         green = (0, 255, 0)
         gray = (160, 160, 160)
         yellow = (0, 220, 255)
 
-        def put(text, y, color=white, scale=0.6):
-            cv2.putText(img, text, (12, y), cv2.FONT_HERSHEY_SIMPLEX,
-                        scale, color, 1, cv2.LINE_AA)
+        def put(text, y, color=white, scale=0.55):
+            cv2.putText(
+                image,
+                text,
+                (12, y),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                scale,
+                color,
+                1,
+                cv2.LINE_AA,
+            )
 
         put('ERICAR DEBUG', 28, yellow, 0.7)
-        cv2.line(img, (10, 38), (450, 38), gray, 1)
+        cv2.line(image, (10, 38), (490, 38), gray, 1)
 
-        put(f'MODE : {MODE_NAME.get(self._mode, "?")} ({self._mode})', 66, green)
-        lane_txt = '2nd' if self._stage[STAGE_LANE_TARGET] == 1 else '1st'
-        turn_txt = 'B(exit)' if self._stage[STAGE_TURN_TYPE] == 1 else 'A(enter)'
-        put(f'STAGE: lane={lane_txt}  turn={turn_txt}', 92)
-        put(f'LAP  : {self._lap}', 118)
-        put(f'OFFSET: {self._offset:+.3f}', 144)
-        put(f'MOTOR : angle={self._motor_angle:+6.1f}  speed={self._motor_speed:+5.1f}', 170)
+        put(
+            f'MODE : {MODE_NAME.get(self._mode, "?")} '
+            f'({self._mode})',
+            65,
+            green,
+        )
 
-        cv2.line(img, (10, 184), (450, 184), gray, 1)
-        put('PERCEPTION', 206, yellow)
-        y = 230
-        for i, label in enumerate(STATUS_LABEL):
-            v = self._status[i] if i < len(self._status) else 0
-            color = green if v else gray
-            put(f'{label:<16}: {v}', y, color, 0.5)
-            y += 20
+        lane_text = (
+            '2nd'
+            if self._stage[STAGE_LANE_TARGET] == 1
+            else '1st'
+        )
 
-        cv2.imshow('ericar_debug', img)
+        turn_text = (
+            'B(exit)'
+            if self._stage[STAGE_TURN_TYPE] == 1
+            else 'A(enter)'
+        )
+
+        put(
+            f'STAGE: lane={lane_text} turn={turn_text}',
+            90,
+        )
+
+        put(f'LAP : {self._lap}', 115)
+        put(f'OFFSET: {self._offset:+.3f}', 140)
+
+        put(
+            f'MOTOR: angle={self._motor_angle:+6.1f} '
+            f'speed={self._motor_speed:+5.1f}',
+            165,
+        )
+
+        put(
+            f'WAIT: {self._wait_reason or "-"}  '
+            f'POLICE_LATCH: {int(self._police_seen_this_lap)}',
+            190,
+        )
+
+        cv2.line(image, (10, 205), (490, 205), gray, 1)
+        put('PERCEPTION', 228, yellow)
+
+        y = 252
+
+        for index, label in enumerate(STATUS_LABEL):
+            value = (
+                self._status[index]
+                if index < len(self._status)
+                else 0
+            )
+
+            color = green if value else gray
+
+            put(
+                f'{label:<18}: {value}',
+                y,
+                color,
+                0.48,
+            )
+
+            y += 22
+
+        cv2.imshow('ericar_debug', image)
         cv2.waitKey(1)
 
     # ------------------------------------------------------------------
+
     @staticmethod
     def _quat_to_yaw(q):
-        import math
-        siny_cosp = 2.0 * (q.w * q.z + q.x * q.y)
-        cosy_cosp = 1.0 - 2.0 * (q.y * q.y + q.z * q.z)
-        return math.atan2(siny_cosp, cosy_cosp)
+        siny_cosp = 2.0 * (
+            q.w * q.z + q.x * q.y
+        )
+
+        cosy_cosp = 1.0 - 2.0 * (
+            q.y * q.y + q.z * q.z
+        )
+
+        return math.atan2(
+            siny_cosp,
+            cosy_cosp,
+        )
 
 
 def main(args=None):
     rclpy.init(args=args)
     node = Main()
+
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:

@@ -21,7 +21,7 @@ from cv_bridge import CvBridge
 from perception.yolo_detector import YoloDetector
 from perception.traffic_light import (
     TrafficLightDetector, START_OVERRIDES, TRACK_OVERRIDES,
-    SIGNAL_GREEN, SIGNAL_LEFT)
+    SIGNAL_NONE, SIGNAL_GREEN, SIGNAL_LEFT)
 from perception.start_line import detect_start_line
 from perception.shortcut_exit import detect_shortcut_exit
 from perception.obstacle import detect_obstacle_front, detect_merge_clear
@@ -47,7 +47,8 @@ IDX_SHORTCUT_EXIT  = 5   # 0=아직, 1=지름길 출구 위치 감지
 IDX_LAP_LINE       = 6   # 0=아직, 1=출발선 통과 감지
 IDX_PEDESTRIAN     = 7   # 0=무시(없음/멀리/옆), 1=바로 앞 위험 → 정지
 IDX_MERGE_CLEAR    = 8   # 0=아직, 1=우측(2차선) 간격 열림 → 합류 가능
-STATUS_LEN = 9
+IDX_TRAFFIC_PRESENT = 9  # 0=신호등 미검출, 1=트랙 신호등 검출
+STATUS_LEN = 10
 
 # 보행자 '위험(정지)' 판정 기준 — 박스가 가깝고(큼) 진행경로(중앙) 안일 때만.
 #   h(세로크기, 0~1)가 클수록 가깝다. 실측 분포: 중앙0.16 / p90 0.42 / max 0.57
@@ -201,13 +202,24 @@ class Perception(Node):
         return 1 if sig == SIGNAL_GREEN else 0
 
     def _detect_traffic_signal(self, det):
-        # 트랙등(4구): 0=정지대기, 1=직진(초록), 2=좌회전
+        # 트랙 신호등 원본 판정 결과를 한 번만 계산한다.
         sig = self._tl_track.detect(self._img_front)
+
+        # 빨강·노랑·초록·좌회전 중 하나라도 검출되면 신호등이 존재한다.
+        # NONE과 빨간불을 구분하기 위해 별도 상태값으로 발행한다.
+        self._status[IDX_TRAFFIC_PRESENT] = (
+            0 if sig == SIGNAL_NONE else 1
+        )
+
         if sig == SIGNAL_GREEN:
             return 1
+
         if sig == SIGNAL_LEFT:
             return 2
-        return 0  # RED / YELLOW / NONE → 정지 대기
+
+        # 빨강·노랑은 정지 대기이며, NONE도 action 값은 0이다.
+        # 두 경우의 구분은 IDX_TRAFFIC_PRESENT가 담당한다.
+        return 0
 
     def _detect_police(self, det):
         # YOLO 가 police_car 를 하나라도 잡으면 1, 아니면 0
