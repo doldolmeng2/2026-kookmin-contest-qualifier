@@ -112,6 +112,8 @@ class Driving(Node):
         # 라바콘 통과 후 차선 주행으로 전환할 때 main에 한 번 발행한다.
         self._cone_done_pub = self.create_publisher(
             Bool, '/driving/cone_done', 10)
+        # 차선 디버그 이미지 publisher
+        self._lane_debug_pub = self.create_publisher(Image, '/lane_debug', 10)
         # 계산 + 발행 주기 (30Hz)
         self.create_timer(1.0 / 30.0, self._tick)
         self.get_logger().info('driving node ready')
@@ -171,6 +173,9 @@ class Driving(Node):
         elif self._mode in (MODE_LANE, MODE_FOLLOW):
             lane_target = self._stage[STAGE_LANE_TARGET]
             offset = self._lane.compute_offset(self._img_front, lane_target)
+            if self._lane.last_debug_img is not None:
+                self._lane_debug_pub.publish(
+                    self._bridge.cv2_to_imgmsg(self._lane.last_debug_img, 'bgr8'))
         elif self._mode == MODE_LANE_CHANGE:
             lane_target = self._stage[STAGE_LANE_TARGET]
             offset = self._lane.compute_offset(self._img_front, lane_target)

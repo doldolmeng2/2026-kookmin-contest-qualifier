@@ -23,7 +23,7 @@ MODE_WAIT, MODE_CONE, MODE_LANE, MODE_LEFT_TURN, \
 MODE_RATIO = {
     MODE_WAIT:         0.0,
     MODE_CONE:       100.0,
-    MODE_LANE:        70.0,
+    MODE_LANE:        80.0,
     MODE_LEFT_TURN:  100.0,
     MODE_LANE_CHANGE: 70.0,
     MODE_FOLLOW:      70.0,
@@ -34,7 +34,7 @@ MODE_RATIO = {
 SPEED_TABLE = {
     MODE_WAIT:         0,
     MODE_CONE:        15,
-    MODE_LANE:        25,
+    MODE_LANE:        8,
     MODE_LEFT_TURN:   12,
     MODE_LANE_CHANGE: 20,
     MODE_FOLLOW:      10,
@@ -87,6 +87,15 @@ class Control(Node):
         ratio = MODE_RATIO.get(self._mode, 0.0)
         speed = SPEED_TABLE.get(self._mode, 0)
 
+        abs_offset = abs(self._offset)
+        if self._mode == MODE_LANE:
+            if abs_offset < 0.05:
+                ratio = 40.0
+            elif abs_offset < 0.10:
+                ratio = 70.0
+            else:
+                ratio = 200.0
+                pass  # 속도 감소 제거
         angle = self._offset * ratio
         angle = max(-ANGLE_LIMIT, min(ANGLE_LIMIT, angle))
         speed = max(-SPEED_LIMIT, min(SPEED_LIMIT, float(speed)))
