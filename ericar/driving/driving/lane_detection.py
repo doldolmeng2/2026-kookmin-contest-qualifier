@@ -1,16 +1,45 @@
 #!/usr/bin/env python3
+"""
+lane_detection.py
+-----------------
+노란색 차선을 검출하여 차량 중심 대비 lateral offset(-1.0 ~ +1.0)을 계산한다.
+
+알고리즘 개요:
+  1. HSV + HLS 이중 마스킹으로 노란색 픽셀 추출
+  2. Blob 필터로 소형 노이즈(교차로 화살표, 점선 등) 제거
+  3. 2단 ROI:
+     - 하단 ROI (차 바로 앞): 히스토그램 peak로 현재 차선 위치 정밀 추정
+     - 원거리 ROI (앞쪽 도로): centroid(mean)으로 커브 방향 조기 감지
+  4. 커브 boost: 원거리 ROI가 하단 ROI보다 같은 방향으로 더 큰 error를 보이면
+     error를 CURVE_BOOST배로 증폭 → 커브 진입 전 핸들을 더 빨리 꺾음
+  5. Velocity prediction: 차선이 일시적으로 사라졌을 때 직전 이동속도(dx)로
+     최대 MAX_PRED_FRAMES 프레임 동안 위치를 예측해 offset 유지
+  6. NO_LINE 턴 유지: 차선 완전 소실 시 턴 중(|offset|>0.2)이면 핸들 유지,
+     직진 중이면 서서히 0으로 감쇠
+  7. Normalized PID: error를 화면 폭 기준으로 정규화(-1~1) 후 PID 적용
+"""
 import cv2
 import numpy as np
 import sys
 import time
 
-# ── 색상 범위 ────────────────────────────────────────────
+# ── 색상 범위 ────────────────────────────────────────────────────────────────
+# HSV + HLS 이중 조건으로 조명 변화에 강인하게 노란색 검출
+# HSV: 색상(H) 15~40, 채도(S) 70+, 명도(V) 70+
+# HLS: 색상(H) 15~45, 밝기(L) 45+, 채도(S) 60+
 YELLOW_HSV_LOWER = np.array([15,  70,  70], dtype=np.uint8)
 YELLOW_HSV_UPPER = np.array([40, 255, 255], dtype=np.uint8)
 YELLOW_HLS_LOWER = np.array([15,  45,  60], dtype=np.uint8)
 YELLOW_HLS_UPPER = np.array([45, 255, 255], dtype=np.uint8)
 
-# ── 타겟 / 탐색 ──────────────────────────────────────────
+# ── 타겟 / 탐색 파라미터 ─────────────────────────────────────────────────────
+# LANE1_TARGET_X: 1차선 주행 시 차선이 위치해야 할 이미지 x좌표 (직선 보정값)
+# LANE2_TARGET_X: 2차선 주행 시 타겟 x좌표
+# MIN_YELLOW_PX : 유효 차선으로 인정하는 최소 노란 픽셀 수
+# YELLOW_MAX_RATIO: 이 비율 이상이면 교차로/오탐지로 판단하여 스킵
+# HIST_KERNEL   : 히스토그램 스무딩 커널 크기 (클수록 peak가 부드러워짐)
+# SEARCH_HALF   : 히스토그램 peak 탐색 범위 (target_x ± SEARCH_HALF px)
+# BLOB_MIN_AREA : 이 면적(px²) 미만인 연결요소는 노이즈로 제거
 LANE1_TARGET_X   = 310
 LANE2_TARGET_X   = 420
 MIN_YELLOW_PX    = 30
@@ -19,70 +48,115 @@ HIST_KERNEL      = 40
 SEARCH_HALF      = 100
 BLOB_MIN_AREA    = 80
 
-# ── 2단 ROI ──────────────────────────────────────────────
-ROI_NEAR_START   = 0.70   # 하단(정밀): 70%~100%
-ROI_FAR_START    = 0.45   # 원거리(look-ahead): 45%~70%
-ROI_FAR_END      = 0.70
+# ── 2단 ROI ──────────────────────────────────────────────────────────────────
+# 이미지 높이를 기준으로 비율로 지정 (0.0 = 이미지 상단, 1.0 = 이미지 하단)
+#
+# ROI_NEAR_START: 하단 ROI 시작 위치 (차 바로 앞 노면)
+#   → 히스토그램 peak로 현재 차선 중심 정밀 추정
+#   → 직선 구간에서 안정적인 제어 기준점
+#
+# ROI_FAR_START/END: 원거리 ROI 구간 (앞쪽 도로)
+#   → mean(centroid)으로 커브가 어느 방향으로 꺾이는지 조기 감지
+#   → 하단 ROI만 보면 커브를 너무 늦게 인식하는 문제를 보완
+ROI_NEAR_START   = 0.70   # 하단 ROI: 이미지 70%~100% (차 바로 앞)
+ROI_FAR_START    = 0.50   # 원거리 ROI 시작: 이미지 50%
+ROI_FAR_END      = 0.60   # 원거리 ROI 끝:   이미지 60%
 
-# ── 커브 boost ────────────────────────────────────────────
+# ── 커브 boost ───────────────────────────────────────────────────────────────
+# 원거리 ROI(look-ahead)의 mean이 하단 ROI peak보다 같은 방향으로
+# CURVE_MIN_ERR px 이상 더 큰 error를 보일 때 커브로 판단하여
+# error_px를 CURVE_BOOST배로 증폭 → 더 빠르고 강하게 핸들 꺾기
 CURVE_BOOST      = 3.0
-CURVE_MIN_ERR    = 15     # px - 이 이상 차이날 때만 boost
+CURVE_MIN_ERR    = 15     # 최소 추가 오차(px), 이 이상일 때만 boost 적용
 
-# ── velocity prediction ───────────────────────────────────
+# ── velocity prediction ──────────────────────────────────────────────────────
+# 차선이 일시적으로 사라졌을 때 (예: S자 커브 중간, 그림자 등)
+# 직전 프레임들의 이동 속도(dx)를 지수이동평균으로 추정하고,
+# 그 속도로 최대 MAX_PRED_FRAMES 프레임 동안 위치를 외삽하여 offset 유지
+# DX_ALPHA: EMA 계수 (클수록 최신 dx 반영 강함)
 MAX_PRED_FRAMES  = 12
 DX_ALPHA         = 0.3
 
-# ── NO_LINE ───────────────────────────────────────────────
+# ── NO_LINE 처리 ─────────────────────────────────────────────────────────────
+# velocity prediction도 불가능한 완전 차선 소실 시
+# NO_LINE_MAX 프레임 이후부터 offset을 서서히 0으로 감쇠
+# 단, 턴 중(|last_offset| > 0.2)이면 감쇠 없이 마지막 핸들각 유지
+# → S자 2번째 커브 진입 시 1번째 턴 관성을 보존
 NO_LINE_DECAY    = 0.85
 NO_LINE_MAX      = 15
 
-# ── PID ───────────────────────────────────────────────────
+# ── PID 파라미터 ─────────────────────────────────────────────────────────────
+# error_norm = error_px / (w/2)로 정규화 (-1.0 ~ +1.0)
+# KP: 비례항 - 현재 오차에 즉각 반응
+# KI: 적분항 - 지속적 편향 보정 (현재 비활성)
+# KD: 미분항 - 급격한 변화 억제 (오버슈트 방지)
+# PID_DERIVATIVE_ALPHA: 미분항 EMA 계수 (노이즈 스무딩)
 PID_KP               = 0.55
 PID_KI               = 0.0
 PID_KD               = 0.20
 PID_INTEGRAL_LIMIT   = 1.0
 PID_DERIVATIVE_ALPHA = 0.60
-CONTROL_PERIOD       = 1.0 / 30.0
+CONTROL_PERIOD       = 1.0 / 30.0   # 제어 주기 30Hz
 
 
 class LaneDetector:
     def __init__(self):
-        self.last_offset      = 0.0
-        self.last_debug_img   = None
-        self._no_line_cnt     = 0
+        self.last_offset      = 0.0   # 마지막으로 계산된 offset (소실 시 반환용)
+        self.last_debug_img   = None  # driving.py가 /lane_debug로 퍼블리시할 이미지
+        self._no_line_cnt     = 0     # 연속 차선 소실 프레임 수
+        # PID 상태
         self._pid_integral    = 0.0
         self._pid_prev_error  = None
         self._pid_prev_time   = None
         self._pid_prev_deriv  = 0.0
-        self._prev_yellow_x   = None
-        self._last_dx         = 0.0
-        self._missing_frames  = 0
+        # velocity prediction 상태
+        self._prev_yellow_x   = None  # 직전 프레임 차선 x좌표
+        self._last_dx         = 0.0   # EMA로 추정된 프레임당 x이동량
+        self._missing_frames  = 0     # 연속으로 차선 미검출된 프레임 수
 
     def _reset_pid(self):
+        """PID 내부 상태 초기화 (차선 완전 소실 시 호출)"""
         self._pid_integral   = 0.0
         self._pid_prev_error = None
         self._pid_prev_time  = None
         self._pid_prev_deriv = 0.0
 
     def _compute_pid(self, error_norm: float) -> float:
+        """
+        정규화된 오차(-1~1)를 입력받아 PID 출력(-1~1)을 반환한다.
+        미분항은 EMA 필터를 거쳐 노이즈를 억제한다.
+        """
         now = time.monotonic()
         dt  = CONTROL_PERIOD if self._pid_prev_time is None else (now - self._pid_prev_time)
         if dt < 1e-4:
             dt = CONTROL_PERIOD
+
+        # P항: 현재 오차에 비례
         p_term = PID_KP * error_norm
+
+        # I항: 오차 누적 (wind-up 방지를 위해 클리핑)
         self._pid_integral = max(-PID_INTEGRAL_LIMIT,
                                   min(PID_INTEGRAL_LIMIT,
                                       self._pid_integral + error_norm * dt))
-        i_term  = PID_KI * self._pid_integral
-        raw_d   = 0.0 if self._pid_prev_error is None else (error_norm - self._pid_prev_error) / dt
-        deriv   = PID_DERIVATIVE_ALPHA * self._pid_prev_deriv + (1 - PID_DERIVATIVE_ALPHA) * raw_d
-        d_term  = PID_KD * deriv
+        i_term = PID_KI * self._pid_integral
+
+        # D항: 오차 변화율 (EMA로 스무딩)
+        raw_d  = 0.0 if self._pid_prev_error is None else (error_norm - self._pid_prev_error) / dt
+        deriv  = PID_DERIVATIVE_ALPHA * self._pid_prev_deriv + (1 - PID_DERIVATIVE_ALPHA) * raw_d
+        d_term = PID_KD * deriv
+
         self._pid_prev_error = error_norm
         self._pid_prev_time  = now
         self._pid_prev_deriv = deriv
         return p_term + i_term + d_term
 
     def _yellow_mask(self, roi: np.ndarray) -> np.ndarray:
+        """
+        HSV + HLS 이중 마스킹으로 노란색 픽셀을 검출한다.
+        두 조건의 AND를 취해 오탐지를 줄인다.
+        morphology close → 차선 내부 구멍 메우기
+        morphology open  → 단독 픽셀 노이즈 제거
+        """
         hsv  = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
         hls  = cv2.cvtColor(roi, cv2.COLOR_BGR2HLS)
         mask = cv2.bitwise_and(
@@ -94,16 +168,26 @@ class LaneDetector:
         return mask
 
     def _blob_filter(self, mask: np.ndarray) -> np.ndarray:
+        """
+        연결요소(blob) 분석으로 BLOB_MIN_AREA 미만의 작은 덩어리를 제거한다.
+        교차로 화살표, 점선 노이즈, 신호등 반사 등 소형 오탐지 제거에 효과적.
+        """
         n, labels, stats, _ = cv2.connectedComponentsWithStats(mask)
         out = np.zeros_like(mask)
-        for i in range(1, n):
+        for i in range(1, n):  # 0은 배경
             if stats[i, cv2.CC_STAT_AREA] >= BLOB_MIN_AREA:
                 out[labels == i] = 255
         return out
 
     def _histogram_peak(self, xs: np.ndarray, width: int, target_x: int) -> float:
+        """
+        x좌표 배열로 히스토그램을 생성하고 커널 스무딩 후 peak를 반환한다.
+        탐색 범위를 target_x ± SEARCH_HALF로 제한해 반대편 차선 오탐지 방지.
+        peak가 없으면 target_x를 그대로 반환 (offset=0 유지).
+        """
         hist   = np.zeros(width, dtype=np.float32)
         np.add.at(hist, xs.clip(0, width - 1), 1.0)
+        # 박스 커널 컨볼루션으로 스무딩 (HIST_KERNEL 크기 슬라이딩 합산)
         kernel = np.ones(HIST_KERNEL, dtype=np.float32)
         hist_s = np.convolve(hist, kernel, mode='same')
         lo = max(0, target_x - SEARCH_HALF)
@@ -114,33 +198,44 @@ class LaneDetector:
         return float(lo + np.argmax(local))
 
     def compute_offset(self, image, lane_target):
+        """
+        입력 이미지에서 노란 차선을 검출하고 정규화된 lateral offset을 반환한다.
+        offset > 0: 차선이 타겟보다 오른쪽 → 우회전 필요
+        offset < 0: 차선이 타겟보다 왼쪽  → 좌회전 필요
+        """
         if image is None:
             return self.last_offset
 
         h, w     = image.shape[:2]
+        # lane_target: 0=1차선(LANE1), 1=2차선(LANE2)
         target_x = LANE1_TARGET_X if lane_target == 0 else LANE2_TARGET_X
 
-        # ── 하단 ROI (정밀 히스토그램) ───────────────────
+        # ── 하단 ROI: 차 바로 앞 노면에서 현재 차선 위치 정밀 추정 ──────────
+        # 이미지 하단 30% 구간만 사용 → 직선 구간 안정적, 교차로 체커보드 영향 최소화
         n_top  = int(h * ROI_NEAR_START)
         n_mask = self._blob_filter(self._yellow_mask(image[n_top:, :]))
         _, n_xs = np.where(n_mask > 0)
 
-        # ── 원거리 ROI (커브 look-ahead, centroid) ────────
+        # ── 원거리 ROI: 앞쪽 도로에서 커브 방향 조기 감지 ───────────────────
+        # 하단 ROI만 보면 커브를 너무 늦게 인식해 S자에서 충돌 → look-ahead 추가
+        # 이미지 50~60% 구간의 차선 평균 x로 커브 방향 판단
         f_top  = int(h * ROI_FAR_START)
         f_bot  = int(h * ROI_FAR_END)
         f_mask = self._blob_filter(self._yellow_mask(image[f_top:f_bot, :]))
         _, f_xs = np.where(f_mask > 0)
 
-        # ── 디버그 ────────────────────────────────────────
+        # ── 디버그 이미지 생성 ────────────────────────────────────────────────
         debug = image.copy()
-        cv2.line(debug, (0, n_top), (w, n_top), (255, 255, 255), 2)
-        cv2.line(debug, (0, f_top), (w, f_top), (180, 180, 0),   1)
-        cv2.line(debug, (0, f_bot), (w, f_bot), (180, 180, 0),   1)
-        debug[n_top:][n_mask > 0]         = [0, 255, 0]
-        debug[f_top:f_bot][f_mask > 0]    = [0, 200, 200]
-        cv2.line(debug, (target_x, f_top), (target_x, h), (255, 100, 0), 2)
+        cv2.line(debug, (0, n_top), (w, n_top), (255, 255, 255), 2)  # 하단 ROI 경계 (흰색)
+        cv2.line(debug, (0, f_top), (w, f_top), (180, 180, 0),   1)  # 원거리 ROI 상단 (노란색)
+        cv2.line(debug, (0, f_bot), (w, f_bot), (180, 180, 0),   1)  # 원거리 ROI 하단 (노란색)
+        debug[n_top:][n_mask > 0]         = [0, 255, 0]    # 하단 검출 픽셀: 초록
+        debug[f_top:f_bot][f_mask > 0]    = [0, 200, 200]  # 원거리 검출 픽셀: 청록
+        cv2.line(debug, (target_x, f_top), (target_x, h), (255, 100, 0), 2)  # 타겟 라인 (파란색)
 
-        # ── too-many-yellow ───────────────────────────────
+        # ── too-many-yellow: 교차로/오탐지 필터 ──────────────────────────────
+        # 노란 픽셀 비율이 YELLOW_MAX_RATIO를 초과하면 교차로나 이상 상황으로 판단
+        # 이전 offset을 유지하고 스킵
         yellow_ratio = np.count_nonzero(n_mask) / float((h - n_top) * w + 1)
         if yellow_ratio > YELLOW_MAX_RATIO:
             cv2.putText(debug, f'TOO_MANY {yellow_ratio:.2f}',
@@ -148,20 +243,27 @@ class LaneDetector:
             self.last_debug_img = debug
             return self.last_offset
 
-        # ── NO_LINE 처리 ──────────────────────────────────
+        # ── NO_LINE / velocity prediction 처리 ───────────────────────────────
         if n_xs.size < MIN_YELLOW_PX:
+            # 하단 ROI에서 차선을 충분히 검출하지 못한 경우
             self._missing_frames += 1
             self._no_line_cnt    += 1
-            # velocity prediction
+
             if self._prev_yellow_x is not None and self._missing_frames <= MAX_PRED_FRAMES:
+                # [velocity prediction] 직전 이동속도(dx)로 현재 위치 예측
+                # 예: S자 커브 중간에 잠깐 차선이 가려질 때 활용
                 yellow_x = self._prev_yellow_x + self._last_dx * self._missing_frames
                 yellow_x = max(0.0, min(float(w - 1), yellow_x))
                 source = 'predict'
             else:
+                # prediction도 불가 → 완전 소실 처리
                 if self._no_line_cnt > NO_LINE_MAX:
                     if abs(self.last_offset) > 0.2:
-                        pass   # 턴 중 → offset 유지
+                        # [턴 유지] S자 커브 1번째 턴 중에 차선 소실 시
+                        # 마지막 핸들각을 유지해 2번째 커브도 통과 가능하게 함
+                        pass
                     else:
+                        # 직진 중 소실 → 서서히 0으로 감쇠
                         self.last_offset *= NO_LINE_DECAY
                 self._reset_pid()
                 cv2.putText(debug, f'NO_LINE({self._no_line_cnt}) out={self.last_offset:.2f}',
@@ -170,34 +272,41 @@ class LaneDetector:
                 print(f'[LANE] NO_LINE({self._no_line_cnt}) -> {self.last_offset:.3f}', file=sys.stderr, flush=True)
                 return self.last_offset
         else:
+            # 정상 검출: 히스토그램 peak로 현재 차선 x좌표 추정
             self._missing_frames = 0
             self._no_line_cnt    = 0
             yellow_x = self._histogram_peak(n_xs, w, target_x)
             source   = 'hist'
+            # velocity prediction을 위해 dx 업데이트 (EMA)
             if self._prev_yellow_x is not None:
                 dx = yellow_x - self._prev_yellow_x
                 self._last_dx = (1 - DX_ALPHA) * self._last_dx + DX_ALPHA * dx
             self._prev_yellow_x = yellow_x
 
-        # ── 커브 boost (원거리 ROI 기준) ─────────────────
+        # ── 커브 boost ────────────────────────────────────────────────────────
+        # 원거리 ROI(look-ahead)의 mean이 하단 peak보다 같은 방향으로
+        # CURVE_MIN_ERR px 이상 더 큰 오차를 보이면 커브 진입으로 판단
+        # error_px를 CURVE_BOOST배로 증폭 → 더 일찍 더 강하게 핸들 꺾기
         error_px = yellow_x - target_x
         boosted  = False
         if f_xs.size >= MIN_YELLOW_PX:
-            f_mean = float(np.mean(f_xs))
+            f_mean = float(np.mean(f_xs))   # 원거리 ROI 차선 x 평균
             f_err  = f_mean - target_x
-            if (f_err * error_px > 0
-                    and abs(f_err) > abs(error_px) + CURVE_MIN_ERR):
+            if (f_err * error_px > 0                                   # 같은 방향
+                    and abs(f_err) > abs(error_px) + CURVE_MIN_ERR):  # 더 큰 오차
                 error_px *= CURVE_BOOST
                 boosted = True
 
-        # ── PID ───────────────────────────────────────────
+        # ── PID 제어 ──────────────────────────────────────────────────────────
+        # error_px를 화면 폭의 절반으로 나눠 -1~1로 정규화
+        # → 해상도가 바뀌어도 동일한 PID 게인 사용 가능
         error_norm = max(-1.0, min(1.0, error_px / (w / 2.0)))
         offset     = max(-1.0, min(1.0, self._compute_pid(error_norm)))
         self.last_offset = offset
 
-        # ── 디버그 오버레이 ───────────────────────────────
+        # ── 디버그 오버레이 ───────────────────────────────────────────────────
         cv2.line(debug, (int(yellow_x), n_top), (int(yellow_x), h), (255, 255, 0), 2)
-        tag = '(CURVE)' if boosted else ''
+        tag   = '(CURVE)' if boosted else ''
         label = f'peak={int(yellow_x)}({source}){tag} tgt={target_x} err={int(error_px)} out={offset:.2f}'
         cv2.putText(debug, label, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.52, (0, 255, 255), 2)
         self.last_debug_img = debug
