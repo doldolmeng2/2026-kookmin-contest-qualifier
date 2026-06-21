@@ -18,12 +18,10 @@ perception.py 에서 import. /scan(LaserScan) → 전방/전방우측/좌측 거
 import math
 
 FRONT_DEG  = list(range(350, 360)) + list(range(0, 11))   # 전방 ±10°
-FRIGHT_DEG = list(range(340, 359))                         # 전방-우측 '좁게'(도로변 나무 회피)
 LEFT_DEG   = list(range(60, 96))                           # 좌측(추월 대상차)
 
 # 임계값 (bag 실측 기반, 튜닝 가능)
 FRONT_OBSTACLE_MAX = 6.0   # 전방 이 거리 이내면 → 앞차 있음
-MERGE_CLEAR_MIN    = 7.0   # 전방우측이 이 거리보다 멀면 → 합류 가능(우측 차 앞서감)
 PASSED_LEFT_MIN    = 4.0   # 좌측이 이 거리보다 멀면 → 추월 완료(옆차 빠짐)
 
 _SELF_MIN = 0.3   # 이보다 가까운 값은 차체 self-hit 로 보고 무시
@@ -42,13 +40,6 @@ def detect_obstacle_front(scan):
     if scan is None:
         return False
     return _sector_min(scan, FRONT_DEG) < FRONT_OBSTACLE_MAX
-
-
-def detect_merge_clear(scan):
-    """전방-우측(2차선)이 충분히 비어 합류 가능하면 True."""
-    if scan is None:
-        return False
-    return _sector_min(scan, FRIGHT_DEG) > MERGE_CLEAR_MIN
 
 
 def left_min(scan):

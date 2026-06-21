@@ -77,8 +77,10 @@ START_OVERRIDES = dict(
 # 트랙등(4구): 멀리 작게 보임 → 게이트 낮게, bbox 딱 맞게(배경 나무 배제)
 TRACK_OVERRIDES = dict(
     black_min_count=120,
-    black_min_blob_area=70,
-    color_min_count=18,
+    black_min_blob_area=3000,  # ★ 하우징 박스 면적이 이 값 이상(=가까울 때)이면 신호등 인식
+                               #   → 그 다음 색 분류. 로그의 'blob=NNN'을 원하는 거리에서
+                               #   보고 그 값 근처로 튜닝 (너무 일찍이면 ↑, 늦으면 ↓)
+    color_min_count=50,        # 게이트 통과 후 색 구분용 (작게 — 거리 게이트는 하우징이 담당)
     bbox_pad=0,
     aspect_min=2.0,   # 4구는 매우 가로로 김(비율 ~5). 기둥(<1) 확실히 배제
 )
@@ -92,12 +94,16 @@ class TrafficLightDetector:
     """
 
     def __init__(self, name='tl', four_lamp=True,
-                 debug=False, logger=None, overrides=None):
+                 debug=False, show=False, logger=None, overrides=None):
         self.name = name
         self.four_lamp = four_lamp
         self.debug = debug
+        self.show = show
         self.logger = logger
         self.hist = deque(maxlen=TL_HISTORY_LEN)
+        self.last_box = None            # 마지막 하우징 박스 (ROI 좌표)
+        self.last_color = SIGNAL_NONE
+        self._roi_y0 = 0                # ROI 상단 오프셋 (full-image 변환용)
         self._last_debug = 0.0
         self._last_log = 0.0
 
@@ -116,7 +122,19 @@ class TrafficLightDetector:
         counts = self._analyze(image)
         color = self._classify(counts)
         self.hist.append(color)
-        return Counter(self.hist).most_common(1)[0][0]
+        self.last_color = Counter(self.hist).most_common(1)[0][0]
+        return self.last_color
+
+    def draw(self, image):
+        """마지막 하우징 박스를 full-image 위에 그린다 (perception 창 통합용)."""
+        if self.last_box is None:
+            return
+        x, y, w, h = self.last_box
+        y += self._roi_y0
+        cv2.rectangle(image, (x, y), (x + w, y + h), (255, 0, 255), 2)
+        cv2.putText(image, f'{self.name}:{_NAME[self.last_color]}',
+                    (x, max(12, y - 6)), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.6, (255, 0, 255), 2)
 
     # ------------------------------------------------------------------
     def _analyze(self, image):
@@ -126,6 +144,7 @@ class TrafficLightDetector:
         p = self.p
         h, w = image.shape[:2]
         roi = image[int(h * p['roi_top']):int(h * p['roi_bottom']), :]
+        self._roi_y0 = int(h * p['roi_top'])
         hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
         v = hsv[:, :, 2]
         s = hsv[:, :, 1]
@@ -157,7 +176,8 @@ class TrafficLightDetector:
         # 게이트 체크
         if (n_black < p['black_min_count'] or best_box is None
                 or best_area < p['black_min_blob_area']):
-            if self.debug:
+            self.last_box = None
+            if self.debug or self.show:
                 self._save_debug(roi, black, None, {})
             self._log(n_black, best_area, {})
             return {}
@@ -190,7 +210,8 @@ class TrafficLightDetector:
             if max_area >= p['color_min_count']:
                 counts[color] = max_area
 
-        if self.debug:
+        self.last_box = best_box
+        if self.debug or self.show:
             self._save_debug(roi, black, best_box, counts)
         self._log(n_black, best_area, counts)
         return counts
@@ -243,9 +264,7 @@ class TrafficLightDetector:
         if now - self._last_debug < self.p['debug_period']:
             return
         self._last_debug = now
-        d = f'/tmp/tl_debug/{self.name}'
         try:
-            os.makedirs(d, exist_ok=True)
             vis = roi.copy()
             if housing is not None:
                 x, y, w, h = housing
@@ -253,9 +272,15 @@ class TrafficLightDetector:
                 txt = ' '.join(f'{_NAME[c]}:{n}' for c, n in counts.items())
                 cv2.putText(vis, txt, (x, max(12, y - 4)),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 255), 2)
-            ts = int(now * 2)
-            cv2.imwrite(f'{d}/roi_{ts}.png', vis)
-            cv2.imwrite(f'{d}/mask_black_{ts}.png', black_mask)
+            if self.debug:
+                d = f'/tmp/tl_debug/{self.name}'
+                os.makedirs(d, exist_ok=True)
+                ts = int(now * 2)
+                cv2.imwrite(f'{d}/roi_{ts}.png', vis)
+                cv2.imwrite(f'{d}/mask_black_{ts}.png', black_mask)
+            if self.show:
+                cv2.imshow(f'tl_{self.name}', vis)
+                cv2.waitKey(1)
         except Exception as e:
             if self.logger:
-                self.logger.warn(f'tl debug save failed: {e}')
+                self.logger.warn(f'tl debug failed: {e}')

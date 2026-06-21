@@ -17,15 +17,17 @@ from std_msgs.msg import Int32, Int32MultiArray
 from sensor_msgs.msg import Image, LaserScan
 from cv_bridge import CvBridge
 
+import cv2
+
 # 로직 모듈
 from perception.yolo_detector import YoloDetector
 from perception.traffic_light import (
-    TrafficLightDetector, START_OVERRIDES, TRACK_OVERRIDES,
-    SIGNAL_NONE, SIGNAL_GREEN, SIGNAL_LEFT)
+    TrafficLightDetector, SIGNAL_NONE, SIGNAL_GREEN, SIGNAL_LEFT)
 from perception.start_line import detect_start_line
 from perception.shortcut_exit import detect_shortcut_exit
-from perception.obstacle import detect_obstacle_front, detect_merge_clear
+from perception.obstacle import detect_obstacle_front
 from perception.left_car import car_in_left
+from perception.school_zone import SchoolZoneDetector
 
 # 시뮬레이터는 카메라/라이다를 RELIABLE 로 발행하므로 맞춰서 구독
 # (BEST_EFFORT 로 받으면 큰 이미지가 UDP 조각 유실로 대부분 드롭됨)
@@ -46,14 +48,55 @@ IDX_POLICE_DETECTED = 4  # 0=없음, 1=경찰차 있음
 IDX_SHORTCUT_EXIT  = 5   # 0=아직, 1=지름길 출구 위치 감지
 IDX_LAP_LINE       = 6   # 0=아직, 1=출발선 통과 감지
 IDX_PEDESTRIAN     = 7   # 0=무시(없음/멀리/옆), 1=바로 앞 위험 → 정지
-IDX_MERGE_CLEAR    = 8   # 0=아직, 1=우측(2차선) 간격 열림 → 합류 가능
+IDX_SCHOOL_ZONE    = 8   # 0=아님, 1=시작 인식(감속), 2=해제 인식(가속)
 IDX_TRAFFIC_PRESENT = 9  # 0=신호등 미검출, 1=트랙 신호등 검출
 STATUS_LEN = 10
 
-# 보행자 '위험(정지)' 판정 기준 — 박스가 가깝고(큼) 진행경로(중앙) 안일 때만.
-#   h(세로크기, 0~1)가 클수록 가깝다. 실측 분포: 중앙0.16 / p90 0.42 / max 0.57
-PED_DANGER_MIN_H = 0.35          # 이 이상이면 '바로 앞'
-PED_DANGER_X_BAND = (0.30, 0.70)  # 박스 중심 x 가 이 범위(차 진행경로) 안
+# ===========================================================================
+# 🔧 튜닝 파라미터  (인식 임계값 — 여기만 고치면 됨)
+#   ※ 신호등/스쿨존의 'HSV 색 범위'는 양이 많아 각 모듈 상단에 둠
+#     (traffic_light.py / school_zone.py 의 HSV_* 참고)
+# ===========================================================================
+
+# --- YOLO (경찰차 / 보행자) ---
+YOLO_CONF  = 0.5         # confidence 하한 (낮추면 더 잘 잡지만 오검출↑)
+YOLO_EVERY = 5           # N틱마다 1회 추론 (30Hz/5=6Hz). CPU 무거우면 ↑
+
+# --- 보행자 (정지 판단) ---  박스가 가깝고(큼) 진행경로(중앙)일 때만 정지
+PED_DANGER_MIN_H  = 0.35          # 박스 세로크기(0~1) 이 이상이면 '바로 앞' → 정지
+PED_DANGER_X_BAND = (0.30, 0.70)  # 박스 중심 x 가 이 범위(진행경로) 안일 때만
+
+# --- 경찰차 ---
+POLICE_MIN_H = 0.21     # 박스 세로크기(0~1) 이 이상(가까움)일 때만 인식. 창 'hXX' 보고 튜닝
+
+# --- 방해차량 추월완료 (좌측 카메라) ---
+OVERTAKE_GONE_FRAMES = 5  # 옆 차가 N틱 연속 안 보이면 '추월완료'(깜빡임 방지)
+
+# --- 트랙 신호등 (4구) ---  키 이름은 traffic_light.BASE_PARAMS 와 일치해야 함
+TL_TRACK_PARAMS = dict(
+    black_min_count=120,       # ROI 내 검은 픽셀 총량 하한
+    black_min_blob_area=18000,  # ★ 하우징 박스 면적 ≥ 이 값(=가까움)이면 인식. 로그 blob= 보고 튜닝
+    color_min_count=50, c       # 게이트 통과 후 색 구분 최소 픽셀
+    bbox_pad=0,
+    aspect_min=2.0,            # 하우징 가로/세로 비 하한 (세로 기둥/나무 배제)
+)
+
+# --- 시작 신호등 (3구) ---  가까이·정면이라 게이트 높게
+TL_START_PARAMS = dict(
+    black_min_count=600,
+    black_min_blob_area=400,
+    color_min_count=40,
+    aspect_min=1.5,
+)
+
+# --- 어린이 보호구역 (하단 ROI 노랑/흰색 상태기계) ---
+SZ_ROI_TOP      = 0.80   # 하단 ROI 시작(0~1). 차에 가까운 노면만
+SZ_YELLOW_ENTER = 10000  # 노란 픽셀 ≥ → 시작(감속, data[8]=1)
+SZ_WHITE_EXIT   = 1000   # (보호구역 안) 흰 픽셀 ≥ → 해제(data[8]=2)
+SZ_WHITE_NORMAL = 3000   # (해제 후) 흰 픽셀 ≥ → 일반도로 복귀(data[8]=0)
+
+# --- 디버그 시각화 ---
+VIZ_DEFAULT = True       # perception 창(카메라+bbox+status) 기본 표시 여부
 
 # main 모드 정의 (퍼셉션이 모드별로 인식 항목을 골라 켜기 위해 참조)
 MODE_WAIT, MODE_CONE, MODE_LANE, MODE_LEFT_TURN, \
@@ -66,7 +109,7 @@ class Perception(Node):
         super().__init__('perception')
 
         self._bridge = CvBridge()
-        self._detector = YoloDetector()  # CPU 추론, 패키지 내부 police.pt 사용
+        self._detector = YoloDetector(conf_threshold=YOLO_CONF)  # CPU 추론, weights/perception.pt
         # 첫 추론 지연(수 초)을 주행 중이 아니라 시작 시점에 미리 처리.
         # torch/ultralytics 미설치 환경에선 경고만 내고 계속 진행.
         try:
@@ -78,11 +121,22 @@ class Perception(Node):
 
         # 신호등 검출기 (검은 픽셀 게이팅, ericar_msgs 불필요)
         self._tl_start = TrafficLightDetector(
-            'start', four_lamp=False, overrides=START_OVERRIDES,
-            debug=True, logger=self.get_logger())
+            'start', four_lamp=False, overrides=TL_START_PARAMS,
+            show=False, logger=self.get_logger())
         self._tl_track = TrafficLightDetector(
-            'track', four_lamp=True, overrides=TRACK_OVERRIDES,
-            debug=True, logger=self.get_logger())
+            'track', four_lamp=True, overrides=TL_TRACK_PARAMS,
+            show=False, logger=self.get_logger())
+
+        # 어린이 보호구역 (하단 ROI 노랑/흰색 상태기계)
+        self._school_zone = SchoolZoneDetector(
+            logger=self.get_logger(), debug=True, show=False,
+            roi_top=SZ_ROI_TOP, yellow_enter=SZ_YELLOW_ENTER,
+            white_exit=SZ_WHITE_EXIT, white_normal=SZ_WHITE_NORMAL)
+
+        # 디버그 시각화: 카메라 + YOLO bbox + status 를 'perception' 창에 표시
+        #   팀원들이 인식 상태를 눈으로 확인용. 끄려면: -p viz:=false
+        self.declare_parameter('viz', VIZ_DEFAULT)
+        self._viz = self.get_parameter('viz').value
 
         # 최신 입력 버퍼
         self._img_front = None
@@ -99,12 +153,12 @@ class Perception(Node):
         # YOLO 추론은 CPU 라 무겁다 → 저빈도(every N틱)로만 돌리고 결과 캐시
         self._det = {}
         self._tick_n = 0
-        self._yolo_every = 5   # 30Hz / 5 = 6Hz 추론
+        self._yolo_every = YOLO_EVERY
 
         # 추월완료 판정용(좌측 카메라): 옆에 차를 봤는지 + 사라짐 디바운스
         self._left_car_seen = False
         self._left_gone = 0
-        self._GONE_FRAMES = 5   # 차가 5틱(~0.17s) 연속 안 보이면 '추월 완료'(깜빡임 방지)
+        self._GONE_FRAMES = OVERTAKE_GONE_FRAMES
 
         # ---- 구독 ----
         # 시뮬이 RELIABLE 로 발행 → RELIABLE 로 받아야 이미지 유실 없음
@@ -181,17 +235,56 @@ class Perception(Node):
             self._status[IDX_LAP_LINE] = self._detect_lap_line(self._img_front)
             self._status[IDX_PEDESTRIAN] = self._detect_pedestrian(det)
 
-        # 1차선 주행 중: 우측(2차선) 합류 가능 여부 (앞차 추월 판단용)
-        if self._mode == MODE_LANE:
-            self._status[IDX_MERGE_CLEAR] = self._detect_merge_clear(self._scan)
-
         if self._mode == MODE_FOLLOW:
             self._status[IDX_OBSTACLE_PASSED] = self._detect_obstacle_passed(self._scan)
 
         if self._mode == MODE_LANE and self._stage[0] == 1:
             self._status[IDX_SHORTCUT_EXIT] = self._detect_shortcut_exit(det)
 
+        # 어린이 보호구역: 노랑(시작)→1, 흰색(해제)→2 상태기계
+        if self._mode == MODE_LANE:
+            self._status[IDX_SCHOOL_ZONE] = self._school_zone.update(self._img_front)
+
         self._publish_status()
+
+        if self._viz:
+            self._show_debug()
+
+    # ------------------------------------------------------------------
+    # 디버그 시각화: 카메라 + YOLO bbox + status 값
+    # ------------------------------------------------------------------
+    def _show_debug(self):
+        if self._img_front is None:
+            return
+        try:
+            vis = self._img_front.copy()
+            Himg = vis.shape[0]
+            colors = {'police_car': (0, 0, 255), 'pedestrian': (0, 255, 0)}
+            for label, dets in self._det.items():
+                col = colors.get(label, (255, 255, 0))
+                for d in dets:
+                    x1, y1, x2, y2 = (int(v) for v in d.bbox)
+                    hf = (y2 - y1) / float(Himg)   # 박스 세로크기 비율 (거리 가늠 + 튜닝)
+                    cv2.rectangle(vis, (x1, y1), (x2, y2), col, 2)
+                    cv2.putText(vis, f'{label} {d.confidence:.2f} h{hf:.2f}',
+                                (x1, max(12, y1 - 5)),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, col, 2)
+            names = ['start', 'traffic', 'obsF', 'obsP', 'police',
+                     'short', 'lap', 'ped', 'school', 'tlPre']
+            txt = ' '.join(f'{n}:{v}' for n, v in zip(names, self._status))
+            cv2.putText(vis, txt, (6, 18), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.45, (0, 255, 255), 1)
+            # 신호등 하우징 박스 (현재 모드의 검출기) + 어린이보호구역 ROI
+            if self._mode in (MODE_LANE, MODE_SIGNAL_WAIT):
+                self._tl_track.draw(vis)
+            elif self._mode == MODE_WAIT:
+                self._tl_start.draw(vis)
+            if self._mode == MODE_LANE:
+                self._school_zone.draw(vis)
+            cv2.imshow('perception', vis)
+            cv2.waitKey(1)
+        except Exception as e:
+            self.get_logger().warn(f'viz 실패: {e}')
 
     # ------------------------------------------------------------------
     # 인식 세부 함수 (골격만; 추후 구현)
@@ -216,14 +309,21 @@ class Perception(Node):
 
         if sig == SIGNAL_LEFT:
             return 2
-
         # 빨강·노랑은 정지 대기이며, NONE도 action 값은 0이다.
         # 두 경우의 구분은 IDX_TRAFFIC_PRESENT가 담당한다.
         return 0
 
     def _detect_police(self, det):
-        # YOLO 가 police_car 를 하나라도 잡으면 1, 아니면 0
-        return 1 if det.get('police_car') else 0
+        # 경찰차 박스가 충분히 클 때(=가까울 때)만 1 → 너무 일찍 인식 방지
+        cars = det.get('police_car')
+        if not cars or self._img_front is None:
+            return 0
+        H = self._img_front.shape[0]
+        for d in cars:
+            x1, y1, x2, y2 = d.bbox
+            if (y2 - y1) / H >= POLICE_MIN_H:
+                return 1
+        return 0
 
     def _detect_pedestrian(self, det):
         # 보행자 박스 중 '바로 앞 위험'한 것이 있으면 1, 아니면 0(무시하고 통과).
@@ -245,10 +345,6 @@ class Perception(Node):
     def _detect_obstacle_front(self, det, scan):
         # 라이다 전방 섹터에 앞차가 가까이 있으면 1
         return 1 if detect_obstacle_front(scan) else 0
-
-    def _detect_merge_clear(self, scan):
-        # 전방-우측(2차선)이 충분히 비면 1 → main 이 차선변경 결정에 사용
-        return 1 if detect_merge_clear(scan) else 0
 
     def _detect_obstacle_passed(self, scan):
         # 추월완료: 좌측 카메라로 옆 방해차량(라임색)을 '봤다가 → 사라지면' 1.
