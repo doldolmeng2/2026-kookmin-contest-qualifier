@@ -76,7 +76,7 @@ OVERTAKE_GONE_FRAMES = 5  # 옆 차가 N틱 연속 안 보이면 '추월완료'(
 TL_TRACK_PARAMS = dict(
     black_min_count=120,       # ROI 내 검은 픽셀 총량 하한
     black_min_blob_area=18000,  # ★ 하우징 박스 면적 ≥ 이 값(=가까움)이면 인식. 로그 blob= 보고 튜닝
-    color_min_count=50, c       # 게이트 통과 후 색 구분 최소 픽셀
+    color_min_count=50,       # 게이트 통과 후 색 구분 최소 픽셀
     bbox_pad=0,
     aspect_min=2.0,            # 하우징 가로/세로 비 하한 (세로 기둥/나무 배제)
 )
