@@ -45,36 +45,22 @@ LANE2_TARGET_X   = 420
 MIN_YELLOW_PX    = 30
 YELLOW_MAX_RATIO = 0.30
 HIST_KERNEL      = 40
-SEARCH_HALF      = 100
+SEARCH_HALF      = 150
 BLOB_MIN_AREA    = 80
 
-# ── 2단 ROI ──────────────────────────────────────────────────────────────────
+# ── ROI ──────────────────────────────────────────────────────────────────────
 # 이미지 높이를 기준으로 비율로 지정 (0.0 = 이미지 상단, 1.0 = 이미지 하단)
-#
-# ROI_NEAR_START: 하단 ROI 시작 위치 (차 바로 앞 노면)
+# ROI_NEAR_START: 하단 ROI 시작 위치 (차 바로 앞 노면, 이미지 50%~100%)
 #   → 히스토그램 peak로 현재 차선 중심 정밀 추정
-#   → 직선 구간에서 안정적인 제어 기준점
-#
-# ROI_FAR_START/END: 원거리 ROI 구간 (앞쪽 도로)
-#   → mean(centroid)으로 커브가 어느 방향으로 꺾이는지 조기 감지
-#   → 하단 ROI만 보면 커브를 너무 늦게 인식하는 문제를 보완
-ROI_NEAR_START   = 0.70   # 하단 ROI: 이미지 70%~100% (차 바로 앞)
-ROI_FAR_START    = 0.50   # 원거리 ROI 시작: 이미지 50%
-ROI_FAR_END      = 0.60   # 원거리 ROI 끝:   이미지 60%
+ROI_NEAR_START   = 0.50   # 하단 ROI: 이미지 50%~100% (차 바로 앞)
 
-# ── 커브 boost ───────────────────────────────────────────────────────────────
-# 원거리 ROI(look-ahead)의 mean이 하단 ROI peak보다 같은 방향으로
-# CURVE_MIN_ERR px 이상 더 큰 error를 보일 때 커브로 판단하여
-# error_px를 CURVE_BOOST배로 증폭 → 더 빠르고 강하게 핸들 꺾기
-CURVE_BOOST      = 3.0
-CURVE_MIN_ERR    = 15     # 최소 추가 오차(px), 이 이상일 때만 boost 적용
 
 # ── velocity prediction ──────────────────────────────────────────────────────
 # 차선이 일시적으로 사라졌을 때 (예: S자 커브 중간, 그림자 등)
 # 직전 프레임들의 이동 속도(dx)를 지수이동평균으로 추정하고,
 # 그 속도로 최대 MAX_PRED_FRAMES 프레임 동안 위치를 외삽하여 offset 유지
 # DX_ALPHA: EMA 계수 (클수록 최신 dx 반영 강함)
-MAX_PRED_FRAMES  = 12
+MAX_PRED_FRAMES  = 20
 DX_ALPHA         = 0.3
 
 # ── NO_LINE 처리 ─────────────────────────────────────────────────────────────
@@ -82,14 +68,14 @@ DX_ALPHA         = 0.3
 # NO_LINE_MAX 프레임 이후부터 offset을 서서히 0으로 감쇠
 # 단, 턴 중(|last_offset| > 0.2)이면 감쇠 없이 마지막 핸들각 유지
 # → S자 2번째 커브 진입 시 1번째 턴 관성을 보존
-NO_LINE_DECAY    = 0.85
+NO_LINE_DECAY    = 0.95
 NO_LINE_MAX      = 15
 
 # ── PID 파라미터 ─────────────────────────────────────────────────────────────
 # error_norm = error_px / (w/2)로 정규화 (-1.0 ~ +1.0)
 # KP: 비례항 - 현재 오차에 즉각 반응
 # KI: 적분항 - 지속적 편향 보정 (현재 비활성)
-# KD: 미분항 - 급격한 변화 억제 (오버슈트 방지)
+# KD: 미분항 - 급격한 변화 억제 (±0.15 클램핑으로 폭발 방지)
 # PID_DERIVATIVE_ALPHA: 미분항 EMA 계수 (노이즈 스무딩)
 PID_KP               = 0.55
 PID_KI               = 0.0
@@ -144,6 +130,7 @@ class LaneDetector:
         raw_d  = 0.0 if self._pid_prev_error is None else (error_norm - self._pid_prev_error) / dt
         deriv  = PID_DERIVATIVE_ALPHA * self._pid_prev_deriv + (1 - PID_DERIVATIVE_ALPHA) * raw_d
         d_term = PID_KD * deriv
+        d_term = max(-0.15, min(0.15, d_term))  # D항 폭발 방지
 
         self._pid_prev_error = error_norm
         self._pid_prev_time  = now
@@ -216,22 +203,11 @@ class LaneDetector:
         n_mask = self._blob_filter(self._yellow_mask(image[n_top:, :]))
         _, n_xs = np.where(n_mask > 0)
 
-        # ── 원거리 ROI: 앞쪽 도로에서 커브 방향 조기 감지 ───────────────────
-        # 하단 ROI만 보면 커브를 너무 늦게 인식해 S자에서 충돌 → look-ahead 추가
-        # 이미지 50~60% 구간의 차선 평균 x로 커브 방향 판단
-        f_top  = int(h * ROI_FAR_START)
-        f_bot  = int(h * ROI_FAR_END)
-        f_mask = self._blob_filter(self._yellow_mask(image[f_top:f_bot, :]))
-        _, f_xs = np.where(f_mask > 0)
-
         # ── 디버그 이미지 생성 ────────────────────────────────────────────────
         debug = image.copy()
         cv2.line(debug, (0, n_top), (w, n_top), (255, 255, 255), 2)  # 하단 ROI 경계 (흰색)
-        cv2.line(debug, (0, f_top), (w, f_top), (180, 180, 0),   1)  # 원거리 ROI 상단 (노란색)
-        cv2.line(debug, (0, f_bot), (w, f_bot), (180, 180, 0),   1)  # 원거리 ROI 하단 (노란색)
         debug[n_top:][n_mask > 0]         = [0, 255, 0]    # 하단 검출 픽셀: 초록
-        debug[f_top:f_bot][f_mask > 0]    = [0, 200, 200]  # 원거리 검출 픽셀: 청록
-        cv2.line(debug, (target_x, f_top), (target_x, h), (255, 100, 0), 2)  # 타겟 라인 (파란색)
+        cv2.line(debug, (target_x, n_top), (target_x, h), (255, 100, 0), 2)  # 타겟 라인 (파란색)
 
         # ── too-many-yellow: 교차로/오탐지 필터 ──────────────────────────────
         # 노란 픽셀 비율이 YELLOW_MAX_RATIO를 초과하면 교차로나 이상 상황으로 판단
@@ -251,7 +227,6 @@ class LaneDetector:
 
             if self._prev_yellow_x is not None and self._missing_frames <= MAX_PRED_FRAMES:
                 # [velocity prediction] 직전 이동속도(dx)로 현재 위치 예측
-                # 예: S자 커브 중간에 잠깐 차선이 가려질 때 활용
                 yellow_x = self._prev_yellow_x + self._last_dx * self._missing_frames
                 yellow_x = max(0.0, min(float(w - 1), yellow_x))
                 source = 'predict'
@@ -283,19 +258,8 @@ class LaneDetector:
                 self._last_dx = (1 - DX_ALPHA) * self._last_dx + DX_ALPHA * dx
             self._prev_yellow_x = yellow_x
 
-        # ── 커브 boost ────────────────────────────────────────────────────────
-        # 원거리 ROI(look-ahead)의 mean이 하단 peak보다 같은 방향으로
-        # CURVE_MIN_ERR px 이상 더 큰 오차를 보이면 커브 진입으로 판단
-        # error_px를 CURVE_BOOST배로 증폭 → 더 일찍 더 강하게 핸들 꺾기
+        # ── error 계산 ────────────────────────────────────────────────────────
         error_px = yellow_x - target_x
-        boosted  = False
-        if f_xs.size >= MIN_YELLOW_PX:
-            f_mean = float(np.mean(f_xs))   # 원거리 ROI 차선 x 평균
-            f_err  = f_mean - target_x
-            if (f_err * error_px > 0                                   # 같은 방향
-                    and abs(f_err) > abs(error_px) + CURVE_MIN_ERR):  # 더 큰 오차
-                error_px *= CURVE_BOOST
-                boosted = True
 
         # ── PID 제어 ──────────────────────────────────────────────────────────
         # error_px를 화면 폭의 절반으로 나눠 -1~1로 정규화
@@ -306,10 +270,9 @@ class LaneDetector:
 
         # ── 디버그 오버레이 ───────────────────────────────────────────────────
         cv2.line(debug, (int(yellow_x), n_top), (int(yellow_x), h), (255, 255, 0), 2)
-        tag   = '(CURVE)' if boosted else ''
-        label = f'peak={int(yellow_x)}({source}){tag} tgt={target_x} err={int(error_px)} out={offset:.2f}'
+        label = f'peak={int(yellow_x)}({source}) tgt={target_x} err={int(error_px)} out={offset:.2f}'
         cv2.putText(debug, label, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.52, (0, 255, 255), 2)
         self.last_debug_img = debug
-        print(f'[LANE] peak={yellow_x:.0f} tgt={target_x} err={error_px:.1f} boost={boosted} out={offset:.3f}',
+        print(f'[LANE] peak={yellow_x:.0f} tgt={target_x} err={error_px:.1f} out={offset:.3f}',
               file=sys.stderr, flush=True)
         return self.last_offset

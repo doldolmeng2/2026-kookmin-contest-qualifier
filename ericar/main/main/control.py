@@ -19,7 +19,7 @@ from xycar_msgs.msg import XycarMotor
 MODE_WAIT, MODE_CONE, MODE_LANE, MODE_LEFT_TURN, \
     MODE_LANE_CHANGE, MODE_FOLLOW, MODE_SIGNAL_WAIT = range(7)
 
-# 모드별 offset → angle 비례 계수 (angle = offset * ratio, -100~100 로 clip)
+# 모드별 offset → angle 비례 계수 (angle = offset * ratio, ANGLE_LIMIT=150 으로 clip)
 MODE_RATIO = {
     MODE_WAIT:         0.0,
     MODE_CONE:       100.0,
@@ -41,7 +41,7 @@ SPEED_TABLE = {
     MODE_SIGNAL_WAIT:  0,
 }
 
-ANGLE_LIMIT = 100.0
+ANGLE_LIMIT = 150.0
 SPEED_LIMIT = 50.0
 
 
@@ -91,11 +91,14 @@ class Control(Node):
         if self._mode == MODE_LANE:
             if abs_offset < 0.05:
                 ratio = 40.0
-            elif abs_offset < 0.10:
+            elif abs_offset < 0.06:
                 ratio = 70.0
-            else:
-                ratio = 200.0
-                pass  # 속도 감소 제거
+            elif abs_offset < 0.20:   # 완만한 커브
+                ratio = 400.0
+                speed = 5
+            else:                      # 급커브
+                ratio = 500.0
+                speed = 3
         angle = self._offset * ratio
         angle = max(-ANGLE_LIMIT, min(ANGLE_LIMIT, angle))
         speed = max(-SPEED_LIMIT, min(SPEED_LIMIT, float(speed)))
