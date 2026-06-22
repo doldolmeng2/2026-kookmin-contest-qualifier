@@ -62,10 +62,11 @@ IDX_POLICE_DETECTED = 4
 IDX_SHORTCUT_EXIT = 5
 IDX_LAP_LINE = 6
 IDX_PEDESTRIAN = 7
-IDX_MERGE_CLEAR = 8
+IDX_SCHOOL_ZONE = 8
 IDX_TRAFFIC_PRESENT = 9
+IDX_POLICE_READY = 10
 
-STATUS_LEN = 10
+STATUS_LEN = 11
 
 STATUS_LABEL = [
     'start_signal',
@@ -76,8 +77,9 @@ STATUS_LABEL = [
     'shortcut_exit',
     'lap_line',
     'pedestrian',
-    'merge_clear',
+    'school_zone',
     'traffic_present',
+    'police_ready',
 ]
 
 TRAFFIC_WAIT = 0
@@ -85,7 +87,8 @@ TRAFFIC_GREEN = 1
 TRAFFIC_LEFT = 2
 
 # 연속 프레임 기반 디바운스 값
-TRAFFIC_PRESENT_FRAMES = 3
+TRAFFIC_PRESENT_FRAMES = 5
+PEDESTRIAN_DANGER_FRAMES = 3
 PEDESTRIAN_CLEAR_FRAMES = 8
 SIGNAL_COOLDOWN_FRAMES = 60
 
@@ -140,6 +143,7 @@ class Main(Node):
         # 보행자 정지 후 복귀할 모드
         self._wait_reason = None
         self._resume_mode = MODE_LANE
+        self._pedestrian_danger_count = 0
         self._pedestrian_clear_count = 0
 
         # 트랙 신호등 및 경로 선택 상태
@@ -376,37 +380,14 @@ class Main(Node):
             )
             return
 
-        # 방해차량 미션은 인식 파트 완성 후 파라미터로 활성화한다.
-        if (
-            self._enable_obstacle_mission
-            and not self._shortcut_active
-            and self._stage[STAGE_LANE_TARGET] == 0
-            and s[IDX_OBSTACLE_FRONT] == 1
-        ):
-            if s[IDX_MERGE_CLEAR] == 1:
-                self._stage[STAGE_LANE_TARGET] = 1
-                self._lane_change_reason = 'obstacle'
-
-                self._set_mode(
-                    MODE_LANE_CHANGE,
-                    '방해차량 감지 및 우측 합류 가능',
-                )
-            else:
-                # 우측 차선이 열릴 때까지 1차선에서 저속으로 따라간다.
-                self._follow_phase = 'waiting_merge'
-
-                self._set_mode(
-                    MODE_FOLLOW,
-                    '방해차량 감지, 합류 가능 시점 대기',
-                )
-            return
+        # 최신 perception status에서는 우측 차선 합류 가능 신호가 제거되었다.
+        # 안전한 합류 조건을 다시 정의하기 전까지 방해차량 차선 변경은 실행하지 않는다.
 
         if self._lap_line_event:
             self._lap += 1
             self._consume_lap_line()
 
             # 새로운 lap에서는 경찰차 경로 판단을 다시 수행한다.
-            self._police_seen_this_lap = False
             self._signal_cooldown_frames = SIGNAL_COOLDOWN_FRAMES
 
             self.get_logger().info(
@@ -435,16 +416,6 @@ class Main(Node):
     def _fsm_follow(self):
         s = self._status
 
-        if self._follow_phase == 'waiting_merge':
-            if s[IDX_MERGE_CLEAR] == 1:
-                self._stage[STAGE_LANE_TARGET] = 1
-                self._lane_change_reason = 'obstacle'
-
-                self._set_mode(
-                    MODE_LANE_CHANGE,
-                    '우측 차선 합류 가능',
-                )
-            return
 
         # 2차선에서 옆 방해차량을 지나친 뒤 1차선으로 복귀한다.
         if s[IDX_OBSTACLE_PASSED] == 1:
@@ -462,31 +433,57 @@ class Main(Node):
             return
 
         signal = self._status[IDX_TRAFFIC_SIGNAL]
+        police_ready = (
+            self._status[IDX_POLICE_READY] == 1
+        )
 
-        if self._police_seen_this_lap:
-            # 경찰차가 있으면 지름길을 사용하지 않고 초록불 직진한다.
-            if signal == TRAFFIC_GREEN:
-                self._stage[STAGE_LANE_TARGET] = 0
-                self._shortcut_active = False
-                self._wait_reason = None
-                self._signal_cooldown_frames = SIGNAL_COOLDOWN_FRAMES
+        # 첫 번째 lap은 경찰차가 반드시 있으므로 무조건 직진한다.
+        # 검출기가 비활성인 경우도 잘못된 좌회전을 막기 위해 직진한다.
+        go_straight = (
+            self._lap == 1
+            or not police_ready
+            or self._police_seen_this_lap
+        )
 
-                self._set_mode(
-                    MODE_LANE,
-                    '경찰차 감지 상태에서 직진 초록불',
-                )
+        if go_straight:
+            if signal != TRAFFIC_GREEN:
+                return
 
-        else:
-            # 경찰차가 없으면 좌회전 신호에 지름길로 진입한다.
-            if signal == TRAFFIC_LEFT:
-                self._stage[STAGE_TURN_TYPE] = 0
-                self._shortcut_active = True
-                self._wait_reason = None
+            self._stage[STAGE_LANE_TARGET] = 0
+            self._shortcut_active = False
+            self._wait_reason = None
+            self._signal_cooldown_frames = SIGNAL_COOLDOWN_FRAMES
 
-                self._set_mode(
-                    MODE_LEFT_TURN,
-                    '경찰차 미검출 및 좌회전 신호',
-                )
+            if self._lap == 1:
+                reason = '첫 번째 lap: 초록불 직진'
+            elif not police_ready:
+                reason = '경찰차 검출기 비활성: 초록불 직진'
+            else:
+                reason = '경찰차 감지: 초록불 직진'
+
+            # 이번 lap 경로 결정을 완료했으므로 다음 lap을 위해 초기화한다.
+            self._police_seen_this_lap = False
+
+            self._set_mode(
+                MODE_LANE,
+                reason,
+            )
+            return
+
+        # 두 번째·세 번째 lap에서 검출기가 정상이고
+        # 경찰차를 보지 못한 경우에만 좌회전한다.
+        if signal == TRAFFIC_LEFT:
+            self._stage[STAGE_TURN_TYPE] = 0
+            self._shortcut_active = True
+            self._wait_reason = None
+
+            # 이번 lap 경로 결정을 완료했으므로 다음 lap을 위해 초기화한다.
+            self._police_seen_this_lap = False
+
+            self._set_mode(
+                MODE_LEFT_TURN,
+                '경찰차 미검출: 좌회전 신호 후 지름길 진입',
+            )
 
     def _after_left_turn(self):
         turn_type = self._stage[STAGE_TURN_TYPE]
@@ -515,6 +512,8 @@ class Main(Node):
     # ==================================================================
 
     def _handle_pedestrian(self):
+        # 보행자 미션은 어린이 보호구역과 독립적이다.
+        # 곡선 차선 구간에서 전방 위험 보행자를 연속 감지하면 정지한다.
         pedestrian_danger = (
             self._status[IDX_PEDESTRIAN] == 1
         )
@@ -525,16 +524,29 @@ class Main(Node):
             MODE_FOLLOW,
         )
 
-        if self._mode in moving_modes and pedestrian_danger:
-            self._resume_mode = self._mode
-            self._wait_reason = 'pedestrian'
-            self._pedestrian_clear_count = 0
+        if self._mode in moving_modes:
+            if pedestrian_danger:
+                self._pedestrian_danger_count += 1
+            else:
+                self._pedestrian_danger_count = 0
 
-            self._set_mode(
-                MODE_SIGNAL_WAIT,
-                '전방 위험 보행자 감지',
-            )
-            return True
+            # 순간적인 한 프레임 오검출에는 정지하지 않는다.
+            if (
+                self._pedestrian_danger_count
+                >= PEDESTRIAN_DANGER_FRAMES
+            ):
+                self._resume_mode = self._mode
+                self._wait_reason = 'pedestrian'
+                self._pedestrian_danger_count = 0
+                self._pedestrian_clear_count = 0
+
+                self._set_mode(
+                    MODE_SIGNAL_WAIT,
+                    '곡선 차선 전방 보행자 연속 감지',
+                )
+                return True
+
+            return False
 
         if (
             self._mode == MODE_SIGNAL_WAIT
@@ -552,15 +564,17 @@ class Main(Node):
                 resume_mode = self._resume_mode
 
                 self._wait_reason = None
+                self._pedestrian_danger_count = 0
                 self._pedestrian_clear_count = 0
 
                 self._set_mode(
                     resume_mode,
-                    '보행자 위험 해제',
+                    '보행자 위험 연속 해제',
                 )
 
             return True
 
+        self._pedestrian_danger_count = 0
         return False
 
     # ==================================================================
@@ -578,6 +592,7 @@ class Main(Node):
         return False
 
     def _reached_traffic_light(self):
+        # 첫 번째 lap부터 트랙 신호등 경로 판단을 수행한다.
         if self._lap < 1:
             return False
 

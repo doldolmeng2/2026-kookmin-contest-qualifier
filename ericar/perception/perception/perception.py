@@ -50,7 +50,8 @@ IDX_LAP_LINE       = 6   # 0=아직, 1=출발선 통과 감지
 IDX_PEDESTRIAN     = 7   # 0=무시(없음/멀리/옆), 1=바로 앞 위험 → 정지
 IDX_SCHOOL_ZONE    = 8   # 0=아님, 1=시작 인식(감속), 2=해제 인식(가속)
 IDX_TRAFFIC_PRESENT = 9  # 0=신호등 미검출, 1=트랙 신호등 검출
-STATUS_LEN = 10
+IDX_POLICE_READY    = 10  # 0=검출기 비활성/실패, 1=YOLO 모델 준비 완료
+STATUS_LEN = 11
 
 # ===========================================================================
 # 🔧 튜닝 파라미터  (인식 임계값 — 여기만 고치면 됨)
@@ -96,7 +97,7 @@ SZ_WHITE_EXIT   = 1000   # (보호구역 안) 흰 픽셀 ≥ → 해제(data[8]=
 SZ_WHITE_NORMAL = 3000   # (해제 후) 흰 픽셀 ≥ → 일반도로 복귀(data[8]=0)
 
 # --- 디버그 시각화 ---
-VIZ_DEFAULT = True       # perception 창(카메라+bbox+status) 기본 표시 여부
+VIZ_DEFAULT = False       # perception 창(카메라+bbox+status) 기본 표시 여부
 
 # main 모드 정의 (퍼셉션이 모드별로 인식 항목을 골라 켜기 위해 참조)
 MODE_WAIT, MODE_CONE, MODE_LANE, MODE_LEFT_TURN, \
@@ -110,11 +111,13 @@ class Perception(Node):
 
         self._bridge = CvBridge()
         self._detector = YoloDetector(conf_threshold=YOLO_CONF)  # CPU 추론, weights/perception.pt
+        self._police_detector_ready = False
         # 첫 추론 지연(수 초)을 주행 중이 아니라 시작 시점에 미리 처리.
         # torch/ultralytics 미설치 환경에선 경고만 내고 계속 진행.
         try:
             self.get_logger().info('YOLO 모델 로딩 중...')
             self._detector.warmup()
+            self._police_detector_ready = True
             self.get_logger().info('YOLO 모델 준비 완료')
         except Exception as e:
             self.get_logger().warn(f'YOLO 로드 실패(경찰차 검출 비활성): {e}')
@@ -231,9 +234,26 @@ class Perception(Node):
             self._status[IDX_POLICE_DETECTED] = self._detect_police(det)
 
         if self._mode in (MODE_LANE, MODE_FOLLOW):
-            self._status[IDX_OBSTACLE_FRONT] = self._detect_obstacle_front(det, self._scan)
-            self._status[IDX_LAP_LINE] = self._detect_lap_line(self._img_front)
+            self._status[IDX_OBSTACLE_FRONT] = self._detect_obstacle_front(
+                det,
+                self._scan,
+            )
+            self._status[IDX_LAP_LINE] = self._detect_lap_line(
+                self._img_front,
+            )
+
+        # 보행자 때문에 정지한 뒤에도 상태를 계속 갱신해야
+        # 보행자가 사라졌을 때 main이 다시 출발할 수 있다.
+        if self._mode in (
+            MODE_LANE,
+            MODE_LANE_CHANGE,
+            MODE_FOLLOW,
+            MODE_SIGNAL_WAIT,
+        ):
             self._status[IDX_PEDESTRIAN] = self._detect_pedestrian(det)
+        else:
+            # 다른 모드에서 이전 보행자 값이 남지 않도록 초기화한다.
+            self._status[IDX_PEDESTRIAN] = 0
 
         if self._mode == MODE_FOLLOW:
             self._status[IDX_OBSTACLE_PASSED] = self._detect_obstacle_passed(self._scan)
@@ -244,6 +264,10 @@ class Perception(Node):
         # 어린이 보호구역: 노랑(시작)→1, 흰색(해제)→2 상태기계
         if self._mode == MODE_LANE:
             self._status[IDX_SCHOOL_ZONE] = self._school_zone.update(self._img_front)
+
+        self._status[IDX_POLICE_READY] = int(
+            self._police_detector_ready
+        )
 
         self._publish_status()
 
@@ -269,8 +293,19 @@ class Perception(Node):
                     cv2.putText(vis, f'{label} {d.confidence:.2f} h{hf:.2f}',
                                 (x1, max(12, y1 - 5)),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, col, 2)
-            names = ['start', 'traffic', 'obsF', 'obsP', 'police',
-                     'short', 'lap', 'ped', 'school', 'tlPre']
+            names = [
+                'start',
+                'traffic',
+                'obsF',
+                'obsP',
+                'police',
+                'short',
+                'lap',
+                'ped',
+                'school',
+                'tlPre',
+                'policeReady',
+            ]
             txt = ' '.join(f'{n}:{v}' for n, v in zip(names, self._status))
             cv2.putText(vis, txt, (6, 18), cv2.FONT_HERSHEY_SIMPLEX,
                         0.45, (0, 255, 255), 1)
@@ -326,20 +361,58 @@ class Perception(Node):
         return 0
 
     def _detect_pedestrian(self, det):
-        # 보행자 박스 중 '바로 앞 위험'한 것이 있으면 1, 아니면 0(무시하고 통과).
-        #   위험 = 가깝고(박스 h 큼) AND 진행경로(중앙 x밴드) 안.
-        #   멀거나 길 가장자리 보행자는 0 → 그냥 지나감.
-        peds = det.get('pedestrian')
+        # 모델에 따라 사람 클래스명이 pedestrian 또는 person일 수 있다.
+        peds = list(det.get('pedestrian') or [])
+        label_name = 'pedestrian'
+
+        if not peds:
+            peds = list(det.get('person') or [])
+            label_name = 'person'
+
         if not peds or self._img_front is None:
+            detected_labels = {
+                name: len(items)
+                for name, items in det.items()
+                if items
+            }
+
+            if detected_labels:
+                self.get_logger().info(
+                    f'[PED] danger=0 detected_labels={detected_labels}'
+                )
+
             return 0
+
         H, W = self._img_front.shape[:2]
+
         for d in peds:
             x1, y1, x2, y2 = d.bbox
-            h_norm = (y2 - y1) / H
-            cx_norm = ((x1 + x2) * 0.5) / W
-            if (h_norm >= PED_DANGER_MIN_H
-                    and PED_DANGER_X_BAND[0] <= cx_norm <= PED_DANGER_X_BAND[1]):
+
+            h_norm = (y2 - y1) / float(H)
+            cx_norm = ((x1 + x2) * 0.5) / float(W)
+
+            pass_height = h_norm >= PED_DANGER_MIN_H
+            pass_center = (
+                PED_DANGER_X_BAND[0]
+                <= cx_norm
+                <= PED_DANGER_X_BAND[1]
+            )
+            danger = pass_height and pass_center
+
+            self.get_logger().info(
+                '[PED] '
+                f'label={label_name} '
+                f'conf={d.confidence:.2f} '
+                f'h={h_norm:.3f} '
+                f'cx={cx_norm:.3f} '
+                f'height_ok={int(pass_height)} '
+                f'center_ok={int(pass_center)} '
+                f'danger={int(danger)}'
+            )
+
+            if danger:
                 return 1
+
         return 0
 
     def _detect_obstacle_front(self, det, scan):
