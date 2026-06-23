@@ -146,7 +146,13 @@ class Driving(Node):
 
     def _stage_cb(self, msg):
         if msg.data:
+            old_stage = list(self._stage)
             self._stage = list(msg.data)
+            if self._stage != old_stage:
+                self.get_logger().info(
+                    f'STAGE 수신: {old_stage} -> {self._stage}, '
+                    f'현재 mode={self._mode}'
+                )
 
     def _perception_cb(self, msg):
         """LAP1: 홈=1차선, 앞차→2차선, 왼쪽차 사라짐→1차선
