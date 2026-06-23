@@ -93,12 +93,12 @@ class Control(Node):
                 ratio = 40.0
             elif abs_offset < 0.06:
                 ratio = 70.0
-            elif abs_offset < 0.20:   # 완만한 커브
+            elif abs_offset < 0.12:   # 완만한 커브
                 ratio = 400.0
                 speed = 5
-            else:                      # 급커브
-                ratio = 500.0
-                speed = 3
+            else:                      # 급커브 (err > ~38px)
+                ratio = 700.0
+                speed = 2
         angle = self._offset * ratio
         angle = max(-ANGLE_LIMIT, min(ANGLE_LIMIT, angle))
         speed = max(-SPEED_LIMIT, min(SPEED_LIMIT, float(speed)))

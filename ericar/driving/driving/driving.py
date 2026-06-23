@@ -79,6 +79,11 @@ class Driving(Node):
         self._cone_missing_count = 0
         self._lane_visible_count = 0
         self._cone_done_sent = False
+        # 방해차량 차선 결정 (perception 연계)
+        self._obs_lane        = 0   # 0=1차선, 1=2차선
+        self._lap_count       = 0
+        self._lap_line_prev   = 0
+        self._obs_front_latch = False
 
         # 카메라 구독 시 RELIABLE QoS 사용 (시뮬레이터 발행자가 RELIABLE이므로)
         qos_reliable = QoSProfile(
@@ -99,6 +104,9 @@ class Driving(Node):
             Int32, '/main/mode', self._mode_cb, 10)
         self.create_subscription(
             Int32MultiArray, '/main/stage', self._stage_cb, 10)
+        self.create_subscription(
+            Int32MultiArray, '/perception/status',
+            self._perception_cb, 10)
 
         # ---- 발행 ----
         self._offset_pub = self.create_publisher(Float32, '/driving/offset', 10)
@@ -140,6 +148,51 @@ class Driving(Node):
         if msg.data:
             self._stage = list(msg.data)
 
+    def _perception_cb(self, msg):
+        """LAP1: 홈=1차선, 앞차→2차선, 왼쪽차 사라짐→1차선
+        LAP2/3: 홈=2차선, 앞차→1차선, 왼쪽차 사라짐→2차선"""
+        if len(msg.data) < 7:
+            return
+        status = list(msg.data)
+
+        # 랩라인 엣지 감지
+        lap_line = status[6]
+        if lap_line == 1 and self._lap_line_prev == 0:
+            self._lap_count += 1
+            self.get_logger().info(f'[OBS] lap={self._lap_count}')
+            if self._lap_count >= 2:
+                self._obs_lane = 1
+                self._obs_front_latch = False
+                self.get_logger().info('[OBS] LAP2+ 홈=2차선')
+        self._lap_line_prev = lap_line
+
+        home = 1 if self._lap_count >= 2 else 0
+        away = 1 - home
+
+        # 앞차 감지 → 회피 차선
+        if status[2] == 1 and self._obs_lane == home:
+            self._obs_front_latch = True
+        if self._obs_front_latch and self._obs_lane == home:
+            if self._is_merge_clear():
+                self._obs_lane = away
+                self.get_logger().info(f'[OBS] 앞차 → {away+1}차선')
+
+        # 왼쪽 차 사라짐 → 홈 복귀
+        if status[3] == 1 and self._obs_lane == away:
+            self._obs_lane = home
+            self._obs_front_latch = False
+            self.get_logger().info(f'[OBS] 복귀 → {home+1}차선')
+
+    def _is_merge_clear(self):
+        import math
+        if self._scan is None:
+            return True
+        r = self._scan.ranges
+        n = len(r)
+        vals = [r[d] for d in range(315, 350)
+                if d < n and math.isfinite(r[d]) and r[d] > 0.3]
+        return (min(vals) if vals else float('inf')) > 3.0
+
     def _on_mode_enter(self, new_mode):
         if new_mode == MODE_CONE:
             # 새 라바콘 미션에 진입할 때 종료 판정 상태를 초기화한다.
@@ -171,7 +224,7 @@ class Driving(Node):
             # 기존 조향 계산 이후 라바콘 구간 종료 조건을 확인한다.
             self._check_cone_done()
         elif self._mode in (MODE_LANE, MODE_FOLLOW):
-            lane_target = self._stage[STAGE_LANE_TARGET]
+            lane_target = self._obs_lane
             offset = self._lane.compute_offset(self._img_front, lane_target)
             if self._lane.last_debug_img is not None:
                 self._lane_debug_pub.publish(

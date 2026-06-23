@@ -95,6 +95,8 @@ class LaneDetector:
         self._pid_prev_error  = None
         self._pid_prev_time   = None
         self._pid_prev_deriv  = 0.0
+        # peak 이동 속도 제한
+        self._prev_peak       = None
         # velocity prediction 상태
         self._prev_yellow_x   = None  # 직전 프레임 차선 x좌표
         self._last_dx         = 0.0   # EMA로 추정된 프레임당 x이동량
@@ -153,6 +155,38 @@ class LaneDetector:
         mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8))
         mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN,  np.ones((3, 3), np.uint8))
         return mask
+
+
+    def _white_mask(self, roi):
+        """흰색 차선 마스크 (HSV: 낮은 채도 + 높은 명도)"""
+        hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+        return cv2.inRange(hsv, np.array([0, 0, 190]), np.array([180, 25, 255]))
+
+    def _detect_white_edges(self, image, w):
+        """흰 차선 양쪽 경계 x좌표 반환 (없으면 None)"""
+        h = image.shape[0]
+        roi_top = int(h * 0.80)
+        roi = image[roi_top:, :]
+        hist = np.sum(self._white_mask(roi), axis=0).astype(np.float32)
+        hist = np.convolve(hist, np.ones(20, dtype=np.float32), mode='same')
+        WHITE_MIN_SUM = 300
+        # 왼쪽 경계
+        lh = hist[:w//2]
+        lp = int(np.argmax(lh))
+        left_x = lp if lh[lp] > WHITE_MIN_SUM else None
+        # 오른쪽 경계
+        rh = hist[w//2:]
+        rp = int(np.argmax(rh)) + w//2
+        right_x = rp if hist[rp] > WHITE_MIN_SUM else None
+        print(f"[WHITE] left={left_x} right={right_x} hist_max_l={lh[lp]:.0f} hist_max_r={hist[rp]:.0f}", flush=True)
+        # ── 흰선 히스토그램 시각화용으로 저장 ──
+        self._white_debug = {
+            'left': left_x, 'right': right_x,
+            'lmax': float(lh[lp]), 'rmax': float(hist[rp])
+        }
+        print(f"[WHITE] left={left_x} right={right_x} "
+              f"hist_l={lh[lp]:.0f} hist_r={hist[rp]:.0f}", flush=True)
+        return left_x, right_x
 
     def _blob_filter(self, mask: np.ndarray) -> np.ndarray:
         """
@@ -259,6 +293,26 @@ class LaneDetector:
             self._prev_yellow_x = yellow_x
 
         # ── error 계산 ────────────────────────────────────────────────────────
+        # ── peak 이동 속도 제한 ──────────────────────────────────────────────
+        # 직선(이전 프레임 양쪽 감지): 30px/frame - 오감지 방지
+        # 커브(이전 프레임 한쪽만): 60px/frame - 빠른 추종 허용
+        prev_in_curve = getattr(self, '_prev_in_curve', False)
+        MAX_DELTA = 60 if prev_in_curve else 30
+        if self._prev_peak is not None:
+            delta = yellow_x - self._prev_peak
+            if abs(delta) > MAX_DELTA:
+                yellow_x = int(self._prev_peak + MAX_DELTA * (1 if delta > 0 else -1))
+                print(f"[SPD_LIMIT({MAX_DELTA})] delta={delta:+.0f} → peak={yellow_x}", flush=True)
+        self._prev_peak = yellow_x
+
+        # ── 큰 에러 지속 시 감속 플래그 ──────────────────────────
+        abs_err = abs(yellow_x - target_x)
+        if abs_err > 50:
+            self._large_err_count = getattr(self, '_large_err_count', 0) + 1
+        else:
+            self._large_err_count = 0
+        self.slow_down = self._large_err_count >= 3
+
         error_px = yellow_x - target_x
 
         # ── PID 제어 ──────────────────────────────────────────────────────────
@@ -266,9 +320,105 @@ class LaneDetector:
         # → 해상도가 바뀌어도 동일한 PID 게인 사용 가능
         error_norm = max(-1.0, min(1.0, error_px / (w / 2.0)))
         offset     = max(-1.0, min(1.0, self._compute_pid(error_norm)))
+
+        # ── 흰선 가드레일 (상태 기반) ────────────────────────────────────────
+        # 직선: 양쪽 흰선 모두 감지 → 가드레일 OFF
+        # 커브: 한쪽만 감지         → 그쪽이 위험 경계 → 강제 반발
+        left_white, right_white = self._detect_white_edges(image, w)
+        both_visible = (left_white is not None) and (right_white is not None)
+        only_right   = (left_white is None)     and (right_white is not None)
+        only_left    = (left_white is not None) and (right_white is None)
+
+        CAR_X         = w // 2   # 320 (차 중앙 기준)
+        GUARD_WARN_PX = 80       # 이내: 하드 오버라이드 (절대 못 넘음)
+        GUARD_SOFT_PX = 160      # 이내: 소프트 보정 시작
+        HARD_FORCE    = 0.8      # 하드 구간 최소 조향 강도
+        SOFT_MAX      = 0.5      # 소프트 구간 최대 보정량
+
+        guard_state = 'STRAIGHT' if both_visible else 'WHITE_NONE'
+
+        # 커브 방향 보조 조향 (lookahead boost)
+        # 가드레일이 한쪽만 감지하면 = 커브 중. 즉시 그 방향으로 boost.
+        CURVE_BOOST = 0.12   # 커브 진입 시 미리 추가할 조향량
+
+        if not both_visible:
+            if only_right:
+                dist = right_white - CAR_X
+                if dist < GUARD_WARN_PX:
+                    offset = min(offset, -HARD_FORCE)
+                    guard_state = f'GUARD-R HARD d={dist:.0f}'
+                elif dist < GUARD_SOFT_PX:
+                    t = (GUARD_SOFT_PX - dist) / (GUARD_SOFT_PX - GUARD_WARN_PX)
+                    offset = max(-1.0, offset - t * SOFT_MAX)
+                    guard_state = f'GUARD-R soft d={dist:.0f}'
+                else:
+                    offset = max(-1.0, offset - CURVE_BOOST)
+                    guard_state = f'GUARD-R idle d={dist:.0f}'
+                print(f"[{guard_state}] rw={right_white}", flush=True)
+
+            elif only_left:
+                dist = CAR_X - left_white
+                if dist < GUARD_WARN_PX:
+                    offset = max(offset, HARD_FORCE)
+                    guard_state = f'GUARD-L HARD d={dist:.0f}'
+                elif dist < GUARD_SOFT_PX:
+                    t = (GUARD_SOFT_PX - dist) / (GUARD_SOFT_PX - GUARD_WARN_PX)
+                    offset = min(1.0, offset + t * SOFT_MAX)
+                    guard_state = f'GUARD-L soft d={dist:.0f}'
+                else:
+                    offset = min(1.0, offset + CURVE_BOOST)
+                    guard_state = f'GUARD-L idle d={dist:.0f}'
+                print(f"[{guard_state}] lw={left_white}", flush=True)
+
         self.last_offset = offset
 
         # ── 디버그 오버레이 ───────────────────────────────────────────────────
+        overlay = debug.copy()
+
+        # 가드레일 위험 구역 반투명 채색
+        if only_right and right_white is not None:
+            dist = right_white - CAR_X
+            if dist < GUARD_WARN_PX:
+                color = (0, 0, 200)    # 빨강: HARD 구간
+            elif dist < GUARD_SOFT_PX:
+                color = (0, 100, 220)  # 주황: soft 구간
+            else:
+                color = (0, 180, 180)  # 노랑: idle
+            cv2.rectangle(overlay, (right_white, n_top), (w, h), color, -1)
+            cv2.addWeighted(overlay, 0.35, debug, 0.65, 0, debug)
+            # 흰선: 굵은 보라색
+            cv2.line(debug, (right_white, n_top), (right_white, h), (255, 0, 255), 3)
+            # 밀어내는 방향 화살표
+            ax = right_white - 40
+            ay = n_top + (h - n_top) // 2
+            cv2.arrowedLine(debug, (right_white - 10, ay), (ax, ay), (0, 0, 255), 3, tipLength=0.4)
+
+        elif only_left and left_white is not None:
+            dist = CAR_X - left_white
+            if dist < GUARD_WARN_PX:
+                color = (0, 0, 200)
+            elif dist < GUARD_SOFT_PX:
+                color = (0, 100, 220)
+            else:
+                color = (0, 180, 180)
+            cv2.rectangle(overlay, (0, n_top), (left_white, h), color, -1)
+            cv2.addWeighted(overlay, 0.35, debug, 0.65, 0, debug)
+            cv2.line(debug, (left_white, n_top), (left_white, h), (255, 0, 255), 3)
+            ax = left_white + 40
+            ay = n_top + (h - n_top) // 2
+            cv2.arrowedLine(debug, (left_white + 10, ay), (ax, ay), (0, 0, 255), 3, tipLength=0.4)
+
+        elif both_visible:
+            # 양쪽 다 보임 → 회색 선으로 표시 (직선)
+            if left_white is not None:
+                cv2.line(debug, (left_white, n_top), (left_white, h), (160, 160, 160), 1)
+            if right_white is not None:
+                cv2.line(debug, (right_white, n_top), (right_white, h), (160, 160, 160), 1)
+
+        # 가드레일 상태 텍스트
+        g_color = (0, 0, 255) if 'HARD' in guard_state else (0, 200, 255) if 'soft' in guard_state else (180, 180, 180)
+        cv2.putText(debug, guard_state, (10, 45), cv2.FONT_HERSHEY_SIMPLEX, 0.5, g_color, 2)
+
         cv2.line(debug, (int(yellow_x), n_top), (int(yellow_x), h), (255, 255, 0), 2)
         label = f'peak={int(yellow_x)}({source}) tgt={target_x} err={int(error_px)} out={offset:.2f}'
         cv2.putText(debug, label, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.52, (0, 255, 255), 2)
