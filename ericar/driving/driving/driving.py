@@ -138,7 +138,14 @@ class Driving(Node):
 
     def _stage_cb(self, msg):
         if msg.data:
+            old_stage = list(self._stage)
             self._stage = list(msg.data)
+
+            if self._stage != old_stage:
+                self.get_logger().info(
+                    f'STAGE 수신: {old_stage} -> {self._stage}, '
+                    f'현재 mode={self._mode}'
+                )
 
     def _on_mode_enter(self, new_mode):
         if new_mode == MODE_CONE:
@@ -153,8 +160,18 @@ class Driving(Node):
             self._lane_change_ticks = 0
             self._lane_change_stable_count = 0
         if new_mode == MODE_LEFT_TURN:
-            # turn_type 에 따라 목표 yaw 설정
-            self._turn.start(self._stage[STAGE_TURN_TYPE], self._yaw)
+            turn_type = self._stage[STAGE_TURN_TYPE]
+
+            self.get_logger().info(
+                'LEFT_TURN 시작: '
+                f'turn_type={turn_type}, '
+                f'stage={self._stage}, '
+                f'start_yaw={self._yaw:.3f}'
+            )
+
+            # turn_type에 따라 목표 yaw 설정
+            self._turn.start(turn_type, self._yaw)
+
             # 좌회전 완료 플래그 리셋
             self._turn_reached = False
 
