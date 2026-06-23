@@ -199,12 +199,6 @@ class Driving(Node):
                 if d < n and math.isfinite(r[d]) and r[d] > 0.3]
         return (min(vals) if vals else float('inf')) > 3.0
 
-            if self._stage != old_stage:
-                self.get_logger().info(
-                    f'STAGE 수신: {old_stage} -> {self._stage}, '
-                    f'현재 mode={self._mode}'
-                )
-
     def _on_mode_enter(self, new_mode):
         if new_mode == MODE_CONE:
             # 새 라바콘 미션에 진입할 때 종료 판정 상태를 초기화한다.

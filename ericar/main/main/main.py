@@ -149,7 +149,13 @@ class Main(Node):
         # 트랙 신호등 및 경로 선택 상태
         self._traffic_present_count = 0
         self._signal_cooldown_frames = 0
+        # 경찰차가 현재 lap에서 한 번이라도 검출되면,
+        # 화면에서 사라져도 다음 lap 시작 전까지 기억한다.
         self._police_seen_this_lap = False
+
+        # 동일 lap에서 같은 트랙 신호등을 다시 처리하지 않는다.
+        self._route_decision_lap = -1
+
         self._shortcut_active = False
 
         # ------------------------------------------------------------------
@@ -387,11 +393,14 @@ class Main(Node):
             self._lap += 1
             self._consume_lap_line()
 
-            # 새로운 lap에서는 경찰차 경로 판단을 다시 수행한다.
+            # 경찰차 검출 기록은 경로 결정 직후가 아니라
+            # 새로운 lap이 시작되는 시점에만 초기화한다.
+            self._police_seen_this_lap = False
             self._signal_cooldown_frames = SIGNAL_COOLDOWN_FRAMES
 
             self.get_logger().info(
-                f'lap 증가: {self._lap}'
+                f'lap 증가: {self._lap}, '
+                '경찰차 검출 latch 초기화'
             )
 
     def _fsm_lane_change(self):
@@ -437,15 +446,11 @@ class Main(Node):
             self._status[IDX_POLICE_READY] == 1
         )
 
-        # 첫 번째 lap은 경찰차가 반드시 있으므로 무조건 직진한다.
-        # 검출기가 비활성인 경우도 잘못된 좌회전을 막기 위해 직진한다.
-        go_straight = (
-            self._lap == 1
-            or not police_ready
-            or self._police_seen_this_lap
-        )
-
-        if go_straight:
+        # --------------------------------------------------------------
+        # 첫 번째 lap:
+        # 경찰차 검출 결과와 관계없이 초록불에 무조건 직진한다.
+        # --------------------------------------------------------------
+        if self._lap == 1:
             if signal != TRAFFIC_GREEN:
                 return
 
@@ -453,37 +458,55 @@ class Main(Node):
             self._shortcut_active = False
             self._wait_reason = None
             self._signal_cooldown_frames = SIGNAL_COOLDOWN_FRAMES
-
-            if self._lap == 1:
-                reason = '첫 번째 lap: 초록불 직진'
-            elif not police_ready:
-                reason = '경찰차 검출기 비활성: 초록불 직진'
-            else:
-                reason = '경찰차 감지: 초록불 직진'
-
-            # 이번 lap 경로 결정을 완료했으므로 다음 lap을 위해 초기화한다.
-            self._police_seen_this_lap = False
+            self._route_decision_lap = self._lap
 
             self._set_mode(
                 MODE_LANE,
-                reason,
+                '첫 번째 lap: 초록불 직진',
             )
             return
 
-        # 두 번째·세 번째 lap에서 검출기가 정상이고
-        # 경찰차를 보지 못한 경우에만 좌회전한다.
-        if signal == TRAFFIC_LEFT:
-            self._stage[STAGE_TURN_TYPE] = 0
-            self._shortcut_active = True
-            self._wait_reason = None
+        # --------------------------------------------------------------
+        # 두 번째 lap 이후:
+        # 이번 lap에서 경찰차를 한 번이라도 봤다면,
+        # 이후 화면에서 사라져도 경찰차가 있었던 것으로 판단한다.
+        # --------------------------------------------------------------
+        if self._police_seen_this_lap:
+            if signal != TRAFFIC_GREEN:
+                return
 
-            # 이번 lap 경로 결정을 완료했으므로 다음 lap을 위해 초기화한다.
-            self._police_seen_this_lap = False
+            self._stage[STAGE_LANE_TARGET] = 0
+            self._shortcut_active = False
+            self._wait_reason = None
+            self._signal_cooldown_frames = SIGNAL_COOLDOWN_FRAMES
+            self._route_decision_lap = self._lap
 
             self._set_mode(
-                MODE_LEFT_TURN,
-                '경찰차 미검출: 좌회전 신호 후 지름길 진입',
+                MODE_LANE,
+                '경찰차 감지 기록 유지: 초록불 직진',
             )
+            return
+
+        # 경찰차가 검출되지 않았더라도 detector가 준비되지 않았다면
+        # 경찰차 없음으로 판단하지 않고 정지 상태를 유지한다.
+        if not police_ready:
+            return
+
+        # detector가 준비됐고 이번 lap에서 경찰차를 한 번도 보지 못한
+        # 경우에만 좌회전 신호를 받아 지름길로 진입한다.
+        if signal != TRAFFIC_LEFT:
+            return
+
+        self._stage[STAGE_TURN_TYPE] = 0
+        self._shortcut_active = True
+        self._wait_reason = None
+        self._signal_cooldown_frames = SIGNAL_COOLDOWN_FRAMES
+        self._route_decision_lap = self._lap
+
+        self._set_mode(
+            MODE_LEFT_TURN,
+            '경찰차 미검출 확정: 좌회전 신호 후 지름길 진입',
+        )
 
     def _after_left_turn(self):
         turn_type = self._stage[STAGE_TURN_TYPE]
@@ -594,6 +617,11 @@ class Main(Node):
     def _reached_traffic_light(self):
         # 첫 번째 lap부터 트랙 신호등 경로 판단을 수행한다.
         if self._lap < 1:
+            return False
+
+        # 이미 현재 lap의 직진/좌회전 경로를 결정했다면
+        # 화면에 같은 신호등이 계속 남아 있어도 다시 정지하지 않는다.
+        if self._route_decision_lap == self._lap:
             return False
 
         if self._shortcut_active:
