@@ -212,8 +212,18 @@ class Driving(Node):
             self._lane_change_ticks = 0
             self._lane_change_stable_count = 0
         if new_mode == MODE_LEFT_TURN:
-            # turn_type 에 따라 목표 yaw 설정
-            self._turn.start(self._stage[STAGE_TURN_TYPE], self._yaw)
+            turn_type = self._stage[STAGE_TURN_TYPE]
+
+            self.get_logger().info(
+                'LEFT_TURN 시작: '
+                f'turn_type={turn_type}, '
+                f'stage={self._stage}, '
+                f'start_yaw={self._yaw:.3f}'
+            )
+
+            # turn_type에 따라 목표 yaw 설정
+            self._turn.start(turn_type, self._yaw)
+
             # 좌회전 완료 플래그 리셋
             self._turn_reached = False
 
