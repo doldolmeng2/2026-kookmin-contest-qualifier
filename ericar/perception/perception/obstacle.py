@@ -35,18 +35,26 @@ def _sector_min(scan, degs):
     return min(vals) if vals else float('inf')
 
 
-def detect_obstacle_front(scan):
-    """전방에 앞차가 가까이 있으면 True."""
+def detect_obstacle_front(scan, degs=FRONT_DEG, max_dist=FRONT_OBSTACLE_MAX):
+    """전방 섹터(degs)에 앞차가 max_dist 이내로 있으면 True.
+    (임계값은 perception.py 의 OBS_* 에서 넘겨줌)"""
     if scan is None:
         return False
-    return _sector_min(scan, FRONT_DEG) < FRONT_OBSTACLE_MAX
+    return _sector_min(scan, degs) < max_dist
 
 
-def left_min(scan):
-    """좌측 섹터 최소 거리(m). 비었으면 inf. (추월완료 판정은 perception에서 상태로)"""
+def left_min(scan, degs=LEFT_DEG):
+    """좌측 섹터(degs) 최소 거리(m). 비었으면 inf. (추월완료 판정은 perception에서 상태로)"""
     if scan is None:
         return float('inf')
-    return _sector_min(scan, LEFT_DEG)
+    return _sector_min(scan, degs)
+
+
+def sector_min(scan, degs):
+    """임의 섹터 최소 거리 (시각화 등에서 사용)."""
+    if scan is None:
+        return float('inf')
+    return _sector_min(scan, degs)
 
 
 # 추월완료(obstacle_passed) 판정용 (perception 에서 상태 추적):
