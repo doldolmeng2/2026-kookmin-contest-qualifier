@@ -91,6 +91,7 @@ TRAFFIC_PRESENT_FRAMES = 5
 PEDESTRIAN_DANGER_FRAMES = 3
 PEDESTRIAN_CLEAR_FRAMES = 8
 SIGNAL_COOLDOWN_FRAMES = 60
+STOP_LINE_CONFIRM_FRAMES = 2
 
 
 class Main(Node):
@@ -148,6 +149,11 @@ class Main(Node):
 
         # 트랙 신호등 및 경로 선택 상태
         self._traffic_present_count = 0
+        self._traffic_armed = False
+
+        self._stop_line_near = False
+        self._stop_line_count = 0
+
         self._signal_cooldown_frames = 0
         # 경찰차가 현재 lap에서 한 번이라도 검출되면,
         # 화면에서 사라져도 다음 lap 시작 전까지 기억한다.
@@ -166,6 +172,13 @@ class Main(Node):
             Int32MultiArray,
             '/perception/status',
             self._status_cb,
+            10,
+        )
+
+        self.create_subscription(
+            Bool,
+            '/perception/stop_line_near',
+            self._stop_line_cb,
             10,
         )
 
@@ -276,6 +289,9 @@ class Main(Node):
 
         self._status = new_status
 
+    def _stop_line_cb(self, msg):
+        self._stop_line_near = bool(msg.data)
+
     def _offset_cb(self, msg):
         self._offset = float(msg.data)
 
@@ -317,6 +333,17 @@ class Main(Node):
             self._traffic_present_count += 1
         else:
             self._traffic_present_count = 0
+
+        if (
+            self._traffic_present_count
+            >= TRAFFIC_PRESENT_FRAMES
+        ):
+            self._traffic_armed = True
+
+        if self._stop_line_near:
+            self._stop_line_count += 1
+        else:
+            self._stop_line_count = 0
 
         # 주행 중 위험 보행자는 모드 처리보다 우선한다.
         if self._handle_pedestrian():
@@ -392,6 +419,11 @@ class Main(Node):
         if self._lap_line_event:
             self._lap += 1
             self._consume_lap_line()
+
+            self._traffic_armed = False
+            self._traffic_present_count = 0
+            self._stop_line_near = False
+            self._stop_line_count = 0
 
             # 경찰차 검출 기록은 경로 결정 직후가 아니라
             # 새로운 lap이 시작되는 시점에만 초기화한다.
@@ -630,10 +662,19 @@ class Main(Node):
         if self._signal_cooldown_frames > 0:
             return False
 
-        return (
-            self._traffic_present_count
-            >= TRAFFIC_PRESENT_FRAMES
+        reached = (
+            self._traffic_armed
+            and self._stop_line_count
+            >= STOP_LINE_CONFIRM_FRAMES
         )
+
+        if reached:
+            # 같은 검출값으로 재진입하지 않도록 즉시 소모한다.
+            self._traffic_armed = False
+            self._traffic_present_count = 0
+            self._stop_line_count = 0
+
+        return reached
 
     def _left_turn_reached(self):
         if self._turn_done:
@@ -691,7 +732,7 @@ class Main(Node):
 
     def _debug_tick(self):
         image = np.zeros(
-            (500, 500, 3),
+            (570, 500, 3),
             dtype=np.uint8,
         )
 
@@ -776,6 +817,35 @@ class Main(Node):
             )
 
             y += 22
+
+        ped_raw = int(
+            self._status[IDX_PEDESTRIAN]
+        )
+        ped_wait = int(
+            self._wait_reason == 'pedestrian'
+        )
+
+        put(
+            (
+                f'PED RAW:{ped_raw} '
+                f'DANGER:{self._pedestrian_danger_count}/'
+                f'{PEDESTRIAN_DANGER_FRAMES} '
+                f'WAIT:{ped_wait}'
+            ),
+            525,
+            green if ped_raw else gray,
+        )
+
+        put(
+            (
+                f'STOP RAW:{int(self._stop_line_near)} '
+                f'COUNT:{self._stop_line_count}/'
+                f'{STOP_LINE_CONFIRM_FRAMES} '
+                f'ARMED:{int(self._traffic_armed)}'
+            ),
+            550,
+            green if self._stop_line_near else gray,
+        )
 
         cv2.imshow('ericar_debug', image)
         cv2.waitKey(1)

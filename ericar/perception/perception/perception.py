@@ -15,7 +15,7 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy, qos_profile_sensor_data
 
-from std_msgs.msg import Int32, Int32MultiArray
+from std_msgs.msg import Bool, Int32, Int32MultiArray
 from sensor_msgs.msg import Image, LaserScan
 from cv_bridge import CvBridge
 
@@ -26,6 +26,14 @@ from perception.yolo_detector import YoloDetector
 from perception.traffic_light import (
     TrafficLightDetector, SIGNAL_NONE, SIGNAL_GREEN, SIGNAL_LEFT)
 from perception.start_line import detect_start_line
+from perception.stop_line import (
+    ROI_BOTTOM as STOP_LINE_ROI_BOTTOM,
+    ROI_LEFT as STOP_LINE_ROI_LEFT,
+    ROI_RIGHT as STOP_LINE_ROI_RIGHT,
+    ROI_TOP as STOP_LINE_ROI_TOP,
+    TRIGGER_Y_MIN as STOP_LINE_TRIGGER_Y,
+    detect_stop_line,
+)
 from perception.shortcut_exit import detect_shortcut_exit
 from perception.obstacle import detect_obstacle_front, left_min, sector_min
 from perception.left_car import car_in_left
@@ -106,7 +114,7 @@ SZ_WHITE_EXIT   = 1000   # (보호구역 안) 흰 픽셀 ≥ → 해제(data[8]=
 SZ_WHITE_NORMAL = 3000   # (해제 후) 흰 픽셀 ≥ → 일반도로 복귀(data[8]=0)
 
 # --- 디버그 시각화 ---
-VIZ_DEFAULT = False       # perception 창(카메라+bbox+status) 기본 표시 여부
+VIZ_DEFAULT = False     # perception 창(카메라+bbox+status) 기본 표시 여부
 
 # main 모드 정의 (퍼셉션이 모드별로 인식 항목을 골라 켜기 위해 참조)
 MODE_WAIT, MODE_CONE, MODE_LANE, MODE_LEFT_TURN, \
@@ -162,6 +170,11 @@ class Perception(Node):
         # 누적 상태 (한 번 1이 된 래치성 값은 유지)
         self._status = [0] * STATUS_LEN
 
+        # 흰색 정지선 검출 결과와 디버그 수치
+        self._stop_line_near = False
+        self._stop_line_y_ratio = -1.0
+        self._stop_line_row_ratio = 0.0
+
         # YOLO 추론은 CPU 라 무겁다 → 저빈도(every N틱)로만 돌리고 결과 캐시
         self._det = {}
         self._tick_n = 0
@@ -190,6 +203,12 @@ class Perception(Node):
         # ---- 발행 ----
         self._status_pub = self.create_publisher(
             Int32MultiArray, '/perception/status', 10)
+
+        self._stop_line_pub = self.create_publisher(
+            Bool,
+            '/perception/stop_line_near',
+            10,
+        )
 
         # 인식 + 발행 주기 (30Hz)
         self.create_timer(1.0 / 30.0, self._tick)
@@ -277,6 +296,22 @@ class Perception(Node):
             self._police_detector_ready
         )
 
+        # 정지선은 차선 주행 및 신호 대기 중에만 검사한다.
+        if self._mode in (MODE_LANE, MODE_SIGNAL_WAIT):
+            (
+                self._stop_line_near,
+                self._stop_line_y_ratio,
+                self._stop_line_row_ratio,
+            ) = detect_stop_line(self._img_front)
+        else:
+            self._stop_line_near = False
+            self._stop_line_y_ratio = -1.0
+            self._stop_line_row_ratio = 0.0
+
+        self._stop_line_pub.publish(
+            Bool(data=bool(self._stop_line_near))
+        )
+
         self._publish_status()
 
         if self._viz:
@@ -324,6 +359,64 @@ class Perception(Node):
                 self._tl_start.draw(vis)
             if self._mode == MODE_LANE:
                 self._school_zone.draw(vis)
+            # 흰색 정지선 검출 ROI와 트리거 위치
+            h, w = vis.shape[:2]
+            sx0 = int(w * STOP_LINE_ROI_LEFT)
+            sx1 = int(w * STOP_LINE_ROI_RIGHT)
+            sy0 = int(h * STOP_LINE_ROI_TOP)
+            sy1 = int(h * STOP_LINE_ROI_BOTTOM)
+            trigger_y = int(h * STOP_LINE_TRIGGER_Y)
+
+            cv2.rectangle(
+                vis,
+                (sx0, sy0),
+                (sx1, sy1),
+                (255, 200, 0),
+                1,
+            )
+            cv2.line(
+                vis,
+                (sx0, trigger_y),
+                (sx1, trigger_y),
+                (0, 165, 255),
+                2,
+            )
+
+            if self._stop_line_y_ratio >= 0.0:
+                detected_y = int(
+                    h * self._stop_line_y_ratio
+                )
+                color = (
+                    (0, 255, 0)
+                    if self._stop_line_near
+                    else (0, 0, 255)
+                )
+                cv2.line(
+                    vis,
+                    (sx0, detected_y),
+                    (sx1, detected_y),
+                    color,
+                    2,
+                )
+
+            cv2.putText(
+                vis,
+                (
+                    f'STOP:{int(self._stop_line_near)} '
+                    f'y={self._stop_line_y_ratio:.2f} '
+                    f'row={self._stop_line_row_ratio:.2f}'
+                ),
+                (6, 58),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.50,
+                (
+                    (0, 255, 0)
+                    if self._stop_line_near
+                    else (0, 165, 255)
+                ),
+                2,
+            )
+
             cv2.imshow('perception', vis)
             # 방해차량(라이다) 조감도 창
             if self._scan is not None:
