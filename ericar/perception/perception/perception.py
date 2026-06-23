@@ -235,7 +235,7 @@ class Perception(Node):
             self._status[IDX_LAP_LINE] = self._detect_lap_line(self._img_front)
             self._status[IDX_PEDESTRIAN] = self._detect_pedestrian(det)
 
-        if self._mode == MODE_FOLLOW:
+        if self._mode in (MODE_LANE, MODE_FOLLOW):
             self._status[IDX_OBSTACLE_PASSED] = self._detect_obstacle_passed(self._scan)
 
         if self._mode == MODE_LANE and self._stage[0] == 1:
