@@ -1,0 +1,22 @@
+[2.655s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/track_drive': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/track_drive/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/track_drive build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/track_drive/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/track_drive/install.log --single-version-externally-managed install_data
+[3.130s] running egg_info
+[3.132s] writing ../build/track_drive/track_drive.egg-info/PKG-INFO
+[3.132s] writing dependency_links to ../build/track_drive/track_drive.egg-info/dependency_links.txt
+[3.136s] writing entry points to ../build/track_drive/track_drive.egg-info/entry_points.txt
+[3.136s] writing requirements to ../build/track_drive/track_drive.egg-info/requires.txt
+[3.136s] writing top-level names to ../build/track_drive/track_drive.egg-info/top_level.txt
+[3.146s] reading manifest file '../build/track_drive/track_drive.egg-info/SOURCES.txt'
+[3.147s] adding license file 'LICENSE'
+[3.151s] writing manifest file '../build/track_drive/track_drive.egg-info/SOURCES.txt'
+[3.151s] running build
+[3.151s] running build_py
+[3.152s] running install
+[3.154s] running install_lib
+[3.157s] running install_data
+[3.158s] running install_egg_info
+[3.166s] removing '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/lib/python3.10/site-packages/track_drive-0.0.0-py3.10.egg-info' (and everything under it)
+[3.166s] Copying ../build/track_drive/track_drive.egg-info to /home/xytron/2026-kookmin-contest-qualifier/install/track_drive/lib/python3.10/site-packages/track_drive-0.0.0-py3.10.egg-info
+[3.174s] running install_scripts
+[3.214s] Installing track_drive script to /home/xytron/2026-kookmin-contest-qualifier/install/track_drive/lib/track_drive
+[3.215s] writing list of installed files to '/home/xytron/2026-kookmin-contest-qualifier/build/track_drive/install.log'
+[3.301s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/track_drive' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/track_drive/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/track_drive build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/track_drive/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/track_drive/install.log --single-version-externally-managed install_data

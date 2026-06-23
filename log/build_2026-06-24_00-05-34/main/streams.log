@@ -1,0 +1,22 @@
+[2.282s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/main': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/main/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/main build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/main/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/main/install.log --single-version-externally-managed install_data
+[2.690s] running egg_info
+[2.690s] writing ../../build/main/main.egg-info/PKG-INFO
+[2.691s] writing dependency_links to ../../build/main/main.egg-info/dependency_links.txt
+[2.691s] writing entry points to ../../build/main/main.egg-info/entry_points.txt
+[2.691s] writing requirements to ../../build/main/main.egg-info/requires.txt
+[2.691s] writing top-level names to ../../build/main/main.egg-info/top_level.txt
+[2.693s] reading manifest file '../../build/main/main.egg-info/SOURCES.txt'
+[2.694s] writing manifest file '../../build/main/main.egg-info/SOURCES.txt'
+[2.695s] running build
+[2.695s] running build_py
+[2.696s] running install
+[2.697s] running install_lib
+[2.707s] running install_data
+[2.707s] running install_egg_info
+[2.709s] removing '/home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages/main-0.0.1-py3.10.egg-info' (and everything under it)
+[2.711s] Copying ../../build/main/main.egg-info to /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages/main-0.0.1-py3.10.egg-info
+[2.713s] running install_scripts
+[2.754s] Installing control script to /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/main
+[2.755s] Installing main script to /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/main
+[2.755s] writing list of installed files to '/home/xytron/2026-kookmin-contest-qualifier/build/main/install.log'
+[2.799s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/main' returned '0': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/main/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/main build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/main/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/main/install.log --single-version-externally-managed install_data

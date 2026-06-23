@@ -1,0 +1,3 @@
+[console_scripts]
+driving = driving.driving:main
+

@@ -1,0 +1,730 @@
+[0.366s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build']
+[0.366s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=8, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, mixin_files=None, mixin=None, verb_parser=<colcon_mixin.mixin.mixin_argument.MixinArgumentDecorator object at 0x79e0e8270d30>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x79e0e8270820>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x79e0e8270820>>, mixin_verb=('build',))
+[0.765s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.766s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.766s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.766s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.766s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.766s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.766s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/xytron/2026-kookmin-contest-qualifier'
+[0.766s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.766s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.766s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.766s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.766s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.766s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.766s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.766s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.767s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.785s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.786s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.786s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.786s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.786s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.786s] Level 1:colcon.colcon_core.package_identification:_identify(ROS-TCP-Endpoint-main-ros2) by extensions ['ignore', 'ignore_ament_install']
+[0.786s] Level 1:colcon.colcon_core.package_identification:_identify(ROS-TCP-Endpoint-main-ros2) by extension 'ignore'
+[0.786s] Level 1:colcon.colcon_core.package_identification:_identify(ROS-TCP-Endpoint-main-ros2) by extension 'ignore_ament_install'
+[0.786s] Level 1:colcon.colcon_core.package_identification:_identify(ROS-TCP-Endpoint-main-ros2) by extensions ['colcon_pkg']
+[0.786s] Level 1:colcon.colcon_core.package_identification:_identify(ROS-TCP-Endpoint-main-ros2) by extension 'colcon_pkg'
+[0.786s] Level 1:colcon.colcon_core.package_identification:_identify(ROS-TCP-Endpoint-main-ros2) by extensions ['colcon_meta']
+[0.786s] Level 1:colcon.colcon_core.package_identification:_identify(ROS-TCP-Endpoint-main-ros2) by extension 'colcon_meta'
+[0.786s] Level 1:colcon.colcon_core.package_identification:_identify(ROS-TCP-Endpoint-main-ros2) by extensions ['ros']
+[0.786s] Level 1:colcon.colcon_core.package_identification:_identify(ROS-TCP-Endpoint-main-ros2) by extension 'ros'
+[0.791s] DEBUG:colcon.colcon_core.package_identification:Package 'ROS-TCP-Endpoint-main-ros2' with type 'ros.ament_python' and name 'ros_tcp_endpoint'
+[0.791s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.791s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.791s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar) by extensions ['ignore', 'ignore_ament_install']
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar) by extension 'ignore'
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar) by extension 'ignore_ament_install'
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar) by extensions ['colcon_pkg']
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar) by extension 'colcon_pkg'
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar) by extensions ['colcon_meta']
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar) by extension 'colcon_meta'
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar) by extensions ['ros']
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar) by extension 'ros'
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar) by extensions ['cmake', 'python']
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar) by extension 'cmake'
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar) by extension 'python'
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar) by extensions ['python_setup_py']
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar) by extension 'python_setup_py'
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/build) by extensions ['ignore', 'ignore_ament_install']
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/build) by extension 'ignore'
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/build) ignored
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/driving) by extensions ['ignore', 'ignore_ament_install']
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/driving) by extension 'ignore'
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/driving) by extension 'ignore_ament_install'
+[0.792s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/driving) by extensions ['colcon_pkg']
+[0.793s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/driving) by extension 'colcon_pkg'
+[0.793s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/driving) by extensions ['colcon_meta']
+[0.793s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/driving) by extension 'colcon_meta'
+[0.793s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/driving) by extensions ['ros']
+[0.793s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/driving) by extension 'ros'
+[0.794s] DEBUG:colcon.colcon_core.package_identification:Package 'ericar/driving' with type 'ros.ament_python' and name 'driving'
+[0.795s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/function) by extensions ['ignore', 'ignore_ament_install']
+[0.795s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/function) by extension 'ignore'
+[0.795s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/function) by extension 'ignore_ament_install'
+[0.795s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/function) by extensions ['colcon_pkg']
+[0.795s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/function) by extension 'colcon_pkg'
+[0.795s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/function) by extensions ['colcon_meta']
+[0.795s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/function) by extension 'colcon_meta'
+[0.795s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/function) by extensions ['ros']
+[0.795s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/function) by extension 'ros'
+[0.796s] DEBUG:colcon.colcon_core.package_identification:Package 'ericar/function' with type 'ros.ament_python' and name 'function'
+[0.796s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/install) by extensions ['ignore', 'ignore_ament_install']
+[0.796s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/install) by extension 'ignore'
+[0.797s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/install) ignored
+[0.797s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/log) by extensions ['ignore', 'ignore_ament_install']
+[0.797s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/log) by extension 'ignore'
+[0.797s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/log) ignored
+[0.797s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/main) by extensions ['ignore', 'ignore_ament_install']
+[0.797s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/main) by extension 'ignore'
+[0.797s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/main) by extension 'ignore_ament_install'
+[0.797s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/main) by extensions ['colcon_pkg']
+[0.797s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/main) by extension 'colcon_pkg'
+[0.797s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/main) by extensions ['colcon_meta']
+[0.797s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/main) by extension 'colcon_meta'
+[0.797s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/main) by extensions ['ros']
+[0.797s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/main) by extension 'ros'
+[0.798s] DEBUG:colcon.colcon_core.package_identification:Package 'ericar/main' with type 'ros.ament_python' and name 'main'
+[0.798s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/perception) by extensions ['ignore', 'ignore_ament_install']
+[0.798s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/perception) by extension 'ignore'
+[0.798s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/perception) by extension 'ignore_ament_install'
+[0.798s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/perception) by extensions ['colcon_pkg']
+[0.798s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/perception) by extension 'colcon_pkg'
+[0.798s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/perception) by extensions ['colcon_meta']
+[0.798s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/perception) by extension 'colcon_meta'
+[0.798s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/perception) by extensions ['ros']
+[0.798s] Level 1:colcon.colcon_core.package_identification:_identify(ericar/perception) by extension 'ros'
+[0.799s] DEBUG:colcon.colcon_core.package_identification:Package 'ericar/perception' with type 'ros.ament_python' and name 'perception'
+[0.799s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.800s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.800s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.800s] Level 1:colcon.colcon_core.package_identification:_identify(kookmin9_viewer) by extensions ['ignore', 'ignore_ament_install']
+[0.800s] Level 1:colcon.colcon_core.package_identification:_identify(kookmin9_viewer) by extension 'ignore'
+[0.800s] Level 1:colcon.colcon_core.package_identification:_identify(kookmin9_viewer) by extension 'ignore_ament_install'
+[0.800s] Level 1:colcon.colcon_core.package_identification:_identify(kookmin9_viewer) by extensions ['colcon_pkg']
+[0.800s] Level 1:colcon.colcon_core.package_identification:_identify(kookmin9_viewer) by extension 'colcon_pkg'
+[0.800s] Level 1:colcon.colcon_core.package_identification:_identify(kookmin9_viewer) by extensions ['colcon_meta']
+[0.800s] Level 1:colcon.colcon_core.package_identification:_identify(kookmin9_viewer) by extension 'colcon_meta'
+[0.800s] Level 1:colcon.colcon_core.package_identification:_identify(kookmin9_viewer) by extensions ['ros']
+[0.800s] Level 1:colcon.colcon_core.package_identification:_identify(kookmin9_viewer) by extension 'ros'
+[0.801s] DEBUG:colcon.colcon_core.package_identification:Package 'kookmin9_viewer' with type 'ros.ament_python' and name 'kookmin9_viewer'
+[0.801s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.802s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.802s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.802s] Level 1:colcon.colcon_core.package_identification:_identify(my_cam) by extensions ['ignore', 'ignore_ament_install']
+[0.802s] Level 1:colcon.colcon_core.package_identification:_identify(my_cam) by extension 'ignore'
+[0.802s] Level 1:colcon.colcon_core.package_identification:_identify(my_cam) by extension 'ignore_ament_install'
+[0.802s] Level 1:colcon.colcon_core.package_identification:_identify(my_cam) by extensions ['colcon_pkg']
+[0.802s] Level 1:colcon.colcon_core.package_identification:_identify(my_cam) by extension 'colcon_pkg'
+[0.802s] Level 1:colcon.colcon_core.package_identification:_identify(my_cam) by extensions ['colcon_meta']
+[0.802s] Level 1:colcon.colcon_core.package_identification:_identify(my_cam) by extension 'colcon_meta'
+[0.802s] Level 1:colcon.colcon_core.package_identification:_identify(my_cam) by extensions ['ros']
+[0.802s] Level 1:colcon.colcon_core.package_identification:_identify(my_cam) by extension 'ros'
+[0.804s] DEBUG:colcon.colcon_core.package_identification:Package 'my_cam' with type 'ros.ament_python' and name 'my_cam'
+[0.804s] Level 1:colcon.colcon_core.package_identification:_identify(my_imu) by extensions ['ignore', 'ignore_ament_install']
+[0.804s] Level 1:colcon.colcon_core.package_identification:_identify(my_imu) by extension 'ignore'
+[0.804s] Level 1:colcon.colcon_core.package_identification:_identify(my_imu) by extension 'ignore_ament_install'
+[0.804s] Level 1:colcon.colcon_core.package_identification:_identify(my_imu) by extensions ['colcon_pkg']
+[0.804s] Level 1:colcon.colcon_core.package_identification:_identify(my_imu) by extension 'colcon_pkg'
+[0.804s] Level 1:colcon.colcon_core.package_identification:_identify(my_imu) by extensions ['colcon_meta']
+[0.804s] Level 1:colcon.colcon_core.package_identification:_identify(my_imu) by extension 'colcon_meta'
+[0.804s] Level 1:colcon.colcon_core.package_identification:_identify(my_imu) by extensions ['ros']
+[0.804s] Level 1:colcon.colcon_core.package_identification:_identify(my_imu) by extension 'ros'
+[0.805s] DEBUG:colcon.colcon_core.package_identification:Package 'my_imu' with type 'ros.ament_python' and name 'my_imu'
+[0.805s] Level 1:colcon.colcon_core.package_identification:_identify(my_lidar) by extensions ['ignore', 'ignore_ament_install']
+[0.805s] Level 1:colcon.colcon_core.package_identification:_identify(my_lidar) by extension 'ignore'
+[0.806s] Level 1:colcon.colcon_core.package_identification:_identify(my_lidar) by extension 'ignore_ament_install'
+[0.806s] Level 1:colcon.colcon_core.package_identification:_identify(my_lidar) by extensions ['colcon_pkg']
+[0.806s] Level 1:colcon.colcon_core.package_identification:_identify(my_lidar) by extension 'colcon_pkg'
+[0.806s] Level 1:colcon.colcon_core.package_identification:_identify(my_lidar) by extensions ['colcon_meta']
+[0.806s] Level 1:colcon.colcon_core.package_identification:_identify(my_lidar) by extension 'colcon_meta'
+[0.806s] Level 1:colcon.colcon_core.package_identification:_identify(my_lidar) by extensions ['ros']
+[0.806s] Level 1:colcon.colcon_core.package_identification:_identify(my_lidar) by extension 'ros'
+[0.807s] DEBUG:colcon.colcon_core.package_identification:Package 'my_lidar' with type 'ros.ament_python' and name 'my_lidar'
+[0.807s] Level 1:colcon.colcon_core.package_identification:_identify(my_motor) by extensions ['ignore', 'ignore_ament_install']
+[0.807s] Level 1:colcon.colcon_core.package_identification:_identify(my_motor) by extension 'ignore'
+[0.807s] Level 1:colcon.colcon_core.package_identification:_identify(my_motor) by extension 'ignore_ament_install'
+[0.807s] Level 1:colcon.colcon_core.package_identification:_identify(my_motor) by extensions ['colcon_pkg']
+[0.807s] Level 1:colcon.colcon_core.package_identification:_identify(my_motor) by extension 'colcon_pkg'
+[0.807s] Level 1:colcon.colcon_core.package_identification:_identify(my_motor) by extensions ['colcon_meta']
+[0.807s] Level 1:colcon.colcon_core.package_identification:_identify(my_motor) by extension 'colcon_meta'
+[0.807s] Level 1:colcon.colcon_core.package_identification:_identify(my_motor) by extensions ['ros']
+[0.807s] Level 1:colcon.colcon_core.package_identification:_identify(my_motor) by extension 'ros'
+[0.808s] DEBUG:colcon.colcon_core.package_identification:Package 'my_motor' with type 'ros.ament_python' and name 'my_motor'
+[0.808s] Level 1:colcon.colcon_core.package_identification:_identify(track_drive) by extensions ['ignore', 'ignore_ament_install']
+[0.808s] Level 1:colcon.colcon_core.package_identification:_identify(track_drive) by extension 'ignore'
+[0.808s] Level 1:colcon.colcon_core.package_identification:_identify(track_drive) by extension 'ignore_ament_install'
+[0.808s] Level 1:colcon.colcon_core.package_identification:_identify(track_drive) by extensions ['colcon_pkg']
+[0.808s] Level 1:colcon.colcon_core.package_identification:_identify(track_drive) by extension 'colcon_pkg'
+[0.808s] Level 1:colcon.colcon_core.package_identification:_identify(track_drive) by extensions ['colcon_meta']
+[0.808s] Level 1:colcon.colcon_core.package_identification:_identify(track_drive) by extension 'colcon_meta'
+[0.808s] Level 1:colcon.colcon_core.package_identification:_identify(track_drive) by extensions ['ros']
+[0.808s] Level 1:colcon.colcon_core.package_identification:_identify(track_drive) by extension 'ros'
+[0.810s] DEBUG:colcon.colcon_core.package_identification:Package 'track_drive' with type 'ros.ament_python' and name 'track_drive'
+[0.810s] Level 1:colcon.colcon_core.package_identification:_identify(xycar_msgs) by extensions ['ignore', 'ignore_ament_install']
+[0.810s] Level 1:colcon.colcon_core.package_identification:_identify(xycar_msgs) by extension 'ignore'
+[0.811s] Level 1:colcon.colcon_core.package_identification:_identify(xycar_msgs) by extension 'ignore_ament_install'
+[0.811s] Level 1:colcon.colcon_core.package_identification:_identify(xycar_msgs) by extensions ['colcon_pkg']
+[0.811s] Level 1:colcon.colcon_core.package_identification:_identify(xycar_msgs) by extension 'colcon_pkg'
+[0.811s] Level 1:colcon.colcon_core.package_identification:_identify(xycar_msgs) by extensions ['colcon_meta']
+[0.811s] Level 1:colcon.colcon_core.package_identification:_identify(xycar_msgs) by extension 'colcon_meta'
+[0.811s] Level 1:colcon.colcon_core.package_identification:_identify(xycar_msgs) by extensions ['ros']
+[0.811s] Level 1:colcon.colcon_core.package_identification:_identify(xycar_msgs) by extension 'ros'
+[0.812s] DEBUG:colcon.colcon_core.package_identification:Package 'xycar_msgs' with type 'ros.ament_cmake' and name 'xycar_msgs'
+[0.812s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.812s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.812s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.812s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.812s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.867s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[0.867s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[0.875s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 12 installed packages in /home/xytron/xycar_ws/install
+[0.877s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 273 installed packages in /opt/ros/humble
+[0.879s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[0.976s] Level 5:colcon.colcon_core.verb:set package 'driving' build argument 'cmake_args' from command line to 'None'
+[0.976s] Level 5:colcon.colcon_core.verb:set package 'driving' build argument 'cmake_target' from command line to 'None'
+[0.976s] Level 5:colcon.colcon_core.verb:set package 'driving' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.976s] Level 5:colcon.colcon_core.verb:set package 'driving' build argument 'cmake_clean_cache' from command line to 'False'
+[0.976s] Level 5:colcon.colcon_core.verb:set package 'driving' build argument 'cmake_clean_first' from command line to 'False'
+[0.976s] Level 5:colcon.colcon_core.verb:set package 'driving' build argument 'cmake_force_configure' from command line to 'False'
+[0.976s] Level 5:colcon.colcon_core.verb:set package 'driving' build argument 'ament_cmake_args' from command line to 'None'
+[0.976s] Level 5:colcon.colcon_core.verb:set package 'driving' build argument 'catkin_cmake_args' from command line to 'None'
+[0.976s] Level 5:colcon.colcon_core.verb:set package 'driving' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.976s] DEBUG:colcon.colcon_core.verb:Building package 'driving' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/xytron/2026-kookmin-contest-qualifier/build/driving', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/xytron/2026-kookmin-contest-qualifier/install/driving', 'merge_install': False, 'path': '/home/xytron/2026-kookmin-contest-qualifier/ericar/driving', 'symlink_install': False, 'test_result_base': None}
+[0.977s] Level 5:colcon.colcon_core.verb:set package 'my_imu' build argument 'cmake_args' from command line to 'None'
+[0.977s] Level 5:colcon.colcon_core.verb:set package 'my_imu' build argument 'cmake_target' from command line to 'None'
+[0.977s] Level 5:colcon.colcon_core.verb:set package 'my_imu' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.977s] Level 5:colcon.colcon_core.verb:set package 'my_imu' build argument 'cmake_clean_cache' from command line to 'False'
+[0.977s] Level 5:colcon.colcon_core.verb:set package 'my_imu' build argument 'cmake_clean_first' from command line to 'False'
+[0.977s] Level 5:colcon.colcon_core.verb:set package 'my_imu' build argument 'cmake_force_configure' from command line to 'False'
+[0.977s] Level 5:colcon.colcon_core.verb:set package 'my_imu' build argument 'ament_cmake_args' from command line to 'None'
+[0.977s] Level 5:colcon.colcon_core.verb:set package 'my_imu' build argument 'catkin_cmake_args' from command line to 'None'
+[0.977s] Level 5:colcon.colcon_core.verb:set package 'my_imu' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.977s] DEBUG:colcon.colcon_core.verb:Building package 'my_imu' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/xytron/2026-kookmin-contest-qualifier/build/my_imu', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu', 'merge_install': False, 'path': '/home/xytron/2026-kookmin-contest-qualifier/my_imu', 'symlink_install': False, 'test_result_base': None}
+[0.978s] Level 5:colcon.colcon_core.verb:set package 'my_motor' build argument 'cmake_args' from command line to 'None'
+[0.978s] Level 5:colcon.colcon_core.verb:set package 'my_motor' build argument 'cmake_target' from command line to 'None'
+[0.978s] Level 5:colcon.colcon_core.verb:set package 'my_motor' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.978s] Level 5:colcon.colcon_core.verb:set package 'my_motor' build argument 'cmake_clean_cache' from command line to 'False'
+[0.978s] Level 5:colcon.colcon_core.verb:set package 'my_motor' build argument 'cmake_clean_first' from command line to 'False'
+[0.978s] Level 5:colcon.colcon_core.verb:set package 'my_motor' build argument 'cmake_force_configure' from command line to 'False'
+[0.978s] Level 5:colcon.colcon_core.verb:set package 'my_motor' build argument 'ament_cmake_args' from command line to 'None'
+[0.978s] Level 5:colcon.colcon_core.verb:set package 'my_motor' build argument 'catkin_cmake_args' from command line to 'None'
+[0.978s] Level 5:colcon.colcon_core.verb:set package 'my_motor' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.979s] DEBUG:colcon.colcon_core.verb:Building package 'my_motor' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/xytron/2026-kookmin-contest-qualifier/build/my_motor', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor', 'merge_install': False, 'path': '/home/xytron/2026-kookmin-contest-qualifier/my_motor', 'symlink_install': False, 'test_result_base': None}
+[0.979s] Level 5:colcon.colcon_core.verb:set package 'perception' build argument 'cmake_args' from command line to 'None'
+[0.979s] Level 5:colcon.colcon_core.verb:set package 'perception' build argument 'cmake_target' from command line to 'None'
+[0.979s] Level 5:colcon.colcon_core.verb:set package 'perception' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.979s] Level 5:colcon.colcon_core.verb:set package 'perception' build argument 'cmake_clean_cache' from command line to 'False'
+[0.979s] Level 5:colcon.colcon_core.verb:set package 'perception' build argument 'cmake_clean_first' from command line to 'False'
+[0.979s] Level 5:colcon.colcon_core.verb:set package 'perception' build argument 'cmake_force_configure' from command line to 'False'
+[0.979s] Level 5:colcon.colcon_core.verb:set package 'perception' build argument 'ament_cmake_args' from command line to 'None'
+[0.979s] Level 5:colcon.colcon_core.verb:set package 'perception' build argument 'catkin_cmake_args' from command line to 'None'
+[0.979s] Level 5:colcon.colcon_core.verb:set package 'perception' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.979s] DEBUG:colcon.colcon_core.verb:Building package 'perception' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/xytron/2026-kookmin-contest-qualifier/build/perception', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/xytron/2026-kookmin-contest-qualifier/install/perception', 'merge_install': False, 'path': '/home/xytron/2026-kookmin-contest-qualifier/ericar/perception', 'symlink_install': False, 'test_result_base': None}
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'ros_tcp_endpoint' build argument 'cmake_args' from command line to 'None'
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'ros_tcp_endpoint' build argument 'cmake_target' from command line to 'None'
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'ros_tcp_endpoint' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'ros_tcp_endpoint' build argument 'cmake_clean_cache' from command line to 'False'
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'ros_tcp_endpoint' build argument 'cmake_clean_first' from command line to 'False'
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'ros_tcp_endpoint' build argument 'cmake_force_configure' from command line to 'False'
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'ros_tcp_endpoint' build argument 'ament_cmake_args' from command line to 'None'
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'ros_tcp_endpoint' build argument 'catkin_cmake_args' from command line to 'None'
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'ros_tcp_endpoint' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.980s] DEBUG:colcon.colcon_core.verb:Building package 'ros_tcp_endpoint' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint', 'merge_install': False, 'path': '/home/xytron/2026-kookmin-contest-qualifier/ROS-TCP-Endpoint-main-ros2', 'symlink_install': False, 'test_result_base': None}
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'track_drive' build argument 'cmake_args' from command line to 'None'
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'track_drive' build argument 'cmake_target' from command line to 'None'
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'track_drive' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'track_drive' build argument 'cmake_clean_cache' from command line to 'False'
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'track_drive' build argument 'cmake_clean_first' from command line to 'False'
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'track_drive' build argument 'cmake_force_configure' from command line to 'False'
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'track_drive' build argument 'ament_cmake_args' from command line to 'None'
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'track_drive' build argument 'catkin_cmake_args' from command line to 'None'
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'track_drive' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.980s] DEBUG:colcon.colcon_core.verb:Building package 'track_drive' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/xytron/2026-kookmin-contest-qualifier/build/track_drive', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive', 'merge_install': False, 'path': '/home/xytron/2026-kookmin-contest-qualifier/track_drive', 'symlink_install': False, 'test_result_base': None}
+[0.980s] Level 5:colcon.colcon_core.verb:set package 'xycar_msgs' build argument 'cmake_args' from command line to 'None'
+[0.981s] Level 5:colcon.colcon_core.verb:set package 'xycar_msgs' build argument 'cmake_target' from command line to 'None'
+[0.981s] Level 5:colcon.colcon_core.verb:set package 'xycar_msgs' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.981s] Level 5:colcon.colcon_core.verb:set package 'xycar_msgs' build argument 'cmake_clean_cache' from command line to 'False'
+[0.981s] Level 5:colcon.colcon_core.verb:set package 'xycar_msgs' build argument 'cmake_clean_first' from command line to 'False'
+[0.981s] Level 5:colcon.colcon_core.verb:set package 'xycar_msgs' build argument 'cmake_force_configure' from command line to 'False'
+[0.981s] Level 5:colcon.colcon_core.verb:set package 'xycar_msgs' build argument 'ament_cmake_args' from command line to 'None'
+[0.981s] Level 5:colcon.colcon_core.verb:set package 'xycar_msgs' build argument 'catkin_cmake_args' from command line to 'None'
+[0.981s] Level 5:colcon.colcon_core.verb:set package 'xycar_msgs' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.981s] DEBUG:colcon.colcon_core.verb:Building package 'xycar_msgs' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs', 'merge_install': False, 'path': '/home/xytron/2026-kookmin-contest-qualifier/xycar_msgs', 'symlink_install': False, 'test_result_base': None}
+[0.981s] Level 5:colcon.colcon_core.verb:set package 'function' build argument 'cmake_args' from command line to 'None'
+[0.981s] Level 5:colcon.colcon_core.verb:set package 'function' build argument 'cmake_target' from command line to 'None'
+[0.981s] Level 5:colcon.colcon_core.verb:set package 'function' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.981s] Level 5:colcon.colcon_core.verb:set package 'function' build argument 'cmake_clean_cache' from command line to 'False'
+[0.981s] Level 5:colcon.colcon_core.verb:set package 'function' build argument 'cmake_clean_first' from command line to 'False'
+[0.982s] Level 5:colcon.colcon_core.verb:set package 'function' build argument 'cmake_force_configure' from command line to 'False'
+[0.982s] Level 5:colcon.colcon_core.verb:set package 'function' build argument 'ament_cmake_args' from command line to 'None'
+[0.982s] Level 5:colcon.colcon_core.verb:set package 'function' build argument 'catkin_cmake_args' from command line to 'None'
+[0.982s] Level 5:colcon.colcon_core.verb:set package 'function' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.982s] DEBUG:colcon.colcon_core.verb:Building package 'function' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/xytron/2026-kookmin-contest-qualifier/build/function', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/xytron/2026-kookmin-contest-qualifier/install/function', 'merge_install': False, 'path': '/home/xytron/2026-kookmin-contest-qualifier/ericar/function', 'symlink_install': False, 'test_result_base': None}
+[0.982s] Level 5:colcon.colcon_core.verb:set package 'kookmin9_viewer' build argument 'cmake_args' from command line to 'None'
+[0.982s] Level 5:colcon.colcon_core.verb:set package 'kookmin9_viewer' build argument 'cmake_target' from command line to 'None'
+[0.982s] Level 5:colcon.colcon_core.verb:set package 'kookmin9_viewer' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.982s] Level 5:colcon.colcon_core.verb:set package 'kookmin9_viewer' build argument 'cmake_clean_cache' from command line to 'False'
+[0.982s] Level 5:colcon.colcon_core.verb:set package 'kookmin9_viewer' build argument 'cmake_clean_first' from command line to 'False'
+[0.982s] Level 5:colcon.colcon_core.verb:set package 'kookmin9_viewer' build argument 'cmake_force_configure' from command line to 'False'
+[0.982s] Level 5:colcon.colcon_core.verb:set package 'kookmin9_viewer' build argument 'ament_cmake_args' from command line to 'None'
+[0.982s] Level 5:colcon.colcon_core.verb:set package 'kookmin9_viewer' build argument 'catkin_cmake_args' from command line to 'None'
+[0.982s] Level 5:colcon.colcon_core.verb:set package 'kookmin9_viewer' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.982s] DEBUG:colcon.colcon_core.verb:Building package 'kookmin9_viewer' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer', 'merge_install': False, 'path': '/home/xytron/2026-kookmin-contest-qualifier/kookmin9_viewer', 'symlink_install': False, 'test_result_base': None}
+[0.982s] Level 5:colcon.colcon_core.verb:set package 'main' build argument 'cmake_args' from command line to 'None'
+[0.982s] Level 5:colcon.colcon_core.verb:set package 'main' build argument 'cmake_target' from command line to 'None'
+[0.982s] Level 5:colcon.colcon_core.verb:set package 'main' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.982s] Level 5:colcon.colcon_core.verb:set package 'main' build argument 'cmake_clean_cache' from command line to 'False'
+[0.982s] Level 5:colcon.colcon_core.verb:set package 'main' build argument 'cmake_clean_first' from command line to 'False'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'main' build argument 'cmake_force_configure' from command line to 'False'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'main' build argument 'ament_cmake_args' from command line to 'None'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'main' build argument 'catkin_cmake_args' from command line to 'None'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'main' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.983s] DEBUG:colcon.colcon_core.verb:Building package 'main' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/xytron/2026-kookmin-contest-qualifier/build/main', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/xytron/2026-kookmin-contest-qualifier/install/main', 'merge_install': False, 'path': '/home/xytron/2026-kookmin-contest-qualifier/ericar/main', 'symlink_install': False, 'test_result_base': None}
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'my_cam' build argument 'cmake_args' from command line to 'None'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'my_cam' build argument 'cmake_target' from command line to 'None'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'my_cam' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'my_cam' build argument 'cmake_clean_cache' from command line to 'False'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'my_cam' build argument 'cmake_clean_first' from command line to 'False'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'my_cam' build argument 'cmake_force_configure' from command line to 'False'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'my_cam' build argument 'ament_cmake_args' from command line to 'None'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'my_cam' build argument 'catkin_cmake_args' from command line to 'None'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'my_cam' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.983s] DEBUG:colcon.colcon_core.verb:Building package 'my_cam' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/xytron/2026-kookmin-contest-qualifier/build/my_cam', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam', 'merge_install': False, 'path': '/home/xytron/2026-kookmin-contest-qualifier/my_cam', 'symlink_install': False, 'test_result_base': None}
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'my_lidar' build argument 'cmake_args' from command line to 'None'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'my_lidar' build argument 'cmake_target' from command line to 'None'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'my_lidar' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'my_lidar' build argument 'cmake_clean_cache' from command line to 'False'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'my_lidar' build argument 'cmake_clean_first' from command line to 'False'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'my_lidar' build argument 'cmake_force_configure' from command line to 'False'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'my_lidar' build argument 'ament_cmake_args' from command line to 'None'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'my_lidar' build argument 'catkin_cmake_args' from command line to 'None'
+[0.983s] Level 5:colcon.colcon_core.verb:set package 'my_lidar' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.983s] DEBUG:colcon.colcon_core.verb:Building package 'my_lidar' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/xytron/2026-kookmin-contest-qualifier/build/my_lidar', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar', 'merge_install': False, 'path': '/home/xytron/2026-kookmin-contest-qualifier/my_lidar', 'symlink_install': False, 'test_result_base': None}
+[0.984s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.985s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.985s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/xytron/2026-kookmin-contest-qualifier/xycar_msgs' with build type 'ament_cmake'
+[0.985s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/xytron/2026-kookmin-contest-qualifier/xycar_msgs'
+[0.991s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.991s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.991s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.998s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/xytron/2026-kookmin-contest-qualifier/ericar/driving' with build type 'ament_python'
+[0.998s] Level 1:colcon.colcon_core.shell:create_environment_hook('driving', 'ament_prefix_path')
+[0.998s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/driving/share/driving/hook/ament_prefix_path.ps1'
+[1.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/driving/share/driving/hook/ament_prefix_path.dsv'
+[1.001s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/driving/share/driving/hook/ament_prefix_path.sh'
+[1.002s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.002s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.006s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/xytron/2026-kookmin-contest-qualifier/my_imu' with build type 'ament_python'
+[1.006s] Level 1:colcon.colcon_core.shell:create_environment_hook('my_imu', 'ament_prefix_path')
+[1.006s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/share/my_imu/hook/ament_prefix_path.ps1'
+[1.007s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/share/my_imu/hook/ament_prefix_path.dsv'
+[1.008s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/share/my_imu/hook/ament_prefix_path.sh'
+[1.008s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.008s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.013s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/xytron/2026-kookmin-contest-qualifier/my_motor' with build type 'ament_python'
+[1.013s] Level 1:colcon.colcon_core.shell:create_environment_hook('my_motor', 'ament_prefix_path')
+[1.014s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/share/my_motor/hook/ament_prefix_path.ps1'
+[1.015s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/share/my_motor/hook/ament_prefix_path.dsv'
+[1.015s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/share/my_motor/hook/ament_prefix_path.sh'
+[1.016s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.016s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.020s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/xytron/2026-kookmin-contest-qualifier/ericar/perception' with build type 'ament_python'
+[1.020s] Level 1:colcon.colcon_core.shell:create_environment_hook('perception', 'ament_prefix_path')
+[1.021s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/perception/share/perception/hook/ament_prefix_path.ps1'
+[1.022s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/perception/share/perception/hook/ament_prefix_path.dsv'
+[1.022s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/perception/share/perception/hook/ament_prefix_path.sh'
+[1.024s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.024s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.029s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/xytron/2026-kookmin-contest-qualifier/ROS-TCP-Endpoint-main-ros2' with build type 'ament_python'
+[1.029s] Level 1:colcon.colcon_core.shell:create_environment_hook('ros_tcp_endpoint', 'ament_prefix_path')
+[1.029s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/share/ros_tcp_endpoint/hook/ament_prefix_path.ps1'
+[1.030s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/share/ros_tcp_endpoint/hook/ament_prefix_path.dsv'
+[1.030s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/share/ros_tcp_endpoint/hook/ament_prefix_path.sh'
+[1.031s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.031s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.036s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/xytron/2026-kookmin-contest-qualifier/track_drive' with build type 'ament_python'
+[1.036s] Level 1:colcon.colcon_core.shell:create_environment_hook('track_drive', 'ament_prefix_path')
+[1.036s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/share/track_drive/hook/ament_prefix_path.ps1'
+[1.037s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/share/track_drive/hook/ament_prefix_path.dsv'
+[1.037s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/share/track_drive/hook/ament_prefix_path.sh'
+[1.038s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.038s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.053s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs': CMAKE_PREFIX_PATH=/home/xytron/xycar_ws/install/xycar_msgs:/home/xytron/xycar_ws/install/my_lidar:/home/xytron/xycar_ws/install/my_cam:/home/xytron/xycar_ws/install/main:/home/xytron/xycar_ws/install/kookmin9_viewer:/home/xytron/xycar_ws/install/track_drive:/home/xytron/xycar_ws/install/ros_tcp_endpoint:/home/xytron/xycar_ws/install/perception:/home/xytron/xycar_ws/install/my_motor:/home/xytron/xycar_ws/install/my_imu:/home/xytron/xycar_ws/install/driving:/opt/ros/humble:/home/xytron/xycar_ws/install/ericar_msgs /usr/bin/cmake /home/xytron/2026-kookmin-contest-qualifier/xycar_msgs -DCMAKE_INSTALL_PREFIX=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs
+[1.360s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/xytron/2026-kookmin-contest-qualifier/ericar/driving'
+[1.360s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.360s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.672s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/xytron/2026-kookmin-contest-qualifier/my_imu'
+[1.673s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.673s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.980s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/xytron/2026-kookmin-contest-qualifier/my_motor'
+[1.981s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.981s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[2.291s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/xytron/2026-kookmin-contest-qualifier/ericar/perception'
+[2.291s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[2.292s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[2.607s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/xytron/2026-kookmin-contest-qualifier/ROS-TCP-Endpoint-main-ros2'
+[2.608s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[2.608s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[2.922s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/xytron/2026-kookmin-contest-qualifier/track_drive'
+[2.923s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[2.923s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[3.914s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/my_motor': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_motor/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/my_motor/build
+[3.930s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/my_imu': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_imu/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/build
+[3.938s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build
+[3.946s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/driving': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/driving/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/driving build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/driving/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/driving/install.log --single-version-externally-managed install_data
+[3.948s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/perception': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/perception/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/perception/build
+[3.956s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/track_drive': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/track_drive/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/track_drive/build
+[4.263s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs' returned '0': CMAKE_PREFIX_PATH=/home/xytron/xycar_ws/install/xycar_msgs:/home/xytron/xycar_ws/install/my_lidar:/home/xytron/xycar_ws/install/my_cam:/home/xytron/xycar_ws/install/main:/home/xytron/xycar_ws/install/kookmin9_viewer:/home/xytron/xycar_ws/install/track_drive:/home/xytron/xycar_ws/install/ros_tcp_endpoint:/home/xytron/xycar_ws/install/perception:/home/xytron/xycar_ws/install/my_motor:/home/xytron/xycar_ws/install/my_imu:/home/xytron/xycar_ws/install/driving:/opt/ros/humble:/home/xytron/xycar_ws/install/ericar_msgs /usr/bin/cmake /home/xytron/2026-kookmin-contest-qualifier/xycar_msgs -DCMAKE_INSTALL_PREFIX=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs
+[4.264s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs': CMAKE_PREFIX_PATH=/home/xytron/xycar_ws/install/xycar_msgs:/home/xytron/xycar_ws/install/my_lidar:/home/xytron/xycar_ws/install/my_cam:/home/xytron/xycar_ws/install/main:/home/xytron/xycar_ws/install/kookmin9_viewer:/home/xytron/xycar_ws/install/track_drive:/home/xytron/xycar_ws/install/ros_tcp_endpoint:/home/xytron/xycar_ws/install/perception:/home/xytron/xycar_ws/install/my_motor:/home/xytron/xycar_ws/install/my_imu:/home/xytron/xycar_ws/install/driving:/opt/ros/humble:/home/xytron/xycar_ws/install/ericar_msgs /usr/bin/cmake --build /home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs -- -j8 -l8
+[4.577s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/driving' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/driving/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/driving build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/driving/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/driving/install.log --single-version-externally-managed install_data
+[4.607s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/driving' for CMake module files
+[4.607s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/driving' for CMake config files
+[4.609s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/driving/lib'
+[4.610s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/driving/bin'
+[4.611s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/pkgconfig/driving.pc'
+[4.612s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages'
+[4.612s] Level 1:colcon.colcon_core.shell:create_environment_hook('driving', 'pythonpath')
+[4.612s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/driving/share/driving/hook/pythonpath.ps1'
+[4.616s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/driving/share/driving/hook/pythonpath.dsv'
+[4.616s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/driving/share/driving/hook/pythonpath.sh'
+[4.617s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/driving/bin'
+[4.617s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(driving)
+[4.618s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/driving/share/driving/package.ps1'
+[4.622s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/driving/share/driving/package.dsv'
+[4.624s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/driving/share/driving/package.sh'
+[4.628s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/driving/share/driving/package.bash'
+[4.631s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/driving/share/driving/package.zsh'
+[4.633s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/xytron/2026-kookmin-contest-qualifier/install/driving/share/colcon-core/packages/driving)
+[4.856s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/perception' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/perception/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/perception/build
+[4.858s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/perception': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/perception/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/perception build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/perception/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/perception/install.log --single-version-externally-managed install_data --force
+[4.863s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build
+[4.870s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/ROS-TCP-Endpoint-main-ros2': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/ros_tcp_endpoint build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/install.log --single-version-externally-managed install_data --force
+[4.871s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/my_imu' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_imu/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/build
+[4.875s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/my_imu': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_imu/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/my_imu build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/install.log --single-version-externally-managed install_data --force
+[4.875s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/track_drive' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/track_drive/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/track_drive/build
+[4.880s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/track_drive': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/track_drive/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/track_drive build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/track_drive/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/track_drive/install.log --single-version-externally-managed install_data --force
+[4.897s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/my_motor' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_motor/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/my_motor/build
+[4.901s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/my_motor': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_motor/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/my_motor build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/my_motor/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/my_motor/install.log --single-version-externally-managed install_data --force
+[5.057s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs' returned '0': CMAKE_PREFIX_PATH=/home/xytron/xycar_ws/install/xycar_msgs:/home/xytron/xycar_ws/install/my_lidar:/home/xytron/xycar_ws/install/my_cam:/home/xytron/xycar_ws/install/main:/home/xytron/xycar_ws/install/kookmin9_viewer:/home/xytron/xycar_ws/install/track_drive:/home/xytron/xycar_ws/install/ros_tcp_endpoint:/home/xytron/xycar_ws/install/perception:/home/xytron/xycar_ws/install/my_motor:/home/xytron/xycar_ws/install/my_imu:/home/xytron/xycar_ws/install/driving:/opt/ros/humble:/home/xytron/xycar_ws/install/ericar_msgs /usr/bin/cmake --build /home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs -- -j8 -l8
+[5.076s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs': CMAKE_PREFIX_PATH=/home/xytron/xycar_ws/install/xycar_msgs:/home/xytron/xycar_ws/install/my_lidar:/home/xytron/xycar_ws/install/my_cam:/home/xytron/xycar_ws/install/main:/home/xytron/xycar_ws/install/kookmin9_viewer:/home/xytron/xycar_ws/install/track_drive:/home/xytron/xycar_ws/install/ros_tcp_endpoint:/home/xytron/xycar_ws/install/perception:/home/xytron/xycar_ws/install/my_motor:/home/xytron/xycar_ws/install/my_imu:/home/xytron/xycar_ws/install/driving:/opt/ros/humble:/home/xytron/xycar_ws/install/ericar_msgs /usr/bin/cmake --install /home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs
+[5.303s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(xycar_msgs)
+[5.304s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs' returned '0': CMAKE_PREFIX_PATH=/home/xytron/xycar_ws/install/xycar_msgs:/home/xytron/xycar_ws/install/my_lidar:/home/xytron/xycar_ws/install/my_cam:/home/xytron/xycar_ws/install/main:/home/xytron/xycar_ws/install/kookmin9_viewer:/home/xytron/xycar_ws/install/track_drive:/home/xytron/xycar_ws/install/ros_tcp_endpoint:/home/xytron/xycar_ws/install/perception:/home/xytron/xycar_ws/install/my_motor:/home/xytron/xycar_ws/install/my_imu:/home/xytron/xycar_ws/install/driving:/opt/ros/humble:/home/xytron/xycar_ws/install/ericar_msgs /usr/bin/cmake --install /home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs
+[5.304s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs' for CMake module files
+[5.305s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs' for CMake config files
+[5.308s] Level 1:colcon.colcon_core.shell:create_environment_hook('xycar_msgs', 'cmake_prefix_path')
+[5.308s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/hook/cmake_prefix_path.ps1'
+[5.310s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/hook/cmake_prefix_path.dsv'
+[5.310s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/hook/cmake_prefix_path.sh'
+[5.311s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib'
+[5.311s] Level 1:colcon.colcon_core.shell:create_environment_hook('xycar_msgs', 'ld_library_path_lib')
+[5.311s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/hook/ld_library_path_lib.ps1'
+[5.312s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/hook/ld_library_path_lib.dsv'
+[5.312s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/hook/ld_library_path_lib.sh'
+[5.313s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/bin'
+[5.313s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/pkgconfig/xycar_msgs.pc'
+[5.313s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/python3.10/site-packages'
+[5.313s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/bin'
+[5.314s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/package.ps1'
+[5.315s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/package.dsv'
+[5.319s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/package.sh'
+[5.320s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/package.bash'
+[5.321s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/package.zsh'
+[5.323s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/colcon-core/packages/xycar_msgs)
+[5.324s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(xycar_msgs)
+[5.324s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs' for CMake module files
+[5.328s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs' for CMake config files
+[5.329s] Level 1:colcon.colcon_core.shell:create_environment_hook('xycar_msgs', 'cmake_prefix_path')
+[5.330s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/hook/cmake_prefix_path.ps1'
+[5.330s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/hook/cmake_prefix_path.dsv'
+[5.331s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/hook/cmake_prefix_path.sh'
+[5.331s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib'
+[5.331s] Level 1:colcon.colcon_core.shell:create_environment_hook('xycar_msgs', 'ld_library_path_lib')
+[5.332s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/hook/ld_library_path_lib.ps1'
+[5.332s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/hook/ld_library_path_lib.dsv'
+[5.332s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/hook/ld_library_path_lib.sh'
+[5.333s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/bin'
+[5.333s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/pkgconfig/xycar_msgs.pc'
+[5.333s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/python3.10/site-packages'
+[5.333s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/bin'
+[5.334s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/package.ps1'
+[5.337s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/package.dsv'
+[5.338s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/package.sh'
+[5.339s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/package.bash'
+[5.341s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/package.zsh'
+[5.342s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/colcon-core/packages/xycar_msgs)
+[5.343s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/xytron/2026-kookmin-contest-qualifier/ericar/function' with build type 'ament_python'
+[5.343s] Level 1:colcon.colcon_core.shell:create_environment_hook('function', 'ament_prefix_path')
+[5.343s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/function/share/function/hook/ament_prefix_path.ps1'
+[5.347s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/function/share/function/hook/ament_prefix_path.dsv'
+[5.348s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/function/share/function/hook/ament_prefix_path.sh'
+[5.349s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[5.350s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[5.358s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/xytron/2026-kookmin-contest-qualifier/kookmin9_viewer' with build type 'ament_python'
+[5.359s] Level 1:colcon.colcon_core.shell:create_environment_hook('kookmin9_viewer', 'ament_prefix_path')
+[5.359s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/share/kookmin9_viewer/hook/ament_prefix_path.ps1'
+[5.361s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/share/kookmin9_viewer/hook/ament_prefix_path.dsv'
+[5.362s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/share/kookmin9_viewer/hook/ament_prefix_path.sh'
+[5.369s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[5.369s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[5.380s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/xytron/2026-kookmin-contest-qualifier/ericar/main' with build type 'ament_python'
+[5.380s] Level 1:colcon.colcon_core.shell:create_environment_hook('main', 'ament_prefix_path')
+[5.380s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/main/share/main/hook/ament_prefix_path.ps1'
+[5.381s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/main/share/main/hook/ament_prefix_path.dsv'
+[5.382s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/main/share/main/hook/ament_prefix_path.sh'
+[5.383s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[5.383s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[5.445s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu' for CMake module files
+[5.446s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/my_imu' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_imu/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/my_imu build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/install.log --single-version-externally-managed install_data --force
+[5.447s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu' for CMake config files
+[5.448s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib'
+[5.448s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/bin'
+[5.448s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/pkgconfig/my_imu.pc'
+[5.449s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages'
+[5.449s] Level 1:colcon.colcon_core.shell:create_environment_hook('my_imu', 'pythonpath')
+[5.449s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/share/my_imu/hook/pythonpath.ps1'
+[5.450s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/share/my_imu/hook/pythonpath.dsv'
+[5.451s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/share/my_imu/hook/pythonpath.sh'
+[5.453s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/bin'
+[5.454s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(my_imu)
+[5.455s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/share/my_imu/package.ps1'
+[5.457s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/share/my_imu/package.dsv'
+[5.459s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/share/my_imu/package.sh'
+[5.461s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/share/my_imu/package.bash'
+[5.463s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/share/my_imu/package.zsh'
+[5.464s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/share/colcon-core/packages/my_imu)
+[5.466s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/xytron/2026-kookmin-contest-qualifier/my_cam' with build type 'ament_python'
+[5.466s] Level 1:colcon.colcon_core.shell:create_environment_hook('my_cam', 'ament_prefix_path')
+[5.467s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/share/my_cam/hook/ament_prefix_path.ps1'
+[5.469s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/share/my_cam/hook/ament_prefix_path.dsv'
+[5.469s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/share/my_cam/hook/ament_prefix_path.sh'
+[5.470s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[5.471s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[5.484s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive' for CMake module files
+[5.487s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/track_drive' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/track_drive/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/track_drive build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/track_drive/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/track_drive/install.log --single-version-externally-managed install_data --force
+[5.488s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive' for CMake config files
+[5.489s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/lib'
+[5.489s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/bin'
+[5.489s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/lib/pkgconfig/track_drive.pc'
+[5.490s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/lib/python3.10/site-packages'
+[5.490s] Level 1:colcon.colcon_core.shell:create_environment_hook('track_drive', 'pythonpath')
+[5.490s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/share/track_drive/hook/pythonpath.ps1'
+[5.491s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/share/track_drive/hook/pythonpath.dsv'
+[5.492s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/share/track_drive/hook/pythonpath.sh'
+[5.493s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/bin'
+[5.493s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(track_drive)
+[5.493s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/share/track_drive/package.ps1'
+[5.494s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/share/track_drive/package.dsv'
+[5.496s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/share/track_drive/package.sh'
+[5.497s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/share/track_drive/package.bash'
+[5.497s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/share/track_drive/package.zsh'
+[5.499s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/share/colcon-core/packages/track_drive)
+[5.501s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/xytron/2026-kookmin-contest-qualifier/my_lidar' with build type 'ament_python'
+[5.502s] Level 1:colcon.colcon_core.shell:create_environment_hook('my_lidar', 'ament_prefix_path')
+[5.502s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/share/my_lidar/hook/ament_prefix_path.ps1'
+[5.504s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/share/my_lidar/hook/ament_prefix_path.dsv'
+[5.504s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/share/my_lidar/hook/ament_prefix_path.sh'
+[5.505s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[5.505s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[5.514s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint' for CMake module files
+[5.515s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/ROS-TCP-Endpoint-main-ros2' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/ros_tcp_endpoint build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/install.log --single-version-externally-managed install_data --force
+[5.516s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint' for CMake config files
+[5.517s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib'
+[5.517s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/bin'
+[5.517s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/pkgconfig/ros_tcp_endpoint.pc'
+[5.518s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages'
+[5.518s] Level 1:colcon.colcon_core.shell:create_environment_hook('ros_tcp_endpoint', 'pythonpath')
+[5.518s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/share/ros_tcp_endpoint/hook/pythonpath.ps1'
+[5.519s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/share/ros_tcp_endpoint/hook/pythonpath.dsv'
+[5.519s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/share/ros_tcp_endpoint/hook/pythonpath.sh'
+[5.521s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/bin'
+[5.521s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(ros_tcp_endpoint)
+[5.521s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/share/ros_tcp_endpoint/package.ps1'
+[5.522s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/share/ros_tcp_endpoint/package.dsv'
+[5.523s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/share/ros_tcp_endpoint/package.sh'
+[5.524s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/share/ros_tcp_endpoint/package.bash'
+[5.524s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/share/ros_tcp_endpoint/package.zsh'
+[5.525s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/share/colcon-core/packages/ros_tcp_endpoint)
+[5.525s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor' for CMake module files
+[5.527s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/my_motor' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_motor/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/my_motor build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/my_motor/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/my_motor/install.log --single-version-externally-managed install_data --force
+[5.527s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor' for CMake config files
+[5.528s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/lib'
+[5.528s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/bin'
+[5.529s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/lib/pkgconfig/my_motor.pc'
+[5.529s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/lib/python3.10/site-packages'
+[5.529s] Level 1:colcon.colcon_core.shell:create_environment_hook('my_motor', 'pythonpath')
+[5.530s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/share/my_motor/hook/pythonpath.ps1'
+[5.531s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/share/my_motor/hook/pythonpath.dsv'
+[5.532s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/share/my_motor/hook/pythonpath.sh'
+[5.534s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/bin'
+[5.534s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(my_motor)
+[5.534s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/share/my_motor/package.ps1'
+[5.535s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/share/my_motor/package.dsv'
+[5.536s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/share/my_motor/package.sh'
+[5.537s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/share/my_motor/package.bash'
+[5.537s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/share/my_motor/package.zsh'
+[5.537s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/xytron/2026-kookmin-contest-qualifier/install/my_motor/share/colcon-core/packages/my_motor)
+[5.539s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/perception' for CMake module files
+[5.540s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/perception' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/perception/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/perception build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/perception/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/perception/install.log --single-version-externally-managed install_data --force
+[5.541s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/perception' for CMake config files
+[5.542s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/perception/lib'
+[5.542s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/perception/bin'
+[5.542s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/pkgconfig/perception.pc'
+[5.542s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages'
+[5.542s] Level 1:colcon.colcon_core.shell:create_environment_hook('perception', 'pythonpath')
+[5.542s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/perception/share/perception/hook/pythonpath.ps1'
+[5.543s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/perception/share/perception/hook/pythonpath.dsv'
+[5.544s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/perception/share/perception/hook/pythonpath.sh'
+[5.544s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/perception/bin'
+[5.545s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(perception)
+[5.545s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/perception/share/perception/package.ps1'
+[5.546s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/perception/share/perception/package.dsv'
+[5.546s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/perception/share/perception/package.sh'
+[5.547s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/perception/share/perception/package.bash'
+[5.547s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/perception/share/perception/package.zsh'
+[5.548s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/xytron/2026-kookmin-contest-qualifier/install/perception/share/colcon-core/packages/perception)
+[5.873s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/xytron/2026-kookmin-contest-qualifier/ericar/function'
+[5.874s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[5.874s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[6.189s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/xytron/2026-kookmin-contest-qualifier/kookmin9_viewer'
+[6.190s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[6.190s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[6.497s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/xytron/2026-kookmin-contest-qualifier/ericar/main'
+[6.498s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[6.498s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[6.801s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/xytron/2026-kookmin-contest-qualifier/my_cam'
+[6.802s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[6.802s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[7.111s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/xytron/2026-kookmin-contest-qualifier/my_lidar'
+[7.112s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[7.112s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[7.646s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/function': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/function/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/function/build
+[7.661s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/my_cam': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_cam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/my_cam/build
+[7.664s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/main': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/main/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/main build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/main/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/main/install.log --single-version-externally-managed install_data
+[7.668s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/build
+[7.822s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/my_lidar': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_lidar/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/my_lidar/build
+[8.180s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/main' for CMake module files
+[8.180s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/main' returned '0': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/main/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/main build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/main/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/main/install.log --single-version-externally-managed install_data
+[8.181s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/main' for CMake config files
+[8.182s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/main/lib'
+[8.183s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/main/bin'
+[8.183s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/main/lib/pkgconfig/main.pc'
+[8.183s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages'
+[8.183s] Level 1:colcon.colcon_core.shell:create_environment_hook('main', 'pythonpath')
+[8.183s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/main/share/main/hook/pythonpath.ps1'
+[8.184s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/main/share/main/hook/pythonpath.dsv'
+[8.187s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/main/share/main/hook/pythonpath.sh'
+[8.188s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/main/bin'
+[8.189s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(main)
+[8.189s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/main/share/main/package.ps1'
+[8.191s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/main/share/main/package.dsv'
+[8.192s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/main/share/main/package.sh'
+[8.192s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/main/share/main/package.bash'
+[8.193s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/main/share/main/package.zsh'
+[8.193s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/xytron/2026-kookmin-contest-qualifier/install/main/share/colcon-core/packages/main)
+[8.414s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/my_cam' returned '0': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_cam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/my_cam/build
+[8.417s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/my_cam': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_cam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/my_cam build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/my_cam/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/my_cam/install.log --single-version-externally-managed install_data --force
+[8.422s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer' returned '0': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/build
+[8.424s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/kookmin9_viewer': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/kookmin9_viewer build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/install.log --single-version-externally-managed install_data --force
+[8.438s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/function' returned '0': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/function/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/function/build
+[8.439s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/function': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/function/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/function build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/function/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/function/install.log --single-version-externally-managed install_data --force
+[8.549s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/my_lidar' returned '0': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_lidar/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/my_lidar/build
+[8.551s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/my_lidar': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_lidar/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/my_lidar build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/my_lidar/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/my_lidar/install.log --single-version-externally-managed install_data --force
+[8.840s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam' for CMake module files
+[8.840s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/my_cam' returned '0': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_cam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/my_cam build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/my_cam/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/my_cam/install.log --single-version-externally-managed install_data --force
+[8.842s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam' for CMake config files
+[8.842s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/lib'
+[8.842s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/bin'
+[8.843s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/lib/pkgconfig/my_cam.pc'
+[8.844s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/lib/python3.10/site-packages'
+[8.844s] Level 1:colcon.colcon_core.shell:create_environment_hook('my_cam', 'pythonpath')
+[8.844s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/share/my_cam/hook/pythonpath.ps1'
+[8.845s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/share/my_cam/hook/pythonpath.dsv'
+[8.846s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/share/my_cam/hook/pythonpath.sh'
+[8.848s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/bin'
+[8.848s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(my_cam)
+[8.848s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/share/my_cam/package.ps1'
+[8.849s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/share/my_cam/package.dsv'
+[8.850s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/share/my_cam/package.sh'
+[8.851s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/share/my_cam/package.bash'
+[8.852s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/share/my_cam/package.zsh'
+[8.852s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/share/colcon-core/packages/my_cam)
+[8.858s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer' for CMake module files
+[8.859s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/kookmin9_viewer' returned '0': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/kookmin9_viewer build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/install.log --single-version-externally-managed install_data --force
+[8.859s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer' for CMake config files
+[8.860s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/lib'
+[8.860s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/bin'
+[8.860s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/lib/pkgconfig/kookmin9_viewer.pc'
+[8.860s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/lib/python3.10/site-packages'
+[8.860s] Level 1:colcon.colcon_core.shell:create_environment_hook('kookmin9_viewer', 'pythonpath')
+[8.860s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/share/kookmin9_viewer/hook/pythonpath.ps1'
+[8.861s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/share/kookmin9_viewer/hook/pythonpath.dsv'
+[8.862s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/share/kookmin9_viewer/hook/pythonpath.sh'
+[8.862s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/bin'
+[8.862s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(kookmin9_viewer)
+[8.863s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/share/kookmin9_viewer/package.ps1'
+[8.864s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/share/kookmin9_viewer/package.dsv'
+[8.865s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/share/kookmin9_viewer/package.sh'
+[8.866s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/share/kookmin9_viewer/package.bash'
+[8.867s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/share/kookmin9_viewer/package.zsh'
+[8.867s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/share/colcon-core/packages/kookmin9_viewer)
+[8.871s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/function' for CMake module files
+[8.872s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/function' returned '0': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/function/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/function build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/function/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/function/install.log --single-version-externally-managed install_data --force
+[8.873s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/function' for CMake config files
+[8.874s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/function/lib'
+[8.874s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/function/bin'
+[8.874s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/function/lib/pkgconfig/function.pc'
+[8.875s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages'
+[8.875s] Level 1:colcon.colcon_core.shell:create_environment_hook('function', 'pythonpath')
+[8.875s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/function/share/function/hook/pythonpath.ps1'
+[8.876s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/function/share/function/hook/pythonpath.dsv'
+[8.876s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/function/share/function/hook/pythonpath.sh'
+[8.877s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/function/bin'
+[8.877s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(function)
+[8.877s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/function/share/function/package.ps1'
+[8.878s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/function/share/function/package.dsv'
+[8.878s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/function/share/function/package.sh'
+[8.879s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/function/share/function/package.bash'
+[8.879s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/function/share/function/package.zsh'
+[8.879s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/xytron/2026-kookmin-contest-qualifier/install/function/share/colcon-core/packages/function)
+[8.970s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar' for CMake module files
+[8.970s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/my_lidar' returned '0': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_lidar/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/my_lidar build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/my_lidar/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/my_lidar/install.log --single-version-externally-managed install_data --force
+[8.971s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar' for CMake config files
+[8.971s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/lib'
+[8.971s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/bin'
+[8.971s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/lib/pkgconfig/my_lidar.pc'
+[8.972s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/lib/python3.10/site-packages'
+[8.972s] Level 1:colcon.colcon_core.shell:create_environment_hook('my_lidar', 'pythonpath')
+[8.972s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/share/my_lidar/hook/pythonpath.ps1'
+[8.973s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/share/my_lidar/hook/pythonpath.dsv'
+[8.973s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/share/my_lidar/hook/pythonpath.sh'
+[8.974s] Level 1:colcon.colcon_core.environment:checking '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/bin'
+[8.974s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(my_lidar)
+[8.974s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/share/my_lidar/package.ps1'
+[8.975s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/share/my_lidar/package.dsv'
+[8.976s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/share/my_lidar/package.sh'
+[8.976s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/share/my_lidar/package.bash'
+[8.977s] INFO:colcon.colcon_core.shell:Creating package script '/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/share/my_lidar/package.zsh'
+[8.977s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar/share/colcon-core/packages/my_lidar)
+[8.978s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[8.978s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[8.978s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[8.978s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[9.039s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.notify_send': Could not find 'notify-send'
+[9.039s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[9.039s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[9.040s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[9.053s] DEBUG:colcon.colcon_notification.desktop_notification.notify2:Failed to initialize notify2: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.Notifications was not provided by any .service files
+[9.053s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[9.054s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/xytron/2026-kookmin-contest-qualifier/install/local_setup.ps1'
+[9.056s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/xytron/2026-kookmin-contest-qualifier/install/_local_setup_util_ps1.py'
+[9.058s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/xytron/2026-kookmin-contest-qualifier/install/setup.ps1'
+[9.061s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/xytron/2026-kookmin-contest-qualifier/install/local_setup.sh'
+[9.062s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/xytron/2026-kookmin-contest-qualifier/install/_local_setup_util_sh.py'
+[9.063s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/xytron/2026-kookmin-contest-qualifier/install/setup.sh'
+[9.065s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/xytron/2026-kookmin-contest-qualifier/install/local_setup.bash'
+[9.066s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/xytron/2026-kookmin-contest-qualifier/install/setup.bash'
+[9.068s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/xytron/2026-kookmin-contest-qualifier/install/local_setup.zsh'
+[9.069s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/xytron/2026-kookmin-contest-qualifier/install/setup.zsh'

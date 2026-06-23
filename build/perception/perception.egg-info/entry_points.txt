@@ -1,0 +1,4 @@
+[console_scripts]
+collect_data = perception.collect_data:main
+perception = perception.perception:main
+

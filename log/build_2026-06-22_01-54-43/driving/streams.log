@@ -1,0 +1,39 @@
+[0.613s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/driving': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/driving/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/driving/build
+[0.858s] running develop
+[0.996s] Removing /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving.egg-link (link to .)
+[1.022s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/driving' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/driving/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/driving/build
+[1.024s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/driving': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/driving/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/driving build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/driving/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/driving/install.log --single-version-externally-managed install_data --force
+[1.256s] running egg_info
+[1.256s] writing ../../build/driving/driving.egg-info/PKG-INFO
+[1.257s] writing dependency_links to ../../build/driving/driving.egg-info/dependency_links.txt
+[1.257s] writing entry points to ../../build/driving/driving.egg-info/entry_points.txt
+[1.257s] writing requirements to ../../build/driving/driving.egg-info/requires.txt
+[1.257s] writing top-level names to ../../build/driving/driving.egg-info/top_level.txt
+[1.259s] reading manifest file '../../build/driving/driving.egg-info/SOURCES.txt'
+[1.260s] writing manifest file '../../build/driving/driving.egg-info/SOURCES.txt'
+[1.261s] running build
+[1.261s] running build_py
+[1.261s] copying driving/driving.py -> /home/xytron/2026-kookmin-contest-qualifier/build/driving/build/lib/driving
+[1.261s] copying driving/lane_detection.py -> /home/xytron/2026-kookmin-contest-qualifier/build/driving/build/lib/driving
+[1.261s] running install
+[1.263s] running install_lib
+[1.263s] creating /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving
+[1.264s] copying /home/xytron/2026-kookmin-contest-qualifier/build/driving/build/lib/driving/rubbercone.py -> /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving
+[1.264s] copying /home/xytron/2026-kookmin-contest-qualifier/build/driving/build/lib/driving/driving.py -> /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving
+[1.264s] copying /home/xytron/2026-kookmin-contest-qualifier/build/driving/build/lib/driving/turn_left.py -> /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving
+[1.265s] copying /home/xytron/2026-kookmin-contest-qualifier/build/driving/build/lib/driving/__init__.py -> /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving
+[1.265s] copying /home/xytron/2026-kookmin-contest-qualifier/build/driving/build/lib/driving/lane_detection.py -> /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving
+[1.266s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving/rubbercone.py to rubbercone.cpython-310.pyc
+[1.267s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving/driving.py to driving.cpython-310.pyc
+[1.269s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving/turn_left.py to turn_left.cpython-310.pyc
+[1.269s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving/__init__.py to __init__.cpython-310.pyc
+[1.270s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving/lane_detection.py to lane_detection.cpython-310.pyc
+[1.271s] running install_data
+[1.272s] copying resource/driving -> /home/xytron/2026-kookmin-contest-qualifier/install/driving/share/ament_index/resource_index/packages
+[1.272s] copying package.xml -> /home/xytron/2026-kookmin-contest-qualifier/install/driving/share/driving
+[1.272s] running install_egg_info
+[1.275s] Copying ../../build/driving/driving.egg-info to /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving-0.0.1-py3.10.egg-info
+[1.276s] running install_scripts
+[1.296s] Installing driving script to /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/driving
+[1.297s] writing list of installed files to '/home/xytron/2026-kookmin-contest-qualifier/build/driving/install.log'
+[1.318s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/driving' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/driving/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/driving build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/driving/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/driving/install.log --single-version-externally-managed install_data --force

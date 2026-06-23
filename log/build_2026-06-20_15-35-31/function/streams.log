@@ -1,0 +1,29 @@
+[1.773s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/function': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/function/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/function/build --no-deps symlink_data
+[2.204s] running develop
+[2.435s] running egg_info
+[2.435s] creating function.egg-info
+[2.436s] writing function.egg-info/PKG-INFO
+[2.436s] writing dependency_links to function.egg-info/dependency_links.txt
+[2.436s] writing entry points to function.egg-info/entry_points.txt
+[2.436s] writing requirements to function.egg-info/requires.txt
+[2.437s] writing top-level names to function.egg-info/top_level.txt
+[2.437s] writing manifest file 'function.egg-info/SOURCES.txt'
+[2.438s] reading manifest file 'function.egg-info/SOURCES.txt'
+[2.438s] writing manifest file 'function.egg-info/SOURCES.txt'
+[2.440s] running build_ext
+[2.440s] Creating /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function.egg-link (link to .)
+[2.441s] Installing camera_viewer script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+[2.441s] Installing hsv_tuner script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+[2.441s] Installing imu_visualizer script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+[2.441s] Installing lidar_visualizer script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+[2.441s] Installing manual_control script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+[2.441s] 
+[2.442s] Installed /home/xytron/2026-kookmin-contest-qualifier/build/function
+[2.442s] running symlink_data
+[2.442s] creating /home/xytron/2026-kookmin-contest-qualifier/install/function/share/ament_index
+[2.442s] creating /home/xytron/2026-kookmin-contest-qualifier/install/function/share/ament_index/resource_index
+[2.442s] creating /home/xytron/2026-kookmin-contest-qualifier/install/function/share/ament_index/resource_index/packages
+[2.442s] symbolically linking /home/xytron/2026-kookmin-contest-qualifier/build/function/resource/function -> /home/xytron/2026-kookmin-contest-qualifier/install/function/share/ament_index/resource_index/packages
+[2.442s] symbolically linking /home/xytron/2026-kookmin-contest-qualifier/build/function/package.xml -> /home/xytron/2026-kookmin-contest-qualifier/install/function/share/function
+[2.442s] creating /home/xytron/2026-kookmin-contest-qualifier/install/function/share/function/launch
+[2.478s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/function' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/function/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/function/build --no-deps symlink_data

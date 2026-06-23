@@ -1,0 +1,49 @@
+[0.000000] (-) TimerEvent: {}
+[0.000157] (-) JobUnselected: {'identifier': 'function'}
+[0.000177] (-) JobUnselected: {'identifier': 'kookmin9_viewer'}
+[0.000191] (-) JobUnselected: {'identifier': 'main'}
+[0.000199] (-) JobUnselected: {'identifier': 'my_cam'}
+[0.000211] (-) JobUnselected: {'identifier': 'my_imu'}
+[0.000219] (-) JobUnselected: {'identifier': 'my_lidar'}
+[0.000226] (-) JobUnselected: {'identifier': 'my_motor'}
+[0.000236] (-) JobUnselected: {'identifier': 'perception'}
+[0.000246] (-) JobUnselected: {'identifier': 'ros_tcp_endpoint'}
+[0.000254] (-) JobUnselected: {'identifier': 'track_drive'}
+[0.000262] (-) JobUnselected: {'identifier': 'xycar_msgs'}
+[0.000368] (driving) JobQueued: {'identifier': 'driving', 'dependencies': OrderedDict()}
+[0.001181] (driving) JobStarted: {'identifier': 'driving'}
+[0.099834] (-) TimerEvent: {}
+[0.200268] (-) TimerEvent: {}
+[0.300640] (-) TimerEvent: {}
+[0.401207] (-) TimerEvent: {}
+[0.501655] (-) TimerEvent: {}
+[0.602032] (-) TimerEvent: {}
+[0.617193] (driving) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../../build/driving', 'build', '--build-base', '/home/xytron/2026-kookmin-contest-qualifier/build/driving/build', 'install', '--record', '/home/xytron/2026-kookmin-contest-qualifier/build/driving/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/xytron/2026-kookmin-contest-qualifier/ericar/driving', 'env': {'USER': 'xytron', 'ROS_NAMESPACE': 'xycar', 'ROS_PACKAGE_PATH': '/home/xytron/xycar_ws/install/ericar_msgs/share', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/xytron/xycar_ws/install/xycar_msgs/lib:/home/xytron/xycar_ws/install/ericar_msgs/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib', 'WT_PROFILE_ID': '{e497da6e-94b0-5deb-a2a7-bc930db089cd}', 'HOME': '/home/xytron', 'OLDPWD': '/home/xytron/2026-kookmin-contest-qualifier', 'ROS_PYTHON_VERSION': '3', 'WSL_DISTRO_NAME': 'Ubuntu-22.04', '_colcon_cd_root': '/home/xytron/xycar_ws', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/xytron/xycar_ws/install', 'ROS_DISTRO': 'humble', 'LOGNAME': 'xytron', 'NAME': 'BOOK-HJ970BEJVV', 'WSL_INTEROP': '/run/WSL/445_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'PKG_CONFIG_PATH': '/home/xytron/xycar_ws/install/ericar_msgs/lib/x86_64-linux-gnu/pkgconfig:/home/xytron/xycar_ws/install/ericar_msgs/lib/pkgconfig', 'TERM': 'xterm-256color', 'ROS_LOCALHOST_ONLY': '0', 'PATH': '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.7/bin:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.7/libnvvp:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/NVIDIA Corporation/Nsight Compute 2022.2.0/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/nodejs/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/MySQL/MySQL Shell 8.0/bin/:/mnt/c/Users/rnals/AppData/Local/Programs/Python/Launcher/:/mnt/c/Users/rnals/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/rnals/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/rnals/AppData/Roaming/npm:/mnt/c/Users/rnals/AppData/Local/Microsoft/WinGet/Links:/snap/bin', 'WT_SESSION': 'a1d2e161-65da-4a5b-8a55-5a8769e4d87b', 'XDG_RUNTIME_DIR': '/mnt/wslg/runtime-dir', 'DISPLAY': ':0', 'LANG': 'en_US.UTF-8', 'ROS_DOMAIN_ID': '7', 'AMENT_PREFIX_PATH': '/home/xytron/xycar_ws/install/my_lidar:/home/xytron/xycar_ws/install/my_cam:/home/xytron/xycar_ws/install/main:/home/xytron/xycar_ws/install/kookmin9_viewer:/home/xytron/xycar_ws/install/xycar_msgs:/home/xytron/xycar_ws/install/track_drive:/home/xytron/xycar_ws/install/ros_tcp_endpoint:/home/xytron/xycar_ws/install/perception:/home/xytron/xycar_ws/install/my_motor:/home/xytron/xycar_ws/install/my_imu:/home/xytron/xycar_ws/install/driving:/opt/ros/humble', 'SHELL': '/bin/bash', 'PWD': '/home/xytron/2026-kookmin-contest-qualifier/build/driving', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/xytron/2026-kookmin-contest-qualifier/build/driving/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages:/home/xytron/xycar_ws/build/my_lidar:/home/xytron/xycar_ws/install/my_lidar/lib/python3.10/site-packages:/home/xytron/xycar_ws/build/my_cam:/home/xytron/xycar_ws/install/my_cam/lib/python3.10/site-packages:/home/xytron/xycar_ws/install/main/lib/python3.10/site-packages:/home/xytron/xycar_ws/build/kookmin9_viewer:/home/xytron/xycar_ws/install/kookmin9_viewer/lib/python3.10/site-packages:/home/xytron/xycar_ws/install/xycar_msgs/local/lib/python3.10/dist-packages:/home/xytron/xycar_ws/build/track_drive:/home/xytron/xycar_ws/install/track_drive/lib/python3.10/site-packages:/home/xytron/xycar_ws/build/ros_tcp_endpoint:/home/xytron/xycar_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages:/home/xytron/xycar_ws/build/perception:/home/xytron/xycar_ws/install/perception/lib/python3.10/site-packages:/home/xytron/xycar_ws/build/my_motor:/home/xytron/xycar_ws/install/my_motor/lib/python3.10/site-packages:/home/xytron/xycar_ws/build/my_imu:/home/xytron/xycar_ws/install/my_imu/lib/python3.10/site-packages:/home/xytron/xycar_ws/install/ericar_msgs/local/lib/python3.10/dist-packages:/home/xytron/xycar_ws/install/driving/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/xytron/xycar_ws/install/xycar_msgs:/home/xytron/xycar_ws/install/ericar_msgs', 'WSLENV': 'WT_SESSION:WT_PROFILE_ID:'}, 'shell': False}
+[0.702234] (-) TimerEvent: {}
+[0.802578] (-) TimerEvent: {}
+[0.852288] (driving) StdoutLine: {'line': b'running egg_info\n'}
+[0.852843] (driving) StdoutLine: {'line': b'writing ../../build/driving/driving.egg-info/PKG-INFO\n'}
+[0.853161] (driving) StdoutLine: {'line': b'writing dependency_links to ../../build/driving/driving.egg-info/dependency_links.txt\n'}
+[0.853441] (driving) StdoutLine: {'line': b'writing entry points to ../../build/driving/driving.egg-info/entry_points.txt\n'}
+[0.853672] (driving) StdoutLine: {'line': b'writing requirements to ../../build/driving/driving.egg-info/requires.txt\n'}
+[0.853945] (driving) StdoutLine: {'line': b'writing top-level names to ../../build/driving/driving.egg-info/top_level.txt\n'}
+[0.855413] (driving) StdoutLine: {'line': b"reading manifest file '../../build/driving/driving.egg-info/SOURCES.txt'\n"}
+[0.856659] (driving) StdoutLine: {'line': b"writing manifest file '../../build/driving/driving.egg-info/SOURCES.txt'\n"}
+[0.856843] (driving) StdoutLine: {'line': b'running build\n'}
+[0.856950] (driving) StdoutLine: {'line': b'running build_py\n'}
+[0.857423] (driving) StdoutLine: {'line': b'copying driving/lane_detection.py -> /home/xytron/2026-kookmin-contest-qualifier/build/driving/build/lib/driving\n'}
+[0.857862] (driving) StdoutLine: {'line': b'running install\n'}
+[0.859238] (driving) StdoutLine: {'line': b'running install_lib\n'}
+[0.860366] (driving) StdoutLine: {'line': b'copying /home/xytron/2026-kookmin-contest-qualifier/build/driving/build/lib/driving/lane_detection.py -> /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving\n'}
+[0.862110] (driving) StdoutLine: {'line': b'byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving/lane_detection.py to lane_detection.cpython-310.pyc\n'}
+[0.864709] (driving) StdoutLine: {'line': b'running install_data\n'}
+[0.864918] (driving) StdoutLine: {'line': b'running install_egg_info\n'}
+[0.866938] (driving) StdoutLine: {'line': b"removing '/home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving-0.0.1-py3.10.egg-info' (and everything under it)\n"}
+[0.867251] (driving) StdoutLine: {'line': b'Copying ../../build/driving/driving.egg-info to /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving-0.0.1-py3.10.egg-info\n'}
+[0.868108] (driving) StdoutLine: {'line': b'running install_scripts\n'}
+[0.889177] (driving) StdoutLine: {'line': b'Installing driving script to /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/driving\n'}
+[0.889712] (driving) StdoutLine: {'line': b"writing list of installed files to '/home/xytron/2026-kookmin-contest-qualifier/build/driving/install.log'\n"}
+[0.902741] (-) TimerEvent: {}
+[0.912213] (driving) CommandEnded: {'returncode': 0}
+[0.923785] (driving) JobEnded: {'identifier': 'driving', 'rc': 0}
+[0.924720] (-) EventReactorShutdown: {}

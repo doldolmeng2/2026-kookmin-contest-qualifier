@@ -1,0 +1,19 @@
+running develop
+running egg_info
+writing function.egg-info/PKG-INFO
+writing dependency_links to function.egg-info/dependency_links.txt
+writing entry points to function.egg-info/entry_points.txt
+writing requirements to function.egg-info/requires.txt
+writing top-level names to function.egg-info/top_level.txt
+reading manifest file 'function.egg-info/SOURCES.txt'
+writing manifest file 'function.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function.egg-link (link to .)
+Installing camera_viewer script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+Installing hsv_tuner script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+Installing imu_visualizer script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+Installing lidar_visualizer script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+Installing manual_control script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+
+Installed /home/xytron/2026-kookmin-contest-qualifier/build/function
+running symlink_data

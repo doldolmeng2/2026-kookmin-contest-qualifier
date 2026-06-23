@@ -1,0 +1,237 @@
+[0.038s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs': CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:/home/xytron/2026-kookmin-contest-qualifier/install/ericar_msgs:/home/xytron/xycar_ws/install/xycar_msgs:/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar:/home/xytron/2026-kookmin-contest-qualifier/install/my_cam:/home/xytron/2026-kookmin-contest-qualifier/install/main:/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer:/home/xytron/2026-kookmin-contest-qualifier/install/track_drive:/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint:/home/xytron/2026-kookmin-contest-qualifier/install/perception:/home/xytron/2026-kookmin-contest-qualifier/install/my_motor:/home/xytron/2026-kookmin-contest-qualifier/install/my_imu:/home/xytron/2026-kookmin-contest-qualifier/install/driving:/home/xytron/xycar_ws/install/my_lidar:/home/xytron/xycar_ws/install/my_cam:/home/xytron/xycar_ws/install/main:/home/xytron/xycar_ws/install/kookmin9_viewer:/home/xytron/xycar_ws/install/track_drive:/home/xytron/xycar_ws/install/ros_tcp_endpoint:/home/xytron/xycar_ws/install/perception:/home/xytron/xycar_ws/install/my_motor:/home/xytron/xycar_ws/install/my_imu:/home/xytron/xycar_ws/install/driving:/opt/ros/humble:/home/xytron/xycar_ws/install/ericar_msgs /usr/bin/cmake /home/xytron/2026-kookmin-contest-qualifier/xycar_msgs -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs
+[1.267s] -- The C compiler identification is GNU 11.4.0
+[1.267s] -- The CXX compiler identification is GNU 11.4.0
+[1.268s] -- Detecting C compiler ABI info
+[1.391s] -- Detecting C compiler ABI info - done
+[1.397s] -- Check for working C compiler: /usr/bin/cc - skipped
+[1.397s] -- Detecting C compile features
+[1.397s] -- Detecting C compile features - done
+[1.400s] -- Detecting CXX compiler ABI info
+[1.561s] -- Detecting CXX compiler ABI info - done
+[1.571s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[1.571s] -- Detecting CXX compile features
+[1.571s] -- Detecting CXX compile features - done
+[1.577s] -- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+[1.931s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[2.053s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[2.139s] -- Found rosidl_default_generators: 1.2.1 (/opt/ros/humble/share/rosidl_default_generators/cmake)
+[2.147s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[2.147s] -- Found rosidl_adapter: 3.1.8 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[2.722s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[2.803s] -- Found std_msgs: 4.9.1 (/opt/ros/humble/share/std_msgs/cmake)
+[2.856s] -- Found sensor_msgs: 4.9.1 (/opt/ros/humble/share/sensor_msgs/cmake)
+[3.321s] -- Found ament_cmake_ros: 0.10.0 (/opt/ros/humble/share/ament_cmake_ros/cmake)
+[3.653s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[4.043s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[4.206s] -- Found PythonInterp: /usr/bin/python3 (found suitable version "3.10.12", minimum required is "3.6") 
+[4.207s] -- Found python_cmake_module: 0.10.0 (/opt/ros/humble/share/python_cmake_module/cmake)
+[4.671s] -- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.10.so (found suitable version "3.10.12", minimum required is "3.5") 
+[4.671s] -- Using PYTHON_EXECUTABLE: /usr/bin/python3
+[4.671s] -- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.10
+[4.671s] -- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.10.so
+[4.696s] -- Found PythonExtra: .so  
+[4.889s] -- Found ament_lint_auto: 0.12.15 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[4.908s] -- Added test 'lint_cmake' to check CMake code style
+[4.909s] -- Added test 'xmllint' to check XML markup files
+[4.921s] -- Configuring done
+[4.952s] -- Generating done
+[4.960s] -- Build files have been written to: /home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs
+[4.968s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs' returned '0': CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:/home/xytron/2026-kookmin-contest-qualifier/install/ericar_msgs:/home/xytron/xycar_ws/install/xycar_msgs:/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar:/home/xytron/2026-kookmin-contest-qualifier/install/my_cam:/home/xytron/2026-kookmin-contest-qualifier/install/main:/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer:/home/xytron/2026-kookmin-contest-qualifier/install/track_drive:/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint:/home/xytron/2026-kookmin-contest-qualifier/install/perception:/home/xytron/2026-kookmin-contest-qualifier/install/my_motor:/home/xytron/2026-kookmin-contest-qualifier/install/my_imu:/home/xytron/2026-kookmin-contest-qualifier/install/driving:/home/xytron/xycar_ws/install/my_lidar:/home/xytron/xycar_ws/install/my_cam:/home/xytron/xycar_ws/install/main:/home/xytron/xycar_ws/install/kookmin9_viewer:/home/xytron/xycar_ws/install/track_drive:/home/xytron/xycar_ws/install/ros_tcp_endpoint:/home/xytron/xycar_ws/install/perception:/home/xytron/xycar_ws/install/my_motor:/home/xytron/xycar_ws/install/my_imu:/home/xytron/xycar_ws/install/driving:/opt/ros/humble:/home/xytron/xycar_ws/install/ericar_msgs /usr/bin/cmake /home/xytron/2026-kookmin-contest-qualifier/xycar_msgs -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs
+[4.969s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs': CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:/home/xytron/2026-kookmin-contest-qualifier/install/ericar_msgs:/home/xytron/xycar_ws/install/xycar_msgs:/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar:/home/xytron/2026-kookmin-contest-qualifier/install/my_cam:/home/xytron/2026-kookmin-contest-qualifier/install/main:/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer:/home/xytron/2026-kookmin-contest-qualifier/install/track_drive:/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint:/home/xytron/2026-kookmin-contest-qualifier/install/perception:/home/xytron/2026-kookmin-contest-qualifier/install/my_motor:/home/xytron/2026-kookmin-contest-qualifier/install/my_imu:/home/xytron/2026-kookmin-contest-qualifier/install/driving:/home/xytron/xycar_ws/install/my_lidar:/home/xytron/xycar_ws/install/my_cam:/home/xytron/xycar_ws/install/main:/home/xytron/xycar_ws/install/kookmin9_viewer:/home/xytron/xycar_ws/install/track_drive:/home/xytron/xycar_ws/install/ros_tcp_endpoint:/home/xytron/xycar_ws/install/perception:/home/xytron/xycar_ws/install/my_motor:/home/xytron/xycar_ws/install/my_imu:/home/xytron/xycar_ws/install/driving:/opt/ros/humble:/home/xytron/xycar_ws/install/ericar_msgs /usr/bin/cmake --build /home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs -- -j8 -l8
+[4.997s] [  2%] [34m[1mGenerating C code for ROS interfaces[0m
+[5.006s] [  5%] [34m[1mGenerating Rust code for ROS interfaces[0m
+[5.008s] [  7%] [34m[1mGenerating C++ code for ROS interfaces[0m
+[5.013s] [  7%] Built target ament_cmake_python_symlink_xycar_msgs
+[5.239s] [  7%] Built target xycar_msgs__rs
+[5.288s] [  7%] Built target xycar_msgs__cpp
+[5.299s] [ 10%] [34m[1mGenerating C++ type support dispatch for ROS interfaces[0m
+[5.299s] [ 12%] [34m[1mGenerating C++ introspection for ROS interfaces[0m
+[5.301s] [ 15%] [34m[1mGenerating C++ type support for eProsima Fast-RTPS[0m
+[5.309s] [ 17%] [32mBuilding C object CMakeFiles/xycar_msgs__rosidl_generator_c.dir/rosidl_generator_c/xycar_msgs/msg/detail/xycar_ultrasonic__functions.c.o[0m
+[5.312s] [ 20%] [32mBuilding C object CMakeFiles/xycar_msgs__rosidl_generator_c.dir/rosidl_generator_c/xycar_msgs/msg/detail/xycar_motor__functions.c.o[0m
+[5.313s] running egg_info
+[5.314s] creating xycar_msgs.egg-info
+[5.314s] writing xycar_msgs.egg-info/PKG-INFO
+[5.314s] writing dependency_links to xycar_msgs.egg-info/dependency_links.txt
+[5.314s] writing top-level names to xycar_msgs.egg-info/top_level.txt
+[5.314s] writing manifest file 'xycar_msgs.egg-info/SOURCES.txt'
+[5.315s] reading manifest file 'xycar_msgs.egg-info/SOURCES.txt'
+[5.315s] writing manifest file 'xycar_msgs.egg-info/SOURCES.txt'
+[5.350s] [ 20%] Built target ament_cmake_python_build_xycar_msgs_egg
+[5.378s] [ 22%] [32m[1mLinking C shared library libxycar_msgs__rosidl_generator_c.so[0m
+[5.554s] [ 22%] Built target xycar_msgs__rosidl_generator_c
+[5.566s] [ 25%] [34m[1mGenerating C type support for eProsima Fast-RTPS[0m
+[5.577s] [ 27%] [34m[1mGenerating C type support dispatch for ROS interfaces[0m
+[5.586s] [ 30%] [34m[1mGenerating C introspection for ROS interfaces[0m
+[5.586s] [ 32%] [32mBuilding CXX object CMakeFiles/xycar_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/xycar_msgs/msg/xycar_motor__type_support.cpp.o[0m
+[5.593s] [ 35%] [32mBuilding CXX object CMakeFiles/xycar_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/xycar_msgs/msg/xycar_ultrasonic__type_support.cpp.o[0m
+[5.624s] [ 37%] [32mBuilding CXX object CMakeFiles/xycar_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/xycar_msgs/msg/detail/dds_fastrtps/xycar_motor__type_support.cpp.o[0m
+[5.626s] [ 40%] [32mBuilding CXX object CMakeFiles/xycar_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/xycar_msgs/msg/detail/dds_fastrtps/xycar_ultrasonic__type_support.cpp.o[0m
+[5.629s] [ 42%] [32mBuilding CXX object CMakeFiles/xycar_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/xycar_msgs/msg/detail/xycar_motor__type_support.cpp.o[0m
+[5.997s] [ 45%] [32mBuilding CXX object CMakeFiles/xycar_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/xycar_msgs/msg/xycar_motor__type_support.cpp.o[0m
+[6.038s] [ 47%] [32mBuilding CXX object CMakeFiles/xycar_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/xycar_msgs/msg/detail/xycar_motor__type_support_c.cpp.o[0m
+[6.055s] [ 50%] [32m[1mLinking CXX shared library libxycar_msgs__rosidl_typesupport_cpp.so[0m
+[6.057s] [ 52%] [32mBuilding CXX object CMakeFiles/xycar_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/xycar_msgs/msg/detail/xycar_ultrasonic__type_support_c.cpp.o[0m
+[6.061s] [ 55%] [32mBuilding CXX object CMakeFiles/xycar_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/xycar_msgs/msg/xycar_ultrasonic__type_support.cpp.o[0m
+[6.110s] [ 57%] [32mBuilding C object CMakeFiles/xycar_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/xycar_msgs/msg/detail/xycar_motor__type_support.c.o[0m
+[6.119s] [ 60%] [32m[1mLinking CXX shared library libxycar_msgs__rosidl_typesupport_c.so[0m
+[6.180s] [ 62%] [32mBuilding C object CMakeFiles/xycar_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/xycar_msgs/msg/detail/xycar_ultrasonic__type_support.c.o[0m
+[6.262s] [ 65%] [32m[1mLinking C shared library libxycar_msgs__rosidl_typesupport_introspection_c.so[0m
+[6.345s] [ 67%] [32mBuilding CXX object CMakeFiles/xycar_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/xycar_msgs/msg/detail/xycar_ultrasonic__type_support.cpp.o[0m
+[6.377s] [ 67%] Built target xycar_msgs__rosidl_typesupport_cpp
+[6.380s] [ 67%] Built target xycar_msgs__rosidl_typesupport_c
+[6.429s] [ 70%] [32m[1mLinking CXX shared library libxycar_msgs__rosidl_typesupport_fastrtps_cpp.so[0m
+[6.503s] [ 70%] Built target xycar_msgs__rosidl_typesupport_introspection_c
+[6.554s] [ 72%] [32m[1mLinking CXX shared library libxycar_msgs__rosidl_typesupport_fastrtps_c.so[0m
+[6.662s] [ 72%] Built target xycar_msgs__rosidl_typesupport_fastrtps_cpp
+[6.783s] [ 72%] Built target xycar_msgs__rosidl_typesupport_fastrtps_c
+[6.831s] [ 75%] [32m[1mLinking CXX shared library libxycar_msgs__rosidl_typesupport_introspection_cpp.so[0m
+[7.032s] [ 75%] Built target xycar_msgs__rosidl_typesupport_introspection_cpp
+[7.052s] [ 75%] Built target xycar_msgs
+[7.087s] [ 77%] [34m[1mGenerating Python code for ROS interfaces[0m
+[7.418s] [ 77%] Built target xycar_msgs__py
+[7.435s] [ 80%] [32mBuilding C object CMakeFiles/xycar_msgs__rosidl_generator_py.dir/rosidl_generator_py/xycar_msgs/msg/_xycar_motor_s.c.o[0m
+[7.435s] [ 82%] [32mBuilding C object CMakeFiles/xycar_msgs__rosidl_generator_py.dir/rosidl_generator_py/xycar_msgs/msg/_xycar_ultrasonic_s.c.o[0m
+[7.535s] [ 85%] [32m[1mLinking C shared library rosidl_generator_py/xycar_msgs/libxycar_msgs__rosidl_generator_py.so[0m
+[7.667s] [ 85%] Built target xycar_msgs__rosidl_generator_py
+[7.682s] [ 87%] [32mBuilding C object CMakeFiles/xycar_msgs__rosidl_typesupport_fastrtps_c__pyext.dir/rosidl_generator_py/xycar_msgs/_xycar_msgs_s.ep.rosidl_typesupport_fastrtps_c.c.o[0m
+[7.683s] [ 90%] [32mBuilding C object CMakeFiles/xycar_msgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/xycar_msgs/_xycar_msgs_s.ep.rosidl_typesupport_introspection_c.c.o[0m
+[7.684s] [ 92%] [32mBuilding C object CMakeFiles/xycar_msgs__rosidl_typesupport_c__pyext.dir/rosidl_generator_py/xycar_msgs/_xycar_msgs_s.ep.rosidl_typesupport_c.c.o[0m
+[7.762s] [ 95%] [32m[1mLinking C shared library rosidl_generator_py/xycar_msgs/xycar_msgs_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so[0m
+[7.773s] [ 97%] [32m[1mLinking C shared library rosidl_generator_py/xycar_msgs/xycar_msgs_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so[0m
+[7.786s] [100%] [32m[1mLinking C shared library rosidl_generator_py/xycar_msgs/xycar_msgs_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so[0m
+[7.893s] [100%] Built target xycar_msgs__rosidl_typesupport_c__pyext
+[7.903s] [100%] Built target xycar_msgs__rosidl_typesupport_introspection_c__pyext
+[7.920s] [100%] Built target xycar_msgs__rosidl_typesupport_fastrtps_c__pyext
+[7.946s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs' returned '0': CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:/home/xytron/2026-kookmin-contest-qualifier/install/ericar_msgs:/home/xytron/xycar_ws/install/xycar_msgs:/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar:/home/xytron/2026-kookmin-contest-qualifier/install/my_cam:/home/xytron/2026-kookmin-contest-qualifier/install/main:/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer:/home/xytron/2026-kookmin-contest-qualifier/install/track_drive:/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint:/home/xytron/2026-kookmin-contest-qualifier/install/perception:/home/xytron/2026-kookmin-contest-qualifier/install/my_motor:/home/xytron/2026-kookmin-contest-qualifier/install/my_imu:/home/xytron/2026-kookmin-contest-qualifier/install/driving:/home/xytron/xycar_ws/install/my_lidar:/home/xytron/xycar_ws/install/my_cam:/home/xytron/xycar_ws/install/main:/home/xytron/xycar_ws/install/kookmin9_viewer:/home/xytron/xycar_ws/install/track_drive:/home/xytron/xycar_ws/install/ros_tcp_endpoint:/home/xytron/xycar_ws/install/perception:/home/xytron/xycar_ws/install/my_motor:/home/xytron/xycar_ws/install/my_imu:/home/xytron/xycar_ws/install/driving:/opt/ros/humble:/home/xytron/xycar_ws/install/ericar_msgs /usr/bin/cmake --build /home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs -- -j8 -l8
+[7.955s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs': CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:/home/xytron/2026-kookmin-contest-qualifier/install/ericar_msgs:/home/xytron/xycar_ws/install/xycar_msgs:/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar:/home/xytron/2026-kookmin-contest-qualifier/install/my_cam:/home/xytron/2026-kookmin-contest-qualifier/install/main:/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer:/home/xytron/2026-kookmin-contest-qualifier/install/track_drive:/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint:/home/xytron/2026-kookmin-contest-qualifier/install/perception:/home/xytron/2026-kookmin-contest-qualifier/install/my_motor:/home/xytron/2026-kookmin-contest-qualifier/install/my_imu:/home/xytron/2026-kookmin-contest-qualifier/install/driving:/home/xytron/xycar_ws/install/my_lidar:/home/xytron/xycar_ws/install/my_cam:/home/xytron/xycar_ws/install/main:/home/xytron/xycar_ws/install/kookmin9_viewer:/home/xytron/xycar_ws/install/track_drive:/home/xytron/xycar_ws/install/ros_tcp_endpoint:/home/xytron/xycar_ws/install/perception:/home/xytron/xycar_ws/install/my_motor:/home/xytron/xycar_ws/install/my_imu:/home/xytron/xycar_ws/install/driving:/opt/ros/humble:/home/xytron/xycar_ws/install/ericar_msgs /usr/bin/cmake --install /home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs
+[7.960s] -- Install configuration: ""
+[7.960s] -- Execute custom install script
+[7.961s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/ament_index/resource_index/rosidl_interfaces/xycar_msgs
+[7.969s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_motor__functions.h
+[7.976s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_motor__struct.h
+[7.985s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_motor__type_support.h
+[7.993s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_ultrasonic__functions.h
+[7.999s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_ultrasonic__struct.h
+[8.005s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_ultrasonic__type_support.h
+[8.012s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/rosidl_generator_c__visibility_control.h
+[8.017s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/xycar_motor.h
+[8.033s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/xycar_ultrasonic.h
+[8.047s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/environment/library_path.sh
+[8.052s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/environment/library_path.dsv
+[8.061s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_motor__rosidl_typesupport_fastrtps_c.h
+[8.067s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_ultrasonic__rosidl_typesupport_fastrtps_c.h
+[8.074s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/rosidl_typesupport_fastrtps_c__visibility_control.h
+[8.081s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_motor__rosidl_typesupport_introspection_c.h
+[8.091s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_ultrasonic__rosidl_typesupport_introspection_c.h
+[8.097s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/rosidl_typesupport_introspection_c__visibility_control.h
+[8.104s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_motor__builder.hpp
+[8.110s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_motor__struct.hpp
+[8.117s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_motor__traits.hpp
+[8.123s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_motor__type_support.hpp
+[8.132s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_ultrasonic__builder.hpp
+[8.138s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_ultrasonic__struct.hpp
+[8.149s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_ultrasonic__traits.hpp
+[8.160s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_ultrasonic__type_support.hpp
+[8.166s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/rosidl_generator_cpp__visibility_control.hpp
+[8.174s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/xycar_motor.hpp
+[8.180s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/xycar_ultrasonic.hpp
+[8.187s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_motor__rosidl_typesupport_fastrtps_cpp.hpp
+[8.193s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_ultrasonic__rosidl_typesupport_fastrtps_cpp.hpp
+[8.201s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h
+[8.208s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_motor__rosidl_typesupport_introspection_cpp.hpp
+[8.214s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/include/xycar_msgs/xycar_msgs/msg/detail/xycar_ultrasonic__rosidl_typesupport_introspection_cpp.hpp
+[8.220s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/environment/pythonpath.sh
+[8.229s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/environment/pythonpath.dsv
+[8.235s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs-0.0.0-py3.10.egg-info/PKG-INFO
+[8.241s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs-0.0.0-py3.10.egg-info/SOURCES.txt
+[8.248s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs-0.0.0-py3.10.egg-info/dependency_links.txt
+[8.260s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs-0.0.0-py3.10.egg-info/top_level.txt
+[8.270s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/__init__.py
+[8.276s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/_xycar_msgs_s.ep.rosidl_typesupport_c.c
+[8.283s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/_xycar_msgs_s.ep.rosidl_typesupport_fastrtps_c.c
+[8.289s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/_xycar_msgs_s.ep.rosidl_typesupport_introspection_c.c
+[8.296s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/libxycar_msgs__rosidl_generator_py.so
+[8.302s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/msg/__init__.py
+[8.309s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/msg/_xycar_motor.py
+[8.315s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/msg/_xycar_motor_s.c
+[8.322s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/msg/_xycar_ultrasonic.py
+[8.328s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/msg/_xycar_ultrasonic_s.c
+[8.334s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/xycar_msgs_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so
+[8.341s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/xycar_msgs_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so
+[8.350s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/xycar_msgs_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so
+[8.364s] -- Up-to-date symlink: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/xycar_msgs_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so
+[8.364s] -- Up-to-date symlink: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/xycar_msgs_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so
+[8.364s] -- Up-to-date symlink: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/xycar_msgs_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so
+[8.364s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/ament_index/resource_index/rust_packages/xycar_msgs
+[8.375s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/rust/Cargo.toml
+[8.381s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/rust/build.rs
+[8.389s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/rust/src/lib.rs
+[8.395s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/rust/src/msg.rs
+[8.402s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/rust/src/msg/rmw.rs
+[8.408s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/msg/XycarMotor.idl
+[8.415s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/msg/XycarUltrasonic.idl
+[8.421s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/msg/XycarMotor.msg
+[8.429s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/msg/XycarUltrasonic.msg
+[8.434s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/ament_index/resource_index/package_run_dependencies/xycar_msgs
+[8.442s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/ament_index/resource_index/parent_prefix_path/xycar_msgs
+[8.448s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/environment/ament_prefix_path.sh
+[8.458s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/environment/ament_prefix_path.dsv
+[8.467s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/environment/path.sh
+[8.478s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/environment/path.dsv
+[8.480s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/local_setup.bash
+[8.486s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/local_setup.sh
+[8.495s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/local_setup.zsh
+[8.501s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/local_setup.dsv
+[8.508s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/package.dsv
+[8.514s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/ament_index/resource_index/packages/xycar_msgs
+[8.521s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/rosidl_cmake-extras.cmake
+[8.528s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/ament_cmake_export_dependencies-extras.cmake
+[8.535s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/ament_cmake_export_include_directories-extras.cmake
+[8.541s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/ament_cmake_export_libraries-extras.cmake
+[8.549s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/ament_cmake_export_targets-extras.cmake
+[8.555s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake
+[8.562s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
+[8.569s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/xycar_msgsConfig.cmake
+[8.578s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/xycar_msgsConfig-version.cmake
+[8.589s] -- Symlinking: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/package.xml
+[8.595s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/libxycar_msgs__rosidl_generator_c.so
+[8.595s] -- Set runtime path of "/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/libxycar_msgs__rosidl_generator_c.so" to ""
+[8.595s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/libxycar_msgs__rosidl_typesupport_fastrtps_c.so
+[8.595s] -- Set runtime path of "/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/libxycar_msgs__rosidl_typesupport_fastrtps_c.so" to ""
+[8.595s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/libxycar_msgs__rosidl_typesupport_introspection_c.so
+[8.595s] -- Set runtime path of "/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/libxycar_msgs__rosidl_typesupport_introspection_c.so" to ""
+[8.595s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/libxycar_msgs__rosidl_typesupport_c.so
+[8.595s] -- Set runtime path of "/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/libxycar_msgs__rosidl_typesupport_c.so" to ""
+[8.595s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/libxycar_msgs__rosidl_typesupport_fastrtps_cpp.so
+[8.596s] -- Set runtime path of "/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/libxycar_msgs__rosidl_typesupport_fastrtps_cpp.so" to ""
+[8.596s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/libxycar_msgs__rosidl_typesupport_introspection_cpp.so
+[8.596s] -- Set runtime path of "/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/libxycar_msgs__rosidl_typesupport_introspection_cpp.so" to ""
+[8.596s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/libxycar_msgs__rosidl_typesupport_cpp.so
+[8.596s] -- Set runtime path of "/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/libxycar_msgs__rosidl_typesupport_cpp.so" to ""
+[8.640s] Listing '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs'...
+[8.640s] Compiling '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/__init__.py'...
+[8.640s] Listing '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/msg'...
+[8.640s] Compiling '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/msg/__init__.py'...
+[8.640s] Compiling '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/msg/_xycar_motor.py'...
+[8.640s] Compiling '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages/xycar_msgs/msg/_xycar_ultrasonic.py'...
+[8.643s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/libxycar_msgs__rosidl_generator_py.so
+[8.643s] -- Set runtime path of "/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib/libxycar_msgs__rosidl_generator_py.so" to ""
+[8.643s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/export_xycar_msgs__rosidl_generator_cExport.cmake
+[8.643s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/export_xycar_msgs__rosidl_generator_cExport-noconfig.cmake
+[8.643s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/export_xycar_msgs__rosidl_typesupport_fastrtps_cExport.cmake
+[8.643s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/export_xycar_msgs__rosidl_typesupport_fastrtps_cExport-noconfig.cmake
+[8.643s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/xycar_msgs__rosidl_typesupport_introspection_cExport.cmake
+[8.643s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/xycar_msgs__rosidl_typesupport_introspection_cExport-noconfig.cmake
+[8.643s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/xycar_msgs__rosidl_typesupport_cExport.cmake
+[8.643s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/xycar_msgs__rosidl_typesupport_cExport-noconfig.cmake
+[8.644s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/export_xycar_msgs__rosidl_generator_cppExport.cmake
+[8.644s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/export_xycar_msgs__rosidl_typesupport_fastrtps_cppExport.cmake
+[8.644s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/export_xycar_msgs__rosidl_typesupport_fastrtps_cppExport-noconfig.cmake
+[8.644s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/xycar_msgs__rosidl_typesupport_introspection_cppExport.cmake
+[8.644s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/xycar_msgs__rosidl_typesupport_introspection_cppExport-noconfig.cmake
+[8.644s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/xycar_msgs__rosidl_typesupport_cppExport.cmake
+[8.644s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/xycar_msgs__rosidl_typesupport_cppExport-noconfig.cmake
+[8.644s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/export_xycar_msgs__rosidl_generator_pyExport.cmake
+[8.644s] -- Installing: /home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/share/xycar_msgs/cmake/export_xycar_msgs__rosidl_generator_pyExport-noconfig.cmake
+[8.646s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs' returned '0': CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:/home/xytron/2026-kookmin-contest-qualifier/install/ericar_msgs:/home/xytron/xycar_ws/install/xycar_msgs:/home/xytron/2026-kookmin-contest-qualifier/install/my_lidar:/home/xytron/2026-kookmin-contest-qualifier/install/my_cam:/home/xytron/2026-kookmin-contest-qualifier/install/main:/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer:/home/xytron/2026-kookmin-contest-qualifier/install/track_drive:/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint:/home/xytron/2026-kookmin-contest-qualifier/install/perception:/home/xytron/2026-kookmin-contest-qualifier/install/my_motor:/home/xytron/2026-kookmin-contest-qualifier/install/my_imu:/home/xytron/2026-kookmin-contest-qualifier/install/driving:/home/xytron/xycar_ws/install/my_lidar:/home/xytron/xycar_ws/install/my_cam:/home/xytron/xycar_ws/install/main:/home/xytron/xycar_ws/install/kookmin9_viewer:/home/xytron/xycar_ws/install/track_drive:/home/xytron/xycar_ws/install/ros_tcp_endpoint:/home/xytron/xycar_ws/install/perception:/home/xytron/xycar_ws/install/my_motor:/home/xytron/xycar_ws/install/my_imu:/home/xytron/xycar_ws/install/driving:/opt/ros/humble:/home/xytron/xycar_ws/install/ericar_msgs /usr/bin/cmake --install /home/xytron/2026-kookmin-contest-qualifier/build/xycar_msgs

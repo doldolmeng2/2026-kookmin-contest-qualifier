@@ -1,0 +1,36 @@
+[2.923s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/my_imu': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_imu/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/build
+[3.434s] running develop
+[3.782s] Removing /home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages/my-imu.egg-link (link to .)
+[3.864s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/my_imu' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_imu/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/build
+[3.865s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/my_imu': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_imu/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/my_imu build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/install.log --single-version-externally-managed install_data --force
+[4.387s] running egg_info
+[4.387s] writing ../build/my_imu/my_imu.egg-info/PKG-INFO
+[4.387s] writing dependency_links to ../build/my_imu/my_imu.egg-info/dependency_links.txt
+[4.387s] writing entry points to ../build/my_imu/my_imu.egg-info/entry_points.txt
+[4.387s] writing requirements to ../build/my_imu/my_imu.egg-info/requires.txt
+[4.387s] writing top-level names to ../build/my_imu/my_imu.egg-info/top_level.txt
+[4.387s] reading manifest file '../build/my_imu/my_imu.egg-info/SOURCES.txt'
+[4.387s] writing manifest file '../build/my_imu/my_imu.egg-info/SOURCES.txt'
+[4.387s] running build
+[4.388s] running build_py
+[4.388s] creating /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/build
+[4.388s] creating /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/build/lib
+[4.388s] creating /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/build/lib/my_imu
+[4.389s] copying my_imu/__init__.py -> /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/build/lib/my_imu
+[4.389s] copying my_imu/roll_pitch_yaw.py -> /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/build/lib/my_imu
+[4.389s] running install
+[4.389s] running install_lib
+[4.389s] creating /home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages/my_imu
+[4.389s] copying /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/build/lib/my_imu/__init__.py -> /home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages/my_imu
+[4.389s] copying /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/build/lib/my_imu/roll_pitch_yaw.py -> /home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages/my_imu
+[4.389s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages/my_imu/__init__.py to __init__.cpython-310.pyc
+[4.389s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages/my_imu/roll_pitch_yaw.py to roll_pitch_yaw.cpython-310.pyc
+[4.409s] running install_data
+[4.409s] copying resource/my_imu -> /home/xytron/2026-kookmin-contest-qualifier/install/my_imu/share/ament_index/resource_index/packages
+[4.409s] copying package.xml -> /home/xytron/2026-kookmin-contest-qualifier/install/my_imu/share/my_imu
+[4.409s] running install_egg_info
+[4.409s] Copying ../build/my_imu/my_imu.egg-info to /home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages/my_imu-0.0.0-py3.10.egg-info
+[4.409s] running install_scripts
+[4.415s] Installing roll_pitch_yaw script to /home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/my_imu
+[4.415s] writing list of installed files to '/home/xytron/2026-kookmin-contest-qualifier/build/my_imu/install.log'
+[4.439s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/my_imu' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_imu/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/my_imu build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/install.log --single-version-externally-managed install_data --force

@@ -1,0 +1,15 @@
+running develop
+running egg_info
+writing kookmin9_viewer.egg-info/PKG-INFO
+writing dependency_links to kookmin9_viewer.egg-info/dependency_links.txt
+writing entry points to kookmin9_viewer.egg-info/entry_points.txt
+writing requirements to kookmin9_viewer.egg-info/requires.txt
+writing top-level names to kookmin9_viewer.egg-info/top_level.txt
+reading manifest file 'kookmin9_viewer.egg-info/SOURCES.txt'
+writing manifest file 'kookmin9_viewer.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/lib/python3.10/site-packages/kookmin9-viewer.egg-link (link to .)
+Installing test_viewer script to /home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/lib/kookmin9_viewer
+
+Installed /home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer
+running symlink_data

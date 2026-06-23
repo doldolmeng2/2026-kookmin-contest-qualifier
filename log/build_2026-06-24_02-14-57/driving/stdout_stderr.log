@@ -1,0 +1,22 @@
+running egg_info
+writing ../../build/driving/driving.egg-info/PKG-INFO
+writing dependency_links to ../../build/driving/driving.egg-info/dependency_links.txt
+writing entry points to ../../build/driving/driving.egg-info/entry_points.txt
+writing requirements to ../../build/driving/driving.egg-info/requires.txt
+writing top-level names to ../../build/driving/driving.egg-info/top_level.txt
+reading manifest file '../../build/driving/driving.egg-info/SOURCES.txt'
+writing manifest file '../../build/driving/driving.egg-info/SOURCES.txt'
+running build
+running build_py
+copying driving/driving.py -> /home/xytron/2026-kookmin-contest-qualifier/build/driving/build/lib/driving
+running install
+running install_lib
+copying /home/xytron/2026-kookmin-contest-qualifier/build/driving/build/lib/driving/driving.py -> /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving
+byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving/driving.py to driving.cpython-310.pyc
+running install_data
+running install_egg_info
+removing '/home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving-0.0.1-py3.10.egg-info' (and everything under it)
+Copying ../../build/driving/driving.egg-info to /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving-0.0.1-py3.10.egg-info
+running install_scripts
+Installing driving script to /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/driving
+writing list of installed files to '/home/xytron/2026-kookmin-contest-qualifier/build/driving/install.log'

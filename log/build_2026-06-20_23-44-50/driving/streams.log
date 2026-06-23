@@ -1,0 +1,19 @@
+[1.182s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/driving': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/driving/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/driving/build --no-deps symlink_data --force
+[1.520s] running develop
+[1.719s] running egg_info
+[1.720s] writing driving.egg-info/PKG-INFO
+[1.722s] writing dependency_links to driving.egg-info/dependency_links.txt
+[1.723s] writing entry points to driving.egg-info/entry_points.txt
+[1.724s] writing requirements to driving.egg-info/requires.txt
+[1.724s] writing top-level names to driving.egg-info/top_level.txt
+[1.727s] reading manifest file 'driving.egg-info/SOURCES.txt'
+[1.728s] writing manifest file 'driving.egg-info/SOURCES.txt'
+[1.729s] running build_ext
+[1.730s] Creating /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving.egg-link (link to .)
+[1.730s] Installing driving script to /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/driving
+[1.731s] 
+[1.731s] Installed /home/xytron/2026-kookmin-contest-qualifier/build/driving
+[1.731s] running symlink_data
+[1.739s] symbolically linking /home/xytron/2026-kookmin-contest-qualifier/build/driving/resource/driving -> /home/xytron/2026-kookmin-contest-qualifier/install/driving/share/ament_index/resource_index/packages
+[1.739s] symbolically linking /home/xytron/2026-kookmin-contest-qualifier/build/driving/package.xml -> /home/xytron/2026-kookmin-contest-qualifier/install/driving/share/driving
+[1.762s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/driving' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/driving/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/driving/build --no-deps symlink_data --force

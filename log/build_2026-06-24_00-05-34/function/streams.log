@@ -1,0 +1,52 @@
+[2.299s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/function': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/function/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/function/build
+[2.773s] running develop
+[3.051s] Removing /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function.egg-link (link to .)
+[3.091s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/function' returned '0': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/function/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/function/build
+[3.091s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/function': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/function/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/function build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/function/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/function/install.log --single-version-externally-managed install_data --force
+[3.412s] running egg_info
+[3.415s] writing ../../build/function/function.egg-info/PKG-INFO
+[3.417s] writing dependency_links to ../../build/function/function.egg-info/dependency_links.txt
+[3.417s] writing entry points to ../../build/function/function.egg-info/entry_points.txt
+[3.418s] writing requirements to ../../build/function/function.egg-info/requires.txt
+[3.418s] writing top-level names to ../../build/function/function.egg-info/top_level.txt
+[3.422s] reading manifest file '../../build/function/function.egg-info/SOURCES.txt'
+[3.424s] writing manifest file '../../build/function/function.egg-info/SOURCES.txt'
+[3.424s] running build
+[3.424s] running build_py
+[3.424s] creating /home/xytron/2026-kookmin-contest-qualifier/build/function/build
+[3.425s] creating /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib
+[3.425s] creating /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function
+[3.426s] copying function/camera_viewer.py -> /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function
+[3.426s] copying function/imu_visualizer.py -> /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function
+[3.427s] copying function/lidar_visualizer.py -> /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function
+[3.427s] copying function/manual_control.py -> /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function
+[3.429s] copying function/__init__.py -> /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function
+[3.429s] copying function/hsv_tuner.py -> /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function
+[3.430s] running install
+[3.432s] running install_lib
+[3.433s] creating /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function
+[3.434s] copying /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function/camera_viewer.py -> /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function
+[3.434s] copying /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function/imu_visualizer.py -> /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function
+[3.434s] copying /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function/lidar_visualizer.py -> /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function
+[3.434s] copying /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function/manual_control.py -> /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function
+[3.434s] copying /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function/__init__.py -> /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function
+[3.434s] copying /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function/hsv_tuner.py -> /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function
+[3.435s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function/camera_viewer.py to camera_viewer.cpython-310.pyc
+[3.436s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function/imu_visualizer.py to imu_visualizer.cpython-310.pyc
+[3.438s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function/lidar_visualizer.py to lidar_visualizer.cpython-310.pyc
+[3.439s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function/manual_control.py to manual_control.cpython-310.pyc
+[3.441s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function/__init__.py to __init__.cpython-310.pyc
+[3.441s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function/hsv_tuner.py to hsv_tuner.cpython-310.pyc
+[3.443s] running install_data
+[3.443s] copying resource/function -> /home/xytron/2026-kookmin-contest-qualifier/install/function/share/ament_index/resource_index/packages
+[3.444s] copying package.xml -> /home/xytron/2026-kookmin-contest-qualifier/install/function/share/function
+[3.444s] running install_egg_info
+[3.448s] Copying ../../build/function/function.egg-info to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function-0.0.1-py3.10.egg-info
+[3.451s] running install_scripts
+[3.485s] Installing camera_viewer script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+[3.486s] Installing hsv_tuner script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+[3.486s] Installing imu_visualizer script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+[3.486s] Installing lidar_visualizer script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+[3.486s] Installing manual_control script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+[3.487s] writing list of installed files to '/home/xytron/2026-kookmin-contest-qualifier/build/function/install.log'
+[3.524s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/function' returned '0': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/function/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/function build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/function/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/function/install.log --single-version-externally-managed install_data --force

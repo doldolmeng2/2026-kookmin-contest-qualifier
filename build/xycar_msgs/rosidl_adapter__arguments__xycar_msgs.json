@@ -1,0 +1,7 @@
+{
+  "package_name": "xycar_msgs",
+  "non_idl_tuples": [
+    "/home/xytron/2026-kookmin-contest-qualifier/xycar_msgs:msg/XycarMotor.msg",
+    "/home/xytron/2026-kookmin-contest-qualifier/xycar_msgs:msg/XycarUltrasonic.msg"
+  ]
+}

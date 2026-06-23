@@ -1,0 +1,40 @@
+running egg_info
+creating ../build/main/main.egg-info
+writing ../build/main/main.egg-info/PKG-INFO
+writing dependency_links to ../build/main/main.egg-info/dependency_links.txt
+writing entry points to ../build/main/main.egg-info/entry_points.txt
+writing requirements to ../build/main/main.egg-info/requires.txt
+writing top-level names to ../build/main/main.egg-info/top_level.txt
+writing manifest file '../build/main/main.egg-info/SOURCES.txt'
+reading manifest file '../build/main/main.egg-info/SOURCES.txt'
+writing manifest file '../build/main/main.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/xytron/2026-kookmin-contest-qualifier/ericar/build/main/build
+creating /home/xytron/2026-kookmin-contest-qualifier/ericar/build/main/build/lib
+creating /home/xytron/2026-kookmin-contest-qualifier/ericar/build/main/build/lib/main
+copying main/__init__.py -> /home/xytron/2026-kookmin-contest-qualifier/ericar/build/main/build/lib/main
+copying main/control.py -> /home/xytron/2026-kookmin-contest-qualifier/ericar/build/main/build/lib/main
+copying main/main.py -> /home/xytron/2026-kookmin-contest-qualifier/ericar/build/main/build/lib/main
+running install
+running install_lib
+creating /home/xytron/2026-kookmin-contest-qualifier/ericar/install/main/lib/python3.10/site-packages/main
+copying /home/xytron/2026-kookmin-contest-qualifier/ericar/build/main/build/lib/main/__init__.py -> /home/xytron/2026-kookmin-contest-qualifier/ericar/install/main/lib/python3.10/site-packages/main
+copying /home/xytron/2026-kookmin-contest-qualifier/ericar/build/main/build/lib/main/control.py -> /home/xytron/2026-kookmin-contest-qualifier/ericar/install/main/lib/python3.10/site-packages/main
+copying /home/xytron/2026-kookmin-contest-qualifier/ericar/build/main/build/lib/main/main.py -> /home/xytron/2026-kookmin-contest-qualifier/ericar/install/main/lib/python3.10/site-packages/main
+byte-compiling /home/xytron/2026-kookmin-contest-qualifier/ericar/install/main/lib/python3.10/site-packages/main/__init__.py to __init__.cpython-310.pyc
+byte-compiling /home/xytron/2026-kookmin-contest-qualifier/ericar/install/main/lib/python3.10/site-packages/main/control.py to control.cpython-310.pyc
+byte-compiling /home/xytron/2026-kookmin-contest-qualifier/ericar/install/main/lib/python3.10/site-packages/main/main.py to main.cpython-310.pyc
+running install_data
+creating /home/xytron/2026-kookmin-contest-qualifier/ericar/install/main/share/ament_index
+creating /home/xytron/2026-kookmin-contest-qualifier/ericar/install/main/share/ament_index/resource_index
+creating /home/xytron/2026-kookmin-contest-qualifier/ericar/install/main/share/ament_index/resource_index/packages
+copying resource/main -> /home/xytron/2026-kookmin-contest-qualifier/ericar/install/main/share/ament_index/resource_index/packages
+copying package.xml -> /home/xytron/2026-kookmin-contest-qualifier/ericar/install/main/share/main
+creating /home/xytron/2026-kookmin-contest-qualifier/ericar/install/main/share/main/launch
+running install_egg_info
+Copying ../build/main/main.egg-info to /home/xytron/2026-kookmin-contest-qualifier/ericar/install/main/lib/python3.10/site-packages/main-0.0.1-py3.10.egg-info
+running install_scripts
+Installing control script to /home/xytron/2026-kookmin-contest-qualifier/ericar/install/main/lib/main
+Installing main script to /home/xytron/2026-kookmin-contest-qualifier/ericar/install/main/lib/main
+writing list of installed files to '/home/xytron/2026-kookmin-contest-qualifier/ericar/build/main/install.log'

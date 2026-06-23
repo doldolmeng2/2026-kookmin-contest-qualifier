@@ -1,0 +1,17 @@
+[2.498s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/track_drive': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/track_drive/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/track_drive/build --no-deps symlink_data
+[2.872s] running develop
+[3.175s] running egg_info
+[3.175s] writing track_drive.egg-info/PKG-INFO
+[3.177s] writing dependency_links to track_drive.egg-info/dependency_links.txt
+[3.181s] writing entry points to track_drive.egg-info/entry_points.txt
+[3.181s] writing requirements to track_drive.egg-info/requires.txt
+[3.181s] writing top-level names to track_drive.egg-info/top_level.txt
+[3.181s] reading manifest file 'track_drive.egg-info/SOURCES.txt'
+[3.190s] writing manifest file 'track_drive.egg-info/SOURCES.txt'
+[3.191s] running build_ext
+[3.192s] Creating /home/xytron/2026-kookmin-contest-qualifier/install/track_drive/lib/python3.10/site-packages/track-drive.egg-link (link to .)
+[3.192s] Installing track_drive script to /home/xytron/2026-kookmin-contest-qualifier/install/track_drive/lib/track_drive
+[3.192s] 
+[3.192s] Installed /home/xytron/2026-kookmin-contest-qualifier/build/track_drive
+[3.192s] running symlink_data
+[3.269s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/track_drive' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/track_drive/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/track_drive/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/track_drive/build --no-deps symlink_data

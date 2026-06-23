@@ -1,0 +1,18 @@
+running develop
+running egg_info
+writing main.egg-info/PKG-INFO
+writing dependency_links to main.egg-info/dependency_links.txt
+writing entry points to main.egg-info/entry_points.txt
+writing requirements to main.egg-info/requires.txt
+writing top-level names to main.egg-info/top_level.txt
+reading manifest file 'main.egg-info/SOURCES.txt'
+writing manifest file 'main.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages/main.egg-link (link to .)
+Installing control script to /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/main
+Installing main script to /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/main
+
+Installed /home/xytron/2026-kookmin-contest-qualifier/build/main
+running symlink_data
+symbolically linking /home/xytron/2026-kookmin-contest-qualifier/build/main/resource/main -> /home/xytron/2026-kookmin-contest-qualifier/install/main/share/ament_index/resource_index/packages
+symbolically linking /home/xytron/2026-kookmin-contest-qualifier/build/main/package.xml -> /home/xytron/2026-kookmin-contest-qualifier/install/main/share/main

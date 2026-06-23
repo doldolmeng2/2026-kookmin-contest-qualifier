@@ -1,0 +1,22 @@
+[2.683s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/perception': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/perception/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/perception build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/perception/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/perception/install.log --single-version-externally-managed install_data
+[3.051s] running egg_info
+[3.053s] writing ../../build/perception/perception.egg-info/PKG-INFO
+[3.053s] writing dependency_links to ../../build/perception/perception.egg-info/dependency_links.txt
+[3.053s] writing entry points to ../../build/perception/perception.egg-info/entry_points.txt
+[3.059s] writing requirements to ../../build/perception/perception.egg-info/requires.txt
+[3.059s] writing top-level names to ../../build/perception/perception.egg-info/top_level.txt
+[3.060s] reading manifest file '../../build/perception/perception.egg-info/SOURCES.txt'
+[3.063s] writing manifest file '../../build/perception/perception.egg-info/SOURCES.txt'
+[3.063s] running build
+[3.063s] running build_py
+[3.067s] running install
+[3.067s] running install_lib
+[3.067s] running install_data
+[3.067s] running install_egg_info
+[3.069s] removing '/home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception-0.0.1-py3.10.egg-info' (and everything under it)
+[3.073s] Copying ../../build/perception/perception.egg-info to /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception-0.0.1-py3.10.egg-info
+[3.076s] running install_scripts
+[3.120s] Installing collect_data script to /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/perception
+[3.120s] Installing perception script to /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/perception
+[3.124s] writing list of installed files to '/home/xytron/2026-kookmin-contest-qualifier/build/perception/install.log'
+[3.202s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/perception' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/perception/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/perception build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/perception/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/perception/install.log --single-version-externally-managed install_data

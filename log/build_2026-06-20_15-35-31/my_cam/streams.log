@@ -1,0 +1,24 @@
+[1.905s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/my_cam': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_cam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/my_cam/build --no-deps symlink_data
+[2.297s] running develop
+[2.492s] running egg_info
+[2.492s] creating my_cam.egg-info
+[2.492s] writing my_cam.egg-info/PKG-INFO
+[2.492s] writing dependency_links to my_cam.egg-info/dependency_links.txt
+[2.493s] writing entry points to my_cam.egg-info/entry_points.txt
+[2.493s] writing requirements to my_cam.egg-info/requires.txt
+[2.493s] writing top-level names to my_cam.egg-info/top_level.txt
+[2.493s] writing manifest file 'my_cam.egg-info/SOURCES.txt'
+[2.494s] reading manifest file 'my_cam.egg-info/SOURCES.txt'
+[2.495s] writing manifest file 'my_cam.egg-info/SOURCES.txt'
+[2.497s] running build_ext
+[2.497s] Creating /home/xytron/2026-kookmin-contest-qualifier/install/my_cam/lib/python3.10/site-packages/my-cam.egg-link (link to .)
+[2.497s] Installing cam_viewer script to /home/xytron/2026-kookmin-contest-qualifier/install/my_cam/lib/my_cam
+[2.498s] 
+[2.498s] Installed /home/xytron/2026-kookmin-contest-qualifier/build/my_cam
+[2.498s] running symlink_data
+[2.498s] creating /home/xytron/2026-kookmin-contest-qualifier/install/my_cam/share/ament_index
+[2.498s] creating /home/xytron/2026-kookmin-contest-qualifier/install/my_cam/share/ament_index/resource_index
+[2.498s] creating /home/xytron/2026-kookmin-contest-qualifier/install/my_cam/share/ament_index/resource_index/packages
+[2.498s] symbolically linking /home/xytron/2026-kookmin-contest-qualifier/build/my_cam/resource/my_cam -> /home/xytron/2026-kookmin-contest-qualifier/install/my_cam/share/ament_index/resource_index/packages
+[2.498s] symbolically linking /home/xytron/2026-kookmin-contest-qualifier/build/my_cam/package.xml -> /home/xytron/2026-kookmin-contest-qualifier/install/my_cam/share/my_cam
+[2.526s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/my_cam' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_cam/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_cam/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/my_cam/build --no-deps symlink_data

@@ -1,0 +1,48 @@
+running develop
+Removing /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function.egg-link (link to .)
+running egg_info
+writing ../../build/function/function.egg-info/PKG-INFO
+writing dependency_links to ../../build/function/function.egg-info/dependency_links.txt
+writing entry points to ../../build/function/function.egg-info/entry_points.txt
+writing requirements to ../../build/function/function.egg-info/requires.txt
+writing top-level names to ../../build/function/function.egg-info/top_level.txt
+reading manifest file '../../build/function/function.egg-info/SOURCES.txt'
+writing manifest file '../../build/function/function.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/xytron/2026-kookmin-contest-qualifier/build/function/build
+creating /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib
+creating /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function
+copying function/camera_viewer.py -> /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function
+copying function/imu_visualizer.py -> /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function
+copying function/lidar_visualizer.py -> /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function
+copying function/manual_control.py -> /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function
+copying function/__init__.py -> /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function
+copying function/hsv_tuner.py -> /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function
+running install
+running install_lib
+creating /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function
+copying /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function/camera_viewer.py -> /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function
+copying /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function/imu_visualizer.py -> /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function
+copying /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function/lidar_visualizer.py -> /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function
+copying /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function/manual_control.py -> /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function
+copying /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function/__init__.py -> /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function
+copying /home/xytron/2026-kookmin-contest-qualifier/build/function/build/lib/function/hsv_tuner.py -> /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function
+byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function/camera_viewer.py to camera_viewer.cpython-310.pyc
+byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function/imu_visualizer.py to imu_visualizer.cpython-310.pyc
+byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function/lidar_visualizer.py to lidar_visualizer.cpython-310.pyc
+byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function/manual_control.py to manual_control.cpython-310.pyc
+byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function/__init__.py to __init__.cpython-310.pyc
+byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function/hsv_tuner.py to hsv_tuner.cpython-310.pyc
+running install_data
+copying resource/function -> /home/xytron/2026-kookmin-contest-qualifier/install/function/share/ament_index/resource_index/packages
+copying package.xml -> /home/xytron/2026-kookmin-contest-qualifier/install/function/share/function
+running install_egg_info
+Copying ../../build/function/function.egg-info to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/python3.10/site-packages/function-0.0.1-py3.10.egg-info
+running install_scripts
+Installing camera_viewer script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+Installing hsv_tuner script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+Installing imu_visualizer script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+Installing lidar_visualizer script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+Installing manual_control script to /home/xytron/2026-kookmin-contest-qualifier/install/function/lib/function
+writing list of installed files to '/home/xytron/2026-kookmin-contest-qualifier/build/function/install.log'

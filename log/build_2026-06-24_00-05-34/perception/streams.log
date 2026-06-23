@@ -1,0 +1,61 @@
+[2.927s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/perception': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/perception/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/perception/build
+[3.452s] running develop
+[3.775s] Removing /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception.egg-link (link to .)
+[3.835s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/perception' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/perception/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/perception/build
+[3.837s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/perception': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/perception/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/perception build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/perception/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/perception/install.log --single-version-externally-managed install_data --force
+[4.383s] running egg_info
+[4.383s] writing ../../build/perception/perception.egg-info/PKG-INFO
+[4.383s] writing dependency_links to ../../build/perception/perception.egg-info/dependency_links.txt
+[4.383s] writing entry points to ../../build/perception/perception.egg-info/entry_points.txt
+[4.383s] writing requirements to ../../build/perception/perception.egg-info/requires.txt
+[4.383s] writing top-level names to ../../build/perception/perception.egg-info/top_level.txt
+[4.383s] reading manifest file '../../build/perception/perception.egg-info/SOURCES.txt'
+[4.383s] writing manifest file '../../build/perception/perception.egg-info/SOURCES.txt'
+[4.383s] running build
+[4.383s] running build_py
+[4.384s] creating /home/xytron/2026-kookmin-contest-qualifier/build/perception/build
+[4.384s] creating /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib
+[4.385s] creating /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception
+[4.386s] copying perception/left_car.py -> /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception
+[4.388s] copying perception/yolo_detector.py -> /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception
+[4.388s] copying perception/perception.py -> /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception
+[4.388s] copying perception/start_line.py -> /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception
+[4.388s] copying perception/school_zone.py -> /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception
+[4.388s] copying perception/traffic_light.py -> /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception
+[4.388s] copying perception/shortcut_exit.py -> /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception
+[4.388s] copying perception/__init__.py -> /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception
+[4.388s] copying perception/collect_data.py -> /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception
+[4.389s] copying perception/obstacle.py -> /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception
+[4.389s] running install
+[4.395s] running install_lib
+[4.395s] creating /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception
+[4.395s] copying /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception/left_car.py -> /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception
+[4.395s] copying /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception/yolo_detector.py -> /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception
+[4.395s] copying /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception/perception.py -> /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception
+[4.395s] copying /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception/start_line.py -> /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception
+[4.395s] copying /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception/school_zone.py -> /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception
+[4.395s] copying /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception/traffic_light.py -> /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception
+[4.395s] copying /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception/shortcut_exit.py -> /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception
+[4.396s] copying /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception/__init__.py -> /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception
+[4.396s] copying /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception/collect_data.py -> /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception
+[4.396s] copying /home/xytron/2026-kookmin-contest-qualifier/build/perception/build/lib/perception/obstacle.py -> /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception
+[4.396s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception/left_car.py to left_car.cpython-310.pyc
+[4.396s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception/yolo_detector.py to yolo_detector.cpython-310.pyc
+[4.396s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception/perception.py to perception.cpython-310.pyc
+[4.396s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception/start_line.py to start_line.cpython-310.pyc
+[4.396s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception/school_zone.py to school_zone.cpython-310.pyc
+[4.396s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception/traffic_light.py to traffic_light.cpython-310.pyc
+[4.396s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception/shortcut_exit.py to shortcut_exit.cpython-310.pyc
+[4.396s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception/__init__.py to __init__.cpython-310.pyc
+[4.396s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception/collect_data.py to collect_data.cpython-310.pyc
+[4.396s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception/obstacle.py to obstacle.cpython-310.pyc
+[4.396s] running install_data
+[4.396s] copying resource/perception -> /home/xytron/2026-kookmin-contest-qualifier/install/perception/share/ament_index/resource_index/packages
+[4.396s] copying package.xml -> /home/xytron/2026-kookmin-contest-qualifier/install/perception/share/perception
+[4.396s] running install_egg_info
+[4.396s] Copying ../../build/perception/perception.egg-info to /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception-0.0.1-py3.10.egg-info
+[4.397s] running install_scripts
+[4.464s] Installing collect_data script to /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/perception
+[4.464s] Installing perception script to /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/perception
+[4.465s] writing list of installed files to '/home/xytron/2026-kookmin-contest-qualifier/build/perception/install.log'
+[4.520s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/perception' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/perception/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/perception build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/perception/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/perception/install.log --single-version-externally-managed install_data --force

@@ -1,0 +1,17 @@
+[2.863s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/my_imu': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_imu/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/build --no-deps symlink_data
+[3.450s] running develop
+[3.896s] running egg_info
+[3.897s] writing my_imu.egg-info/PKG-INFO
+[3.897s] writing dependency_links to my_imu.egg-info/dependency_links.txt
+[3.898s] writing entry points to my_imu.egg-info/entry_points.txt
+[3.898s] writing requirements to my_imu.egg-info/requires.txt
+[3.898s] writing top-level names to my_imu.egg-info/top_level.txt
+[3.901s] reading manifest file 'my_imu.egg-info/SOURCES.txt'
+[3.903s] writing manifest file 'my_imu.egg-info/SOURCES.txt'
+[3.907s] running build_ext
+[3.907s] Creating /home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages/my-imu.egg-link (link to .)
+[3.909s] Installing roll_pitch_yaw script to /home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/my_imu
+[3.910s] 
+[3.910s] Installed /home/xytron/2026-kookmin-contest-qualifier/build/my_imu
+[3.911s] running symlink_data
+[4.269s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/my_imu' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/my_imu/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/my_imu/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/my_imu/build --no-deps symlink_data

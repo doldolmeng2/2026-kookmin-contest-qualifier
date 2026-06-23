@@ -1,0 +1,68 @@
+[2.909s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build
+[3.429s] running develop
+[3.755s] Removing /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros-tcp-endpoint.egg-link (link to .)
+[3.834s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build
+[3.841s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/ROS-TCP-Endpoint-main-ros2': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/ros_tcp_endpoint build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/install.log --single-version-externally-managed install_data --force
+[4.370s] running egg_info
+[4.370s] writing ../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/PKG-INFO
+[4.370s] writing dependency_links to ../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/dependency_links.txt
+[4.371s] writing entry points to ../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/entry_points.txt
+[4.371s] writing requirements to ../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/requires.txt
+[4.372s] writing top-level names to ../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/top_level.txt
+[4.372s] reading manifest file '../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/SOURCES.txt'
+[4.372s] adding license file 'LICENSE'
+[4.372s] writing manifest file '../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info/SOURCES.txt'
+[4.372s] running build
+[4.372s] running build_py
+[4.372s] creating /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build
+[4.372s] creating /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib
+[4.372s] creating /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[4.372s] copying ros_tcp_endpoint/default_server_endpoint.py -> /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[4.372s] copying ros_tcp_endpoint/publisher.py -> /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[4.372s] copying ros_tcp_endpoint/exceptions.py -> /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[4.372s] copying ros_tcp_endpoint/tcp_sender.py -> /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[4.372s] copying ros_tcp_endpoint/unity_service.py -> /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[4.372s] copying ros_tcp_endpoint/__init__.py -> /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[4.372s] copying ros_tcp_endpoint/client.py -> /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[4.372s] copying ros_tcp_endpoint/thread_pauser.py -> /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[4.373s] copying ros_tcp_endpoint/subscriber.py -> /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[4.373s] copying ros_tcp_endpoint/service.py -> /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[4.374s] copying ros_tcp_endpoint/communication.py -> /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[4.375s] copying ros_tcp_endpoint/server.py -> /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint
+[4.375s] running install
+[4.375s] running install_lib
+[4.384s] creating /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[4.384s] copying /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/default_server_endpoint.py -> /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[4.384s] copying /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/publisher.py -> /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[4.384s] copying /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/exceptions.py -> /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[4.384s] copying /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/tcp_sender.py -> /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[4.384s] copying /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/unity_service.py -> /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[4.384s] copying /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/__init__.py -> /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[4.384s] copying /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/client.py -> /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[4.384s] copying /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/thread_pauser.py -> /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[4.384s] copying /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/subscriber.py -> /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[4.385s] copying /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/service.py -> /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[4.385s] copying /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/communication.py -> /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[4.385s] copying /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build/lib/ros_tcp_endpoint/server.py -> /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint
+[4.385s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/default_server_endpoint.py to default_server_endpoint.cpython-310.pyc
+[4.385s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/publisher.py to publisher.cpython-310.pyc
+[4.385s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/exceptions.py to exceptions.cpython-310.pyc
+[4.385s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/tcp_sender.py to tcp_sender.cpython-310.pyc
+[4.385s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/unity_service.py to unity_service.cpython-310.pyc
+[4.385s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/__init__.py to __init__.cpython-310.pyc
+[4.385s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/client.py to client.cpython-310.pyc
+[4.385s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/thread_pauser.py to thread_pauser.cpython-310.pyc
+[4.386s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/subscriber.py to subscriber.cpython-310.pyc
+[4.386s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/service.py to service.cpython-310.pyc
+[4.386s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/communication.py to communication.cpython-310.pyc
+[4.386s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint/server.py to server.cpython-310.pyc
+[4.386s] running install_data
+[4.386s] copying resource/ros_tcp_endpoint -> /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/share/ament_index/resource_index/packages
+[4.386s] copying package.xml -> /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/share/ros_tcp_endpoint
+[4.386s] copying launch/endpoint.py -> /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/share/ros_tcp_endpoint/launch
+[4.386s] running install_egg_info
+[4.386s] Copying ../build/ros_tcp_endpoint/ros_tcp_endpoint.egg-info to /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros_tcp_endpoint-0.0.1-py3.10.egg-info
+[4.386s] running install_scripts
+[4.396s] Installing default_server_endpoint script to /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/ros_tcp_endpoint
+[4.396s] writing list of installed files to '/home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/install.log'
+[4.485s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/ROS-TCP-Endpoint-main-ros2' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/ros_tcp_endpoint build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/install.log --single-version-externally-managed install_data --force

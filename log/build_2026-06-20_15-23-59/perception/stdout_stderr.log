@@ -1,0 +1,23 @@
+running develop
+running egg_info
+creating perception.egg-info
+writing perception.egg-info/PKG-INFO
+writing dependency_links to perception.egg-info/dependency_links.txt
+writing entry points to perception.egg-info/entry_points.txt
+writing requirements to perception.egg-info/requires.txt
+writing top-level names to perception.egg-info/top_level.txt
+writing manifest file 'perception.egg-info/SOURCES.txt'
+reading manifest file 'perception.egg-info/SOURCES.txt'
+writing manifest file 'perception.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception.egg-link (link to .)
+Installing perception script to /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/perception
+
+Installed /home/xytron/2026-kookmin-contest-qualifier/build/perception
+running symlink_data
+creating /home/xytron/2026-kookmin-contest-qualifier/install/perception/share/ament_index
+creating /home/xytron/2026-kookmin-contest-qualifier/install/perception/share/ament_index/resource_index
+creating /home/xytron/2026-kookmin-contest-qualifier/install/perception/share/ament_index/resource_index/packages
+symbolically linking /home/xytron/2026-kookmin-contest-qualifier/build/perception/resource/perception -> /home/xytron/2026-kookmin-contest-qualifier/install/perception/share/ament_index/resource_index/packages
+symbolically linking /home/xytron/2026-kookmin-contest-qualifier/build/perception/package.xml -> /home/xytron/2026-kookmin-contest-qualifier/install/perception/share/perception
+creating /home/xytron/2026-kookmin-contest-qualifier/install/perception/share/perception/launch

@@ -1,0 +1,18 @@
+[0.652s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/perception': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/perception/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/perception/build --no-deps symlink_data
+[0.932s] running develop
+[1.078s] running egg_info
+[1.078s] writing perception.egg-info/PKG-INFO
+[1.078s] writing dependency_links to perception.egg-info/dependency_links.txt
+[1.078s] writing entry points to perception.egg-info/entry_points.txt
+[1.078s] writing requirements to perception.egg-info/requires.txt
+[1.078s] writing top-level names to perception.egg-info/top_level.txt
+[1.080s] reading manifest file 'perception.egg-info/SOURCES.txt'
+[1.081s] writing manifest file 'perception.egg-info/SOURCES.txt'
+[1.082s] running build_ext
+[1.082s] Creating /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception.egg-link (link to .)
+[1.083s] Installing collect_data script to /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/perception
+[1.083s] Installing perception script to /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/perception
+[1.083s] 
+[1.083s] Installed /home/xytron/2026-kookmin-contest-qualifier/build/perception
+[1.083s] running symlink_data
+[1.109s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/perception' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/perception/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/perception/build --no-deps symlink_data

@@ -1,0 +1,17 @@
+running develop
+running egg_info
+writing driving.egg-info/PKG-INFO
+writing dependency_links to driving.egg-info/dependency_links.txt
+writing entry points to driving.egg-info/entry_points.txt
+writing requirements to driving.egg-info/requires.txt
+writing top-level names to driving.egg-info/top_level.txt
+reading manifest file 'driving.egg-info/SOURCES.txt'
+writing manifest file 'driving.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/python3.10/site-packages/driving.egg-link (link to .)
+Installing driving script to /home/xytron/2026-kookmin-contest-qualifier/install/driving/lib/driving
+
+Installed /home/xytron/2026-kookmin-contest-qualifier/build/driving
+running symlink_data
+symbolically linking /home/xytron/2026-kookmin-contest-qualifier/build/driving/resource/driving -> /home/xytron/2026-kookmin-contest-qualifier/install/driving/share/ament_index/resource_index/packages
+symbolically linking /home/xytron/2026-kookmin-contest-qualifier/build/driving/package.xml -> /home/xytron/2026-kookmin-contest-qualifier/install/driving/share/driving

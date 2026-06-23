@@ -1,0 +1,7 @@
+[console_scripts]
+camera_viewer = function.camera_viewer:main
+hsv_tuner = function.hsv_tuner:main
+imu_visualizer = function.imu_visualizer:main
+lidar_visualizer = function.lidar_visualizer:main
+manual_control = function.manual_control:main
+

@@ -1,0 +1,25 @@
+[0.695s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/main': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/main/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/main build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/main/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/main/install.log --single-version-externally-managed install_data
+[0.830s] running egg_info
+[0.830s] writing ../../build/main/main.egg-info/PKG-INFO
+[0.831s] writing dependency_links to ../../build/main/main.egg-info/dependency_links.txt
+[0.831s] writing entry points to ../../build/main/main.egg-info/entry_points.txt
+[0.831s] writing requirements to ../../build/main/main.egg-info/requires.txt
+[0.832s] writing top-level names to ../../build/main/main.egg-info/top_level.txt
+[0.833s] reading manifest file '../../build/main/main.egg-info/SOURCES.txt'
+[0.833s] writing manifest file '../../build/main/main.egg-info/SOURCES.txt'
+[0.834s] running build
+[0.834s] running build_py
+[0.834s] copying main/control.py -> /home/xytron/2026-kookmin-contest-qualifier/build/main/build/lib/main
+[0.834s] running install
+[0.835s] running install_lib
+[0.836s] copying /home/xytron/2026-kookmin-contest-qualifier/build/main/build/lib/main/control.py -> /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages/main
+[0.837s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages/main/control.py to control.cpython-310.pyc
+[0.837s] running install_data
+[0.838s] running install_egg_info
+[0.839s] removing '/home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages/main-0.0.1-py3.10.egg-info' (and everything under it)
+[0.839s] Copying ../../build/main/main.egg-info to /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages/main-0.0.1-py3.10.egg-info
+[0.840s] running install_scripts
+[0.852s] Installing control script to /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/main
+[0.853s] Installing main script to /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/main
+[0.853s] writing list of installed files to '/home/xytron/2026-kookmin-contest-qualifier/build/main/install.log'
+[0.880s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/main' returned '0': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/main/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/main build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/main/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/main/install.log --single-version-externally-managed install_data

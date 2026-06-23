@@ -1,0 +1,17 @@
+[2.122s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/perception': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/perception/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/perception/build --no-deps symlink_data
+[2.571s] running develop
+[2.836s] running egg_info
+[2.836s] writing perception.egg-info/PKG-INFO
+[2.836s] writing dependency_links to perception.egg-info/dependency_links.txt
+[2.836s] writing entry points to perception.egg-info/entry_points.txt
+[2.836s] writing requirements to perception.egg-info/requires.txt
+[2.836s] writing top-level names to perception.egg-info/top_level.txt
+[2.836s] reading manifest file 'perception.egg-info/SOURCES.txt'
+[2.836s] writing manifest file 'perception.egg-info/SOURCES.txt'
+[2.838s] running build_ext
+[2.838s] Creating /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages/perception.egg-link (link to .)
+[2.842s] Installing perception script to /home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/perception
+[2.844s] 
+[2.844s] Installed /home/xytron/2026-kookmin-contest-qualifier/build/perception
+[2.844s] running symlink_data
+[2.920s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/perception' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/perception/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/perception/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/perception/build --no-deps symlink_data

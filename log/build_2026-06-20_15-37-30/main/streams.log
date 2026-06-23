@@ -1,0 +1,40 @@
+[0.909s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/main': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/main/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/main/build
+[1.162s] running develop
+[1.296s] Removing /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages/main.egg-link (link to .)
+[1.333s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/main' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/main/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/main/build
+[1.335s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/main': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/main/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/main build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/main/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/main/install.log --single-version-externally-managed install_data --force
+[1.582s] running egg_info
+[1.583s] writing ../../build/main/main.egg-info/PKG-INFO
+[1.583s] writing dependency_links to ../../build/main/main.egg-info/dependency_links.txt
+[1.583s] writing entry points to ../../build/main/main.egg-info/entry_points.txt
+[1.583s] writing requirements to ../../build/main/main.egg-info/requires.txt
+[1.583s] writing top-level names to ../../build/main/main.egg-info/top_level.txt
+[1.585s] reading manifest file '../../build/main/main.egg-info/SOURCES.txt'
+[1.586s] writing manifest file '../../build/main/main.egg-info/SOURCES.txt'
+[1.586s] running build
+[1.586s] running build_py
+[1.587s] creating /home/xytron/2026-kookmin-contest-qualifier/build/main/build
+[1.587s] creating /home/xytron/2026-kookmin-contest-qualifier/build/main/build/lib
+[1.587s] creating /home/xytron/2026-kookmin-contest-qualifier/build/main/build/lib/main
+[1.588s] copying main/__init__.py -> /home/xytron/2026-kookmin-contest-qualifier/build/main/build/lib/main
+[1.588s] copying main/control.py -> /home/xytron/2026-kookmin-contest-qualifier/build/main/build/lib/main
+[1.588s] copying main/main.py -> /home/xytron/2026-kookmin-contest-qualifier/build/main/build/lib/main
+[1.588s] running install
+[1.589s] running install_lib
+[1.589s] creating /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages/main
+[1.589s] copying /home/xytron/2026-kookmin-contest-qualifier/build/main/build/lib/main/__init__.py -> /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages/main
+[1.590s] copying /home/xytron/2026-kookmin-contest-qualifier/build/main/build/lib/main/control.py -> /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages/main
+[1.590s] copying /home/xytron/2026-kookmin-contest-qualifier/build/main/build/lib/main/main.py -> /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages/main
+[1.591s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages/main/__init__.py to __init__.cpython-310.pyc
+[1.591s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages/main/control.py to control.cpython-310.pyc
+[1.592s] byte-compiling /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages/main/main.py to main.cpython-310.pyc
+[1.594s] running install_data
+[1.595s] copying resource/main -> /home/xytron/2026-kookmin-contest-qualifier/install/main/share/ament_index/resource_index/packages
+[1.595s] copying package.xml -> /home/xytron/2026-kookmin-contest-qualifier/install/main/share/main
+[1.595s] running install_egg_info
+[1.596s] Copying ../../build/main/main.egg-info to /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages/main-0.0.1-py3.10.egg-info
+[1.597s] running install_scripts
+[1.615s] Installing control script to /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/main
+[1.616s] Installing main script to /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/main
+[1.617s] writing list of installed files to '/home/xytron/2026-kookmin-contest-qualifier/build/main/install.log'
+[1.634s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/ericar/main' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/main/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/main build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/main/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/main/install.log --single-version-externally-managed install_data --force

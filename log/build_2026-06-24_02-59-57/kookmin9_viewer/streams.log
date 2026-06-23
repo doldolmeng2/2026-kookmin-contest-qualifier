@@ -1,0 +1,22 @@
+[1.534s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/kookmin9_viewer': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/kookmin9_viewer build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/install.log --single-version-externally-managed install_data
+[1.836s] running egg_info
+[1.837s] writing ../build/kookmin9_viewer/kookmin9_viewer.egg-info/PKG-INFO
+[1.837s] writing dependency_links to ../build/kookmin9_viewer/kookmin9_viewer.egg-info/dependency_links.txt
+[1.838s] writing entry points to ../build/kookmin9_viewer/kookmin9_viewer.egg-info/entry_points.txt
+[1.838s] writing requirements to ../build/kookmin9_viewer/kookmin9_viewer.egg-info/requires.txt
+[1.839s] writing top-level names to ../build/kookmin9_viewer/kookmin9_viewer.egg-info/top_level.txt
+[1.842s] reading manifest file '../build/kookmin9_viewer/kookmin9_viewer.egg-info/SOURCES.txt'
+[1.843s] adding license file 'LICENSE'
+[1.844s] writing manifest file '../build/kookmin9_viewer/kookmin9_viewer.egg-info/SOURCES.txt'
+[1.844s] running build
+[1.844s] running build_py
+[1.847s] running install
+[1.847s] running install_lib
+[1.849s] running install_data
+[1.850s] running install_egg_info
+[1.851s] removing '/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/lib/python3.10/site-packages/kookmin9_viewer-0.1.0-py3.10.egg-info' (and everything under it)
+[1.852s] Copying ../build/kookmin9_viewer/kookmin9_viewer.egg-info to /home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/lib/python3.10/site-packages/kookmin9_viewer-0.1.0-py3.10.egg-info
+[1.855s] running install_scripts
+[1.888s] Installing test_viewer script to /home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/lib/kookmin9_viewer
+[1.890s] writing list of installed files to '/home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/install.log'
+[2.465s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/kookmin9_viewer' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/kookmin9_viewer build --build-base /home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/build install --record /home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/install.log --single-version-externally-managed install_data

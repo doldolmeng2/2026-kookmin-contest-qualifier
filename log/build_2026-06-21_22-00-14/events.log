@@ -1,0 +1,53 @@
+[0.000000] (-) TimerEvent: {}
+[0.005493] (-) JobUnselected: {'identifier': 'driving'}
+[0.005555] (-) JobUnselected: {'identifier': 'function'}
+[0.005579] (-) JobUnselected: {'identifier': 'kookmin9_viewer'}
+[0.005595] (-) JobUnselected: {'identifier': 'my_cam'}
+[0.005608] (-) JobUnselected: {'identifier': 'my_imu'}
+[0.005622] (-) JobUnselected: {'identifier': 'my_lidar'}
+[0.005634] (-) JobUnselected: {'identifier': 'my_motor'}
+[0.005646] (-) JobUnselected: {'identifier': 'perception'}
+[0.005658] (-) JobUnselected: {'identifier': 'ros_tcp_endpoint'}
+[0.005673] (-) JobUnselected: {'identifier': 'track_drive'}
+[0.005685] (-) JobUnselected: {'identifier': 'xycar_msgs'}
+[0.005741] (main) JobQueued: {'identifier': 'main', 'dependencies': OrderedDict([('xycar_msgs', '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs')])}
+[0.005773] (main) JobStarted: {'identifier': 'main'}
+[0.100138] (-) TimerEvent: {}
+[0.200979] (-) TimerEvent: {}
+[0.302850] (-) TimerEvent: {}
+[0.403299] (-) TimerEvent: {}
+[0.504533] (-) TimerEvent: {}
+[0.605263] (-) TimerEvent: {}
+[0.706716] (-) TimerEvent: {}
+[0.808228] (-) TimerEvent: {}
+[0.909807] (-) TimerEvent: {}
+[1.011632] (-) TimerEvent: {}
+[1.113658] (-) TimerEvent: {}
+[1.215803] (-) TimerEvent: {}
+[1.318933] (-) TimerEvent: {}
+[1.349617] (main) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'develop', '--editable', '--build-directory', '/home/xytron/2026-kookmin-contest-qualifier/build/main/build', '--no-deps', 'symlink_data'], 'cwd': '/home/xytron/2026-kookmin-contest-qualifier/build/main', 'env': {'USER': 'xytron', 'ROS_NAMESPACE': 'xycar', 'ROS_PACKAGE_PATH': '/home/xytron/xycar_ws/install/ericar_msgs/share', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:/home/xytron/xycar_ws/install/xycar_msgs/lib:/home/xytron/xycar_ws/install/ericar_msgs/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib', 'WT_PROFILE_ID': '{e497da6e-94b0-5deb-a2a7-bc930db089cd}', 'HOME': '/home/xytron', 'OLDPWD': '/home/xytron', 'ROS_PYTHON_VERSION': '3', 'WSL_DISTRO_NAME': 'Ubuntu-22.04', '_colcon_cd_root': '/home/xytron/xycar_ws', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/xytron/xycar_ws/install', 'ROS_DISTRO': 'humble', 'LOGNAME': 'xytron', 'NAME': 'BOOK-HJ970BEJVV', 'WSL_INTEROP': '/run/WSL/862_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'PKG_CONFIG_PATH': '/home/xytron/xycar_ws/install/ericar_msgs/lib/x86_64-linux-gnu/pkgconfig:/home/xytron/xycar_ws/install/ericar_msgs/lib/pkgconfig', 'TERM': 'xterm-256color', 'ROS_LOCALHOST_ONLY': '0', 'PATH': '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.7/bin:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.7/libnvvp:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/NVIDIA Corporation/Nsight Compute 2022.2.0/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/nodejs/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/MySQL/MySQL Shell 8.0/bin/:/mnt/c/Users/rnals/AppData/Local/Programs/Python/Launcher/:/mnt/c/Users/rnals/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/rnals/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/rnals/AppData/Roaming/npm:/mnt/c/Users/rnals/AppData/Local/Microsoft/WinGet/Links:/snap/bin', 'WT_SESSION': '1c5ff4a7-092b-4d07-8484-692614cf0f6c', 'XDG_RUNTIME_DIR': '/mnt/wslg/runtime-dir', 'DISPLAY': ':0', 'LANG': 'en_US.UTF-8', 'ROS_DOMAIN_ID': '7', 'AMENT_PREFIX_PATH': '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:/home/xytron/xycar_ws/install/my_lidar:/home/xytron/xycar_ws/install/my_cam:/home/xytron/xycar_ws/install/main:/home/xytron/xycar_ws/install/kookmin9_viewer:/home/xytron/xycar_ws/install/xycar_msgs:/home/xytron/xycar_ws/install/track_drive:/home/xytron/xycar_ws/install/ros_tcp_endpoint:/home/xytron/xycar_ws/install/perception:/home/xytron/xycar_ws/install/my_motor:/home/xytron/xycar_ws/install/my_imu:/home/xytron/xycar_ws/install/driving:/opt/ros/humble', 'SHELL': '/bin/bash', 'PWD': '/home/xytron/2026-kookmin-contest-qualifier/build/main', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/xytron/2026-kookmin-contest-qualifier/build/main/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:/home/xytron/xycar_ws/build/my_lidar:/home/xytron/xycar_ws/install/my_lidar/lib/python3.10/site-packages:/home/xytron/xycar_ws/build/my_cam:/home/xytron/xycar_ws/install/my_cam/lib/python3.10/site-packages:/home/xytron/xycar_ws/install/main/lib/python3.10/site-packages:/home/xytron/xycar_ws/build/kookmin9_viewer:/home/xytron/xycar_ws/install/kookmin9_viewer/lib/python3.10/site-packages:/home/xytron/xycar_ws/install/xycar_msgs/local/lib/python3.10/dist-packages:/home/xytron/xycar_ws/build/track_drive:/home/xytron/xycar_ws/install/track_drive/lib/python3.10/site-packages:/home/xytron/xycar_ws/build/ros_tcp_endpoint:/home/xytron/xycar_ws/install/ros_tcp_endpoint/lib/python3.10/site-packages:/home/xytron/xycar_ws/build/perception:/home/xytron/xycar_ws/install/perception/lib/python3.10/site-packages:/home/xytron/xycar_ws/build/my_motor:/home/xytron/xycar_ws/install/my_motor/lib/python3.10/site-packages:/home/xytron/xycar_ws/build/my_imu:/home/xytron/xycar_ws/install/my_imu/lib/python3.10/site-packages:/home/xytron/xycar_ws/install/ericar_msgs/local/lib/python3.10/dist-packages:/home/xytron/xycar_ws/install/driving/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:/home/xytron/xycar_ws/install/xycar_msgs:/home/xytron/xycar_ws/install/ericar_msgs', 'WSLENV': 'WT_SESSION:WT_PROFILE_ID:'}, 'shell': False}
+[1.421028] (-) TimerEvent: {}
+[1.521812] (-) TimerEvent: {}
+[1.624282] (-) TimerEvent: {}
+[1.718149] (main) StdoutLine: {'line': b'running develop\n'}
+[1.724950] (-) TimerEvent: {}
+[1.825706] (-) TimerEvent: {}
+[1.906010] (main) StdoutLine: {'line': b'running egg_info\n'}
+[1.906223] (main) StdoutLine: {'line': b'writing main.egg-info/PKG-INFO\n'}
+[1.906585] (main) StdoutLine: {'line': b'writing dependency_links to main.egg-info/dependency_links.txt\n'}
+[1.906915] (main) StdoutLine: {'line': b'writing entry points to main.egg-info/entry_points.txt\n'}
+[1.907185] (main) StdoutLine: {'line': b'writing requirements to main.egg-info/requires.txt\n'}
+[1.907430] (main) StdoutLine: {'line': b'writing top-level names to main.egg-info/top_level.txt\n'}
+[1.909999] (main) StdoutLine: {'line': b"reading manifest file 'main.egg-info/SOURCES.txt'\n"}
+[1.910829] (main) StdoutLine: {'line': b"writing manifest file 'main.egg-info/SOURCES.txt'\n"}
+[1.912528] (main) StdoutLine: {'line': b'running build_ext\n'}
+[1.912744] (main) StdoutLine: {'line': b'Creating /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/python3.10/site-packages/main.egg-link (link to .)\n'}
+[1.913808] (main) StdoutLine: {'line': b'Installing control script to /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/main\n'}
+[1.914299] (main) StdoutLine: {'line': b'Installing main script to /home/xytron/2026-kookmin-contest-qualifier/install/main/lib/main\n'}
+[1.914518] (main) StdoutLine: {'line': b'\n'}
+[1.914673] (main) StdoutLine: {'line': b'Installed /home/xytron/2026-kookmin-contest-qualifier/build/main\n'}
+[1.914936] (main) StdoutLine: {'line': b'running symlink_data\n'}
+[1.926164] (-) TimerEvent: {}
+[1.950259] (main) CommandEnded: {'returncode': 0}
+[1.966457] (main) JobEnded: {'identifier': 'main', 'rc': 0}
+[1.967139] (-) EventReactorShutdown: {}

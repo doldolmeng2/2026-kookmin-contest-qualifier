@@ -1,0 +1,17 @@
+[2.405s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/build --no-deps symlink_data
+[2.896s] running develop
+[3.204s] running egg_info
+[3.206s] writing kookmin9_viewer.egg-info/PKG-INFO
+[3.206s] writing dependency_links to kookmin9_viewer.egg-info/dependency_links.txt
+[3.207s] writing entry points to kookmin9_viewer.egg-info/entry_points.txt
+[3.207s] writing requirements to kookmin9_viewer.egg-info/requires.txt
+[3.208s] writing top-level names to kookmin9_viewer.egg-info/top_level.txt
+[3.212s] reading manifest file 'kookmin9_viewer.egg-info/SOURCES.txt'
+[3.213s] writing manifest file 'kookmin9_viewer.egg-info/SOURCES.txt'
+[3.216s] running build_ext
+[3.216s] Creating /home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/lib/python3.10/site-packages/kookmin9-viewer.egg-link (link to .)
+[3.217s] Installing test_viewer script to /home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/lib/kookmin9_viewer
+[3.218s] 
+[3.218s] Installed /home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer
+[3.218s] running symlink_data
+[3.562s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer' returned '0': AMENT_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/kookmin9_viewer/lib/python3.10/site-packages:/home/xytron/2026-kookmin-contest-qualifier/install/xycar_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/kookmin9_viewer/build --no-deps symlink_data

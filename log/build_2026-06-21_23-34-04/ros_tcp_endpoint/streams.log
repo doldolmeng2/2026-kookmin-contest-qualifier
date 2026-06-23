@@ -1,0 +1,17 @@
+[2.863s] Invoking command in '/home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build --no-deps symlink_data
+[3.492s] running develop
+[3.837s] running egg_info
+[3.837s] writing ros_tcp_endpoint.egg-info/PKG-INFO
+[3.841s] writing dependency_links to ros_tcp_endpoint.egg-info/dependency_links.txt
+[3.841s] writing entry points to ros_tcp_endpoint.egg-info/entry_points.txt
+[3.842s] writing requirements to ros_tcp_endpoint.egg-info/requires.txt
+[3.842s] writing top-level names to ros_tcp_endpoint.egg-info/top_level.txt
+[3.844s] reading manifest file 'ros_tcp_endpoint.egg-info/SOURCES.txt'
+[3.846s] writing manifest file 'ros_tcp_endpoint.egg-info/SOURCES.txt'
+[3.848s] running build_ext
+[3.848s] Creating /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages/ros-tcp-endpoint.egg-link (link to .)
+[3.850s] Installing default_server_endpoint script to /home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/ros_tcp_endpoint
+[3.851s] 
+[3.851s] Installed /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint
+[3.851s] running symlink_data
+[4.217s] Invoked command in '/home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint' returned '0': PYTHONPATH=/home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/xytron/2026-kookmin-contest-qualifier/install/ros_tcp_endpoint/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/xytron/2026-kookmin-contest-qualifier/build/ros_tcp_endpoint/build --no-deps symlink_data
