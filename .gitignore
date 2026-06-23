@@ -1,2 +1,8 @@
 __pycache__/
 *.pyc
+build/
+install/
+log/
+ericar/build/
+ericar/install/
+ericar/log/
