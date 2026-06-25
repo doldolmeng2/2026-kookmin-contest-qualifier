@@ -20,7 +20,7 @@ from rclpy.qos import qos_profile_sensor_data
 
 from std_msgs.msg import Int32, Int32MultiArray, Float32, Bool
 from sensor_msgs.msg import Image, LaserScan, Imu
-from cv_bridge import CvBridge
+import numpy as np
 
 # 로직 모듈 (구현은 추후 팀원이 채움)
 from driving.lane_detection import LaneDetector
@@ -47,8 +47,6 @@ class Driving(Node):
 
     def __init__(self):
         super().__init__('driving')
-
-        self._bridge = CvBridge()
 
         # 로직 모듈 인스턴스
         self._lane = LaneDetector()
@@ -94,9 +92,13 @@ class Driving(Node):
     # 콜백
     # ------------------------------------------------------------------
     def _front_cb(self, msg):
-        self._img_front = self._bridge.imgmsg_to_cv2(msg, 'bgr8')
+        img = np.frombuffer(bytes(msg.data), dtype=np.uint8).reshape((msg.height, msg.width, 3))
+        if msg.encoding == 'rgb8':
+            img = img[:, :, ::-1]
+        self._img_front = img
 
     def _scan_cb(self, msg):
+        # print("scan msg received")
         self._scan = msg
 
     def _imu_cb(self, msg):

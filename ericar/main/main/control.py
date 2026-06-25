@@ -36,19 +36,19 @@ MODE_RATIO = {
 SPEED_TABLE = {
     MODE_WAIT:          0,
     MODE_CONE:         15,
-    MODE_LANE:         25,
+    MODE_LANE:         13,
     MODE_LEFT_TURN:    12,
-    MODE_LANE_CHANGE:   9,
+    MODE_LANE_CHANGE:  12,
     MODE_FOLLOW:       10,
     MODE_SIGNAL_WAIT:   0,
-    MODE_SCHOOL_ZONE:   40,
+    MODE_SCHOOL_ZONE:   5,
 }
 
 ANGLE_LIMIT = 100.0
 SPEED_LIMIT = 50.0
 
 # MODE_LANE: angle 절대값이 ANGLE_LIMIT 일 때의 최저 속도
-LANE_SPEED_MIN = 20
+LANE_SPEED_MIN = 8
 
 
 class Control(Node):

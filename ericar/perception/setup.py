@@ -24,6 +24,7 @@ setup(
     entry_points={
         'console_scripts': [
             'perception = perception.perception:main',
+            'collect_data = perception.collect_data:main',
         ],
     },
 )

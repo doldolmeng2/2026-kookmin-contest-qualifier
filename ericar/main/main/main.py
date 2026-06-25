@@ -22,7 +22,7 @@ import cv2
 import numpy as np
 
 from std_msgs.msg import Int32, Int32MultiArray, Float32, Bool
-from sensor_msgs.msg import Imu
+from sensor_msgs.msg import Imu, Image
 from xycar_msgs.msg import XycarMotor
 
 # ---------------------------------------------------------------------------
@@ -46,26 +46,38 @@ MODE_NAME = {
 STAGE_LANE_TARGET = 0   # 0=1차선, 1=2차선
 STAGE_TURN_TYPE = 1     # 0=좌회전A(진입/서쪽), 1=좌회전B(탈출/남쪽)
 
-# 좌회전 완료 판정용 절대 heading (ROS yaw 기준)
-# imu_visualizer 좌표계: yaw=0→N, yaw=π/2→W, yaw=±π→S, yaw=-π/2→E
-TURN_A_TARGET_YAW = math.pi / 2    # 서쪽 (1차 좌회전 완료)
-TURN_B_TARGET_YAW = math.pi        # 남쪽 (2차 좌회전 완료)
-TURN_YAW_TOL = math.radians(20)    # 허용 오차 ±20도
-
-# /perception/status 인덱스
-IDX_START_SIGNAL, IDX_TRAFFIC_SIGNAL, IDX_OBSTACLE_FRONT, IDX_OBSTACLE_PASSED, \
-    IDX_POLICE_DETECTED, IDX_SHORTCUT_EXIT, IDX_LAP_LINE, IDX_CONE_FINISHED, \
-    IDX_SCHOOL_ZONE_SIGNAL, IDX_SCHOOL_ZONE_END = range(10)
-STATUS_LEN = 10
+# /perception/status 인덱스 — perception.py의 IDX_* 정의와 반드시 일치해야 함
+IDX_START_SIGNAL    = 0
+IDX_TRAFFIC_SIGNAL  = 1   # 0=미인식, 1=직진, 2=좌회전, 3=주황/빨간(정지)
+IDX_OBSTACLE_FRONT  = 2
+IDX_OBSTACLE_PASSED = 3
+IDX_POLICE_DETECTED = 4
+IDX_SHORTCUT_EXIT   = 5
+IDX_LAP_LINE        = 6
+IDX_PEDESTRIAN      = 7
+IDX_SCHOOL_ZONE     = 8   # 0=없음, 1=시작(감속)
+IDX_TRAFFIC_PRESENT = 9
+IDX_POLICE_READY    = 10
+IDX_LEFT_TURN_DONE  = 11  # perception이 좌회전 완료 시 1로 세팅
+STATUS_LEN = 12
 
 STATUS_LABEL = [
     'start_signal', 'traffic_signal', 'obstacle_front', 'obstacle_passed',
-    'police_detected', 'shortcut_exit', 'lap_line', 'cone_finished',
-    'school_zone_sig', 'school_zone_end',
+    'police_detected', 'shortcut_exit', 'lap_line', 'pedestrian',
+    'school_zone', 'traffic_present', 'police_ready', 'left_turn_done',
 ]
 
-TRAFFIC_GREEN = 1
-TRAFFIC_LEFT = 2
+TRAFFIC_NONE  = 0
+TRAFFIC_GREEN = 1   # 직진
+TRAFFIC_LEFT  = 2   # 좌회전
+TRAFFIC_STOP  = 3   # 주황/빨간
+
+# cone → lane 전환: lane_detection.py 와 동일한 HSV 범위·ROI
+_YELLOW_LOWER = np.array([25, 205,  80])
+_YELLOW_UPPER = np.array([35, 255, 255])
+_YELLOW_ROI_Y1 = 270
+_YELLOW_ROI_Y2 = 310
+_CONE_YELLOW_MIN = 510   # ROI 내 노란 픽셀 수 ≥ 이 값이면 중앙 차선 검출 완료
 
 
 class Main(Node):
@@ -73,12 +85,16 @@ class Main(Node):
     def __init__(self):
         super().__init__('main')
 
+        self._img_front = None
+
         # 상태
         self._mode = MODE_WAIT
         self._stage = [0, 0]
         self._lap = 0
-        # lap 카운트 잠금: True이면 어린이보호구역 통과 전까지 lap 증가 차단
-        self._lap_locked = False
+        self._lap_locked = False      # 출발선 중복 카운트 방지 (스쿨존 통과 후 해제)
+        self._police_seen = False     # 이번 lap에서 경찰차 인식 여부 (시나리오 분기)
+        self._ignore_police = False   # 방해차량 추월 시작 후 경찰차 무시 플래그
+        self._tl_done = False         # 이번 lap에서 신호등 처리 완료 여부
 
         # 입력 버퍼
         self._status = [0] * STATUS_LEN
@@ -89,6 +105,8 @@ class Main(Node):
         self._motor_speed = 0.0
 
         # ---- 구독 ----
+        self.create_subscription(
+            Image, '/usb_cam/image_raw/front', self._front_cb, 10)
         self.create_subscription(
             Int32MultiArray, '/perception/status', self._status_cb, 10)
         self.create_subscription(Float32, '/driving/offset', self._offset_cb, 10)
@@ -114,9 +132,16 @@ class Main(Node):
     # ==================================================================
     # 콜백
     # ==================================================================
+    def _front_cb(self, msg):
+        img = np.frombuffer(bytes(msg.data), dtype=np.uint8).reshape((msg.height, msg.width, 3))
+        if msg.encoding == 'rgb8':
+            img = img[:, :, ::-1]
+        self._img_front = img
+
     def _status_cb(self, msg):
-        if len(msg.data) >= STATUS_LEN:
-            self._status = list(msg.data[:STATUS_LEN])
+        for i, v in enumerate(msg.data):
+            if i < STATUS_LEN:
+                self._status[i] = int(v)
 
     def _offset_cb(self, msg):
         self._offset = msg.data
@@ -136,17 +161,13 @@ class Main(Node):
     # ==================================================================
     def _fsm_tick(self):
         s = self._status
-        prev_mode, prev_stage = self._mode, list(self._stage)
 
         if self._mode == MODE_WAIT:
-            # 초록불 → 라바콘 주행
             if s[IDX_START_SIGNAL] == 1:
                 self._status[IDX_START_SIGNAL] = 0
                 self._set_mode(MODE_CONE)
 
         elif self._mode == MODE_CONE:
-            # 아스팔트 진입 완료 → 1차선 차선주행
-            # TODO(team): 아스팔트 진입 완료 판정 조건
             if self._cone_finished():
                 self._stage[STAGE_LANE_TARGET] = 0
                 self._set_mode(MODE_LANE)
@@ -155,114 +176,138 @@ class Main(Node):
             self._fsm_lane()
 
         elif self._mode == MODE_LANE_CHANGE:
-            # 차선 변경 완료 → 2차선 저속 추종
             if self._lane_change_done:
                 self._lane_change_done = False
-                self._set_mode(MODE_FOLLOW)
+                if self._stage[STAGE_LANE_TARGET] == 0:
+                    # 1차선 변경 완료 → 차선 주행
+                    self._set_mode(MODE_LANE)
+                else:
+                    # 2차선 변경 완료 → 방해차량 추종
+                    self._set_mode(MODE_FOLLOW)
 
         elif self._mode == MODE_FOLLOW:
-            # 라이다 왼쪽 미감지(추월 완료) → 1차선 복귀
-            # TODO(team): 왼쪽 라이다 미감지 판정 (obstacle_passed 활용 가능)
             if s[IDX_OBSTACLE_PASSED] == 1:
-                self._stage[STAGE_LANE_TARGET] = 0
-                self._set_mode(MODE_LANE)
+                # 추월 완료 → 반대 차선으로 LANE_CHANGE
+                self._stage[STAGE_LANE_TARGET] = 1 - self._stage[STAGE_LANE_TARGET]
+                self._set_mode(MODE_LANE_CHANGE)
 
         elif self._mode == MODE_SIGNAL_WAIT:
             self._fsm_signal_wait()
 
         elif self._mode == MODE_SCHOOL_ZONE:
-            # 어린이보호구역 종료 마커(흰색) 감지 → 1차선 복귀
-            if s[IDX_SCHOOL_ZONE_END] == 1:
-                self._status[IDX_SCHOOL_ZONE_END] = 0
-                self._stage[STAGE_LANE_TARGET] = 0
-                self._lap_locked = False  # 구역 통과 완료 → lap 잠금 해제
-                self._set_mode(MODE_LANE)
+            if s[IDX_SCHOOL_ZONE] == 0:
+                self._lap_locked = False
+                if self._stage[STAGE_LANE_TARGET] == 0:
+                    # 1차선 스쿨존(lap1) → 바로 LANE
+                    self._set_mode(MODE_LANE)
+                else:
+                    # 2차선 스쿨존(lap2/3) → 1차선으로 LANE_CHANGE
+                    self._stage[STAGE_LANE_TARGET] = 0
+                    self._set_mode(MODE_LANE_CHANGE)
 
         elif self._mode == MODE_LEFT_TURN:
-            # 목표 yaw 도달 → 다음 단계
-            # TODO(team): driving.turn 의 reached 판정과 동기화 (별도 토픽 or yaw 직접 비교)
-            if self._left_turn_reached():
+            if s[IDX_LEFT_TURN_DONE] == 1:
                 self._after_left_turn()
 
         self._publish_mode_stage()
 
     def _fsm_lane(self):
         s = self._status
-        # 1차선 주행 중 어린이보호구역 신호 → 어린이보호구역 모드
-        if s[IDX_SCHOOL_ZONE_SIGNAL] == 1 and self._stage[STAGE_LANE_TARGET] == 0:
-            self._status[IDX_SCHOOL_ZONE_SIGNAL] = 0
-            self._set_mode(MODE_SCHOOL_ZONE)
-            return
 
-        # 1차선 주행 중 방해차량 → 차선 변경
-        if s[IDX_OBSTACLE_FRONT] == 1 and self._stage[STAGE_LANE_TARGET] == 0:
-            self._stage[STAGE_LANE_TARGET] = 1   # 2차선으로
-            self._set_mode(MODE_LANE_CHANGE)
-            return
+        if self._lap == 0:
+            # ── lap1: 방해차량 추월 → 스쿨존(1차선) → 출발선 ──
+            if s[IDX_SCHOOL_ZONE] == 1 and self._stage[STAGE_LANE_TARGET] == 0:
+                self._set_mode(MODE_SCHOOL_ZONE)
+                return
 
-        # 2차선 숏컷 주행 중 지름길 출구 감지 → 좌회전B(탈출)
-        if self._stage[STAGE_LANE_TARGET] == 1 and s[IDX_SHORTCUT_EXIT] == 1:
-            self._stage[STAGE_TURN_TYPE] = 1
-            self._set_mode(MODE_LEFT_TURN)
-            return
+            if s[IDX_OBSTACLE_FRONT] == 1 and self._stage[STAGE_LANE_TARGET] == 0:
+                self._stage[STAGE_LANE_TARGET] = 1
+                self._set_mode(MODE_LANE_CHANGE)
+                return
 
-        # 신호등 앞 도달 → 신호 대기
-        # TODO(team): 신호등 앞 도달 판정 (위치/거리). 우선 traffic_signal 수신으로 대체 가능.
-        if self._reached_traffic_light():
-            self._set_mode(MODE_SIGNAL_WAIT)
-            return
+            if s[IDX_LAP_LINE] == 1 and not self._lap_locked:
+                self._lap += 1
+                self._lap_locked = True
+                self._consume_lap_line()
 
-        # 출발선 통과 → lap++ (어린이보호구역 통과 전까지 중복 차단)
-        if s[IDX_LAP_LINE] == 1 and not self._lap_locked:
-            self._lap += 1
-            self._lap_locked = True
-            self._consume_lap_line()
+        else:
+            # ── lap2/3: 경찰차 flag → 신호등 → 시나리오 분기 ──
+
+            # 경찰차 인식 기억 (추월 시작 후에는 무시)
+            if s[IDX_POLICE_DETECTED] == 1 and not self._ignore_police:
+                self._police_seen = True
+
+            # 신호등 감지 → SIGNAL_WAIT (이번 lap에서 아직 처리 안 했을 때만)
+            if s[IDX_TRAFFIC_PRESENT] == 1 and not self._tl_done:
+                self._set_mode(MODE_SIGNAL_WAIT)
+                return
+
+            # 시나리오1: 신호 통과 후 방해차량 감지 → 2차선으로 LANE_CHANGE
+            # 이 시점부터 lap_line까지 경찰차 재인식 무시
+            if (s[IDX_OBSTACLE_FRONT] == 1
+                    and self._stage[STAGE_LANE_TARGET] == 0
+                    and self._police_seen):
+                self._ignore_police = True
+                self._stage[STAGE_LANE_TARGET] = 1
+                self._set_mode(MODE_LANE_CHANGE)
+                return
+
+            # 시나리오2: 2차선 숏컷 주행 중 출구 감지 → LEFT_TURN B
+            if self._stage[STAGE_LANE_TARGET] == 1 and s[IDX_SHORTCUT_EXIT] == 1:
+                self._stage[STAGE_TURN_TYPE] = 1
+                self._set_mode(MODE_LEFT_TURN)
+                return
+
+            # 스쿨존 진입 (1차선에서 감지되더라도 2차선 모드로 전환)
+            if s[IDX_SCHOOL_ZONE] == 1:
+                self._stage[STAGE_LANE_TARGET] = 1
+                self._set_mode(MODE_SCHOOL_ZONE)
+                return
+
+            # 출발선 통과 → lap++ 및 플래그 초기화
+            if s[IDX_LAP_LINE] == 1 and not self._lap_locked:
+                self._lap += 1
+                self._lap_locked = True
+                self._police_seen = False
+                self._ignore_police = False
+                self._tl_done = False
+                self._consume_lap_line()
 
     def _fsm_signal_wait(self):
         s = self._status
         sig = s[IDX_TRAFFIC_SIGNAL]
-        if sig == TRAFFIC_LEFT:
-            # 좌회전 → 지름길 진입
-            self._stage[STAGE_TURN_TYPE] = 0
-            self._set_mode(MODE_LEFT_TURN)
-        elif sig == TRAFFIC_GREEN:
-            # 직진 → 1차선 차선주행 복귀
-            self._stage[STAGE_LANE_TARGET] = 0
-            self._set_mode(MODE_LANE)
+        if self._police_seen:
+            # 시나리오1: 직진(1) 신호 → LANE 복귀 후 방해차량 대기
+            if sig == TRAFFIC_GREEN:
+                self._tl_done = True
+                self._set_mode(MODE_LANE)
+        else:
+            # 시나리오2: 좌회전(2) 신호 → LEFT_TURN A(진입)
+            if sig == TRAFFIC_LEFT:
+                self._tl_done = True
+                self._stage[STAGE_TURN_TYPE] = 0
+                self._set_mode(MODE_LEFT_TURN)
 
     def _after_left_turn(self):
         if self._stage[STAGE_TURN_TYPE] == 0:
-            # 1차 좌회전(진입/서쪽) 완료 → 2차선 숏컷 주행
+            # A 완료(진입) → 2차선 숏컷 주행
             self._stage[STAGE_LANE_TARGET] = 1
             self._set_mode(MODE_LANE)
         else:
-            # 2차 좌회전(탈출/남쪽) 완료 → 어린이보호구역 모드 진입
-            self._stage[STAGE_LANE_TARGET] = 0
-            self._lap_locked = False   # 어린이보호구역 진입으로 lap 잠금 해제
+            # B 완료(탈출) → 스쿨존 진입 (2차선 유지)
             self._set_mode(MODE_SCHOOL_ZONE)
 
     # ------------------------------------------------------------------
     # 전환 조건 헬퍼 (구현은 추후; 자리만 잡음)
     # ------------------------------------------------------------------
     def _cone_finished(self):
-        if self._status[IDX_CONE_FINISHED] == 1:
-            self._status[IDX_CONE_FINISHED] = 0
-            return True
-        return False
-
-    def _reached_traffic_light(self):
-        # TODO(team): 신호등 앞 도달 판정
-        return False
-
-    def _left_turn_reached(self):
-        # turn_type에 따른 절대 heading 기준 좌회전 완료 판정
-        if self._stage[STAGE_TURN_TYPE] == 0:
-            target = TURN_A_TARGET_YAW   # 서쪽 (π/2)
-        else:
-            target = TURN_B_TARGET_YAW   # 남쪽 (π)
-        err = abs(math.atan2(math.sin(self._yaw - target),
-                             math.cos(self._yaw - target)))
-        return err < TURN_YAW_TOL
+        if self._img_front is None:
+            return False
+        roi = self._img_front[_YELLOW_ROI_Y1:_YELLOW_ROI_Y2, :]
+        hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+        mask = cv2.inRange(hsv, _YELLOW_LOWER, _YELLOW_UPPER)
+        print(f"yellow pixel count: {np.count_nonzero(mask)}")
+        return int(np.count_nonzero(mask)) >= _CONE_YELLOW_MIN
 
     def _consume_lap_line(self):
         # lap_line 래치 소비 (중복 카운트 방지)
@@ -285,13 +330,14 @@ class Main(Node):
     # 디버그 시각화
     # ==================================================================
     def _debug_tick(self):
-        img = np.zeros((500, 460, 3), dtype=np.uint8)
+        img = np.zeros((590, 460, 3), dtype=np.uint8)
         white = (255, 255, 255)
         green = (0, 255, 0)
         gray = (160, 160, 160)
         yellow = (0, 220, 255)
         cyan = (255, 220, 0)
         red = (0, 80, 255)
+        orange = (0, 165, 255)
 
         def put(text, y, color=white, scale=0.6):
             cv2.putText(img, text, (12, y), cv2.FONT_HERSHEY_SIMPLEX,
@@ -310,10 +356,17 @@ class Main(Node):
         put(f'YAW  : {math.degrees(self._yaw):+.1f} deg', 144)
         put(f'OFFSET: {self._offset:+.3f}', 170)
         put(f'MOTOR : angle={self._motor_angle:+6.1f}  speed={self._motor_speed:+5.1f}', 196)
+        police_col = orange if self._police_seen else gray
+        put(
+            f'POLICE: seen={int(self._police_seen)}'
+            f'  ignore={int(self._ignore_police)}'
+            f'  tl_done={int(self._tl_done)}',
+            222, police_col, 0.5,
+        )
 
-        cv2.line(img, (10, 210), (450, 210), gray, 1)
-        put('PERCEPTION', 232, yellow)
-        y = 256
+        cv2.line(img, (10, 236), (450, 236), gray, 1)
+        put('PERCEPTION', 258, yellow)
+        y = 280
         for i, label in enumerate(STATUS_LABEL):
             v = self._status[i] if i < len(self._status) else 0
             color = green if v else gray
