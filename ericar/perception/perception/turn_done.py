@@ -11,20 +11,17 @@ import math
 TARGET_YAW_A = math.radians(90)   # 좌회전A: yaw ≈ 90°
 TARGET_YAW_B = math.radians(180)  # 좌회전B: yaw ≈ ±180°
 
-# 목표 도달 허용 오차 (도) — 튜닝 파라미터
-YAW_TOLERANCE = math.radians(10)
-
-
-def detect_turn_done(turn_type, yaw_rad):
+def detect_turn_done(turn_type, yaw_rad, tolerance):
     """turn_type에 맞는 목표 yaw에 도달했으면 True를 반환한다.
 
     Args:
         turn_type: 0=좌회전A, 1=좌회전B
         yaw_rad: IMU yaw (radians, -π ~ π)
+        tolerance: 허용 오차 (radians)
     """
     target = TARGET_YAW_A if turn_type == 0 else TARGET_YAW_B
     diff = abs(math.atan2(
         math.sin(yaw_rad - target),
         math.cos(yaw_rad - target),
     ))
-    return diff < YAW_TOLERANCE
+    return diff < tolerance

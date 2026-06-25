@@ -114,6 +114,9 @@ SZ_ROI_TOP      = 0.80   # 하단 ROI 시작(0~1). 차에 가까운 노면만
 SZ_YELLOW_ENTER = 10000  # 노란 픽셀 ≥ → 시작(감속, data[8]=1)
 SZ_WHITE_EXIT   = 3000   # (보호구역 안) 흰 픽셀 ≥ → 일반도로 복귀(data[8]=0)
 
+# --- 좌회전 완료 (IMU yaw) ---
+TURN_YAW_TOLERANCE = math.radians(1)  # 목표 yaw 도달 허용 오차. 노이즈 많으면 ↑
+
 # --- 디버그 시각화 ---
 VIZ_DEFAULT = True     # perception 창(카메라+bbox+status) 기본 표시 여부
 
@@ -313,7 +316,7 @@ class Perception(Node):
         if self._mode == MODE_LEFT_TURN:
             turn_type = self._stage[1]  # STAGE_TURN_TYPE
             self._status[IDX_TURN_DONE] = int(
-                detect_turn_done(turn_type, self._yaw)
+                detect_turn_done(turn_type, self._yaw, TURN_YAW_TOLERANCE)
             )
         else:
             self._status[IDX_TURN_DONE] = 0
