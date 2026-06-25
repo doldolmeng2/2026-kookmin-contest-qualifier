@@ -128,7 +128,7 @@ class ConeDriver:
             cv2.putText(img, txt, (8, 18 + i * 18),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.46, (200, 200, 200), 1)
 
-        cv2.imshow('Cone Drive', img)
+        # cv2.imshow('Cone Drive', img)
         cv2.waitKey(1)
 
     # ── 내부 헬퍼 ─────────────────────────────────────────────────────────────

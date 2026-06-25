@@ -23,9 +23,9 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
 
 import cv2
-import numpy as np
 
 
 # 시뮬/-bag 둘 다 RELIABLE 로 발행되므로 맞춰서 구독 (안 그러면 큰 이미지 드롭)
@@ -39,6 +39,7 @@ _QOS = QoSProfile(
 class DataCollector(Node):
     def __init__(self):
         super().__init__('data_collector')
+        self.bridge = CvBridge()
 
         self.declare_parameter('topic', '/usb_cam/image_raw/front')  # 수집할 카메라
         self.declare_parameter('interval', 0.3)                      # 저장 간격(초)
@@ -60,9 +61,7 @@ class DataCollector(Node):
         if now - self.last_save < self.interval:
             return
         self.last_save = now
-        img = np.frombuffer(bytes(msg.data), dtype=np.uint8).reshape((msg.height, msg.width, 3))
-        if msg.encoding == 'rgb8':
-            img = img[:, :, ::-1]
+        img = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
         fn = os.path.join(self.out_dir, f'frame_{int(now * 1000)}.jpg')
         cv2.imwrite(fn, img)
         self.count += 1

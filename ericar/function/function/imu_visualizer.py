@@ -74,7 +74,7 @@ class ImuVisualizer(Node):
                     (200, 200, 200), 1)
 
         cv2.imshow('IMU Direction', img)
-        cv2.waitKey(1)
+        cv2.waitKey(1) & 0xFF
 
 
 def main(args=None):

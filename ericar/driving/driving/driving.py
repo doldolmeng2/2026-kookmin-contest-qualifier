@@ -22,8 +22,8 @@ from std_msgs.msg import Int32, Int32MultiArray, Float32, Bool
 from sensor_msgs.msg import Image, LaserScan, Imu
 import numpy as np
 
-# 로직 모듈 (구현은 추후 팀원이 채움)
-from driving.lane_detection import LaneDetector
+# 로직 모듈
+from driving.lane_detection import LaneDetector, SCurveDetector
 from driving.rubbercone import ConeDriver
 from driving.turn_left import LeftTurner
 
@@ -31,7 +31,8 @@ from driving.turn_left import LeftTurner
 # 모드 정의 (README 와 동일)
 # ---------------------------------------------------------------------------
 MODE_WAIT, MODE_CONE, MODE_LANE, MODE_LEFT_TURN, \
-    MODE_LANE_CHANGE, MODE_FOLLOW, MODE_SIGNAL_WAIT, MODE_SCHOOL_ZONE = range(8)
+    MODE_LANE_CHANGE, MODE_FOLLOW, MODE_SIGNAL_WAIT, MODE_SCHOOL_ZONE, \
+    MODE_S_CURVE = range(9)
 
 # stage 인덱스
 STAGE_LANE_TARGET = 0   # 0=1차선, 1=2차선
@@ -49,9 +50,10 @@ class Driving(Node):
         super().__init__('driving')
 
         # 로직 모듈 인스턴스
-        self._lane = LaneDetector()
-        self._cone = ConeDriver()
-        self._turn = LeftTurner()
+        self._lane   = LaneDetector()
+        self._scurve = SCurveDetector()
+        self._cone   = ConeDriver()
+        self._turn   = LeftTurner()
 
         # 입력 버퍼
         self._img_front = None
@@ -151,6 +153,9 @@ class Driving(Node):
                 self.get_logger().warn(
                     f'[LANE_CHANGE] reusing last offset={offset:.1f}  reason: {self._lane.reuse_reason}')
             self._check_lane_change_done(offset)
+
+        elif self._mode == MODE_S_CURVE:
+            offset = self._scurve.compute_offset(self._img_front, self._yaw)
 
         elif self._mode == MODE_LEFT_TURN:
             offset = self._turn.compute_offset(self._yaw)

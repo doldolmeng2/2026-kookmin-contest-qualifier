@@ -29,7 +29,8 @@ from xycar_msgs.msg import XycarMotor
 # 모드 정의
 # ---------------------------------------------------------------------------
 MODE_WAIT, MODE_CONE, MODE_LANE, MODE_LEFT_TURN, \
-    MODE_LANE_CHANGE, MODE_FOLLOW, MODE_SIGNAL_WAIT, MODE_SCHOOL_ZONE = range(8)
+    MODE_LANE_CHANGE, MODE_FOLLOW, MODE_SIGNAL_WAIT, MODE_SCHOOL_ZONE, \
+    MODE_S_CURVE = range(9)
 
 MODE_NAME = {
     MODE_WAIT: 'WAIT',
@@ -40,6 +41,7 @@ MODE_NAME = {
     MODE_FOLLOW: 'FOLLOW',
     MODE_SIGNAL_WAIT: 'SIGNAL_WAIT',
     MODE_SCHOOL_ZONE: 'SCHOOL_ZONE',
+    MODE_S_CURVE: 'S_CURVE',
 }
 
 # stage 인덱스
@@ -59,12 +61,14 @@ IDX_SCHOOL_ZONE     = 8   # 0=없음, 1=시작(감속)
 IDX_TRAFFIC_PRESENT = 9
 IDX_POLICE_READY    = 10
 IDX_LEFT_TURN_DONE  = 11  # perception이 좌회전 완료 시 1로 세팅
-STATUS_LEN = 12
+IDX_S_CURVE         = 12  # 0=S자 아님, 1=S자 구간 끝 감지
+STATUS_LEN = 13
 
 STATUS_LABEL = [
     'start_signal', 'traffic_signal', 'obstacle_front', 'obstacle_passed',
     'police_detected', 'shortcut_exit', 'lap_line', 'pedestrian',
     'school_zone', 'traffic_present', 'police_ready', 'left_turn_done',
+    's_curve',
 ]
 
 TRAFFIC_NONE  = 0
@@ -74,11 +78,13 @@ TRAFFIC_STOP  = 3   # 주황/빨간
 
 # cone → lane 전환: lane_detection.py 와 동일한 HSV 범위·ROI
 _YELLOW_LOWER = np.array([25, 205,  80])
-_YELLOW_UPPER = np.array([35, 255, 255])
+_YELLOW_UPPER = np.array([31, 255, 255])
 _YELLOW_ROI_Y1 = 270
 _YELLOW_ROI_Y2 = 310
-_CONE_YELLOW_MIN = 510   # ROI 내 노란 픽셀 수 ≥ 이 값이면 중앙 차선 검출 완료
+_CONE_YELLOW_MIN = 400   # ROI 내 노란 픽셀 수 ≥ 이 값이면 중앙 차선 검출 완료
 
+# lane → s_curve 전환: offset 절대값이 CURVE_OFFSET_TOL 이상이면 S자 구간 진입
+CURVE_OFFSET_TOL = 43 
 
 class Main(Node):
 
@@ -95,6 +101,8 @@ class Main(Node):
         self._police_seen = False     # 이번 lap에서 경찰차 인식 여부 (시나리오 분기)
         self._ignore_police = False   # 방해차량 추월 시작 후 경찰차 무시 플래그
         self._tl_done = False         # 이번 lap에서 신호등 처리 완료 여부
+        self._s_curve_flag = 0        # MODE_LANE에서 신호등 감지 후 S자 구간 대비 플래그
+        self._left_exit_flag = 0      # LEFT_TURN A 진입 후 숏컷 출구 감지 대기 플래그
 
         # 입력 버퍼
         self._status = [0] * STATUS_LEN
@@ -209,6 +217,11 @@ class Main(Node):
             if s[IDX_LEFT_TURN_DONE] == 1:
                 self._after_left_turn()
 
+        elif self._mode == MODE_S_CURVE:
+            if s[IDX_S_CURVE] == 1:
+                self._stage[STAGE_LANE_TARGET] = 1
+                self._set_mode(MODE_FOLLOW)
+
         self._publish_mode_stage()
 
     def _fsm_lane(self):
@@ -216,6 +229,15 @@ class Main(Node):
 
         if self._lap == 0:
             # ── lap1: 방해차량 추월 → 스쿨존(1차선) → 출발선 ──
+
+            # 신호등 감지 시 S자 구간 대비 플래그 설정
+            if s[IDX_TRAFFIC_SIGNAL] in (1, 2, 3):
+                self._s_curve_flag = 1
+
+            if self._s_curve_flag == 1 and abs(self._offset) >= CURVE_OFFSET_TOL:
+                self._set_mode(MODE_S_CURVE)
+                return
+
             if s[IDX_SCHOOL_ZONE] == 1 and self._stage[STAGE_LANE_TARGET] == 0:
                 self._set_mode(MODE_SCHOOL_ZONE)
                 return
@@ -242,6 +264,14 @@ class Main(Node):
                 self._set_mode(MODE_SIGNAL_WAIT)
                 return
 
+            # 신호등 통과 후 S자 구간 대비 플래그 설정 (SIGNAL_WAIT 분기 이후에만 실행)
+            if s[IDX_TRAFFIC_SIGNAL] in (1, 2, 3):
+                self._s_curve_flag = 1
+
+            if self._s_curve_flag == 1 and abs(self._offset) >= CURVE_OFFSET_TOL:
+                self._set_mode(MODE_S_CURVE)
+                return
+
             # 시나리오1: 신호 통과 후 방해차량 감지 → 2차선으로 LANE_CHANGE
             # 이 시점부터 lap_line까지 경찰차 재인식 무시
             if (s[IDX_OBSTACLE_FRONT] == 1
@@ -252,8 +282,9 @@ class Main(Node):
                 self._set_mode(MODE_LANE_CHANGE)
                 return
 
-            # 시나리오2: 2차선 숏컷 주행 중 출구 감지 → LEFT_TURN B
-            if self._stage[STAGE_LANE_TARGET] == 1 and s[IDX_SHORTCUT_EXIT] == 1:
+            # 시나리오2: LEFT_TURN A 이후 숏컷 주행 중 출구 감지 → LEFT_TURN B
+            if self._left_exit_flag == 1 and s[IDX_SHORTCUT_EXIT] == 1:
+                self._left_exit_flag = 0
                 self._stage[STAGE_TURN_TYPE] = 1
                 self._set_mode(MODE_LEFT_TURN)
                 return
@@ -286,6 +317,7 @@ class Main(Node):
             if sig == TRAFFIC_LEFT:
                 self._tl_done = True
                 self._stage[STAGE_TURN_TYPE] = 0
+                self._left_exit_flag = 1  # 숏컷 출구 감지 대기 시작
                 self._set_mode(MODE_LEFT_TURN)
 
     def _after_left_turn(self):
@@ -318,6 +350,8 @@ class Main(Node):
         if mode != self._mode:
             self.get_logger().info(
                 f'mode: {MODE_NAME.get(self._mode)} -> {MODE_NAME.get(mode)}')
+            if self._mode == MODE_LANE and mode != MODE_LANE:
+                self._s_curve_flag = 0
         self._mode = mode
 
     def _publish_mode_stage(self):
@@ -330,7 +364,7 @@ class Main(Node):
     # 디버그 시각화
     # ==================================================================
     def _debug_tick(self):
-        img = np.zeros((590, 460, 3), dtype=np.uint8)
+        img = np.zeros((630, 460, 3), dtype=np.uint8)
         white = (255, 255, 255)
         green = (0, 255, 0)
         gray = (160, 160, 160)
@@ -363,10 +397,17 @@ class Main(Node):
             f'  tl_done={int(self._tl_done)}',
             222, police_col, 0.5,
         )
+        scurve_col = orange if self._s_curve_flag else gray
+        put(
+            f'S_CURVE_FLAG: {self._s_curve_flag}'
+            f'  LEFT_EXIT_FLAG: {self._left_exit_flag}'
+            f'  offset: {self._offset:+.1f}',
+            244, scurve_col, 0.5,
+        )
 
-        cv2.line(img, (10, 236), (450, 236), gray, 1)
-        put('PERCEPTION', 258, yellow)
-        y = 280
+        cv2.line(img, (10, 258), (450, 258), gray, 1)
+        put('PERCEPTION', 278, yellow)
+        y = 298
         for i, label in enumerate(STATUS_LABEL):
             v = self._status[i] if i < len(self._status) else 0
             color = green if v else gray

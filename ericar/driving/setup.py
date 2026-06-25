@@ -24,6 +24,8 @@ setup(
     entry_points={
         'console_scripts': [
             'driving = driving.driving:main',
+            'lane_detection_test = driving.lane_detection_test:main',
+            'straight_test = driving.straight_test:main',
         ],
     },
 )

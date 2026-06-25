@@ -21,7 +21,7 @@ data[8] 의미:
 import time
 
 import cv2
-import numpy as nps
+import numpy as np
 
 # 하단 ROI (차에 가장 가까운 노면)
 ROI_TOP_FRAC = 0.80
@@ -64,7 +64,7 @@ class SchoolZoneDetector:
         wmask = cv2.inRange(hsv, HSV_WHT_LO, HSV_WHT_HI)
         yellow = int(cv2.countNonZero(ymask))
         white = int(cv2.countNonZero(wmask))
-
+        print(f"yellow pixel count: {yellow}, white pixel count: {white}")
         if self.state == 'out':
             # 일반도로/진입 전: 노랑 급증으로만 진입 (흰색 무시 → 일반 흰차선 무시)
             if yellow >= self.yellow_enter:

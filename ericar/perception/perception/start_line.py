@@ -16,8 +16,8 @@ ROI_TOP, ROI_BOT, ROI_LEFT, ROI_RIGHT = 0.80, 1.00, 0.15, 0.85
 
 BLACK_V_MAX = 50          # 이보다 어두우면 '검정'(체커보드 검은 칸)
 WHITE_V_MIN = 200         # 이보다 밝으면 '흰색'(체커보드 흰 칸)
-BLACK_MIN_RATIO = 0.12    # 맨아래 ROI 검정 비율 하한 (정면크로싱 0.20~0.47 / 접근중 0~0.9% / 도로 0)
-WHITE_MIN_RATIO = 0.25    # 맨아래 ROI 흰색 비율 하한 (정면크로싱 0.29~0.53 / 도로 0.11~0.13)
+BLACK_MIN_RATIO = 0.05    # 맨아래 ROI 검정 비율 하한 (정면크로싱 0.20~0.47 / 접근중 0~0.9% / 도로 0)
+WHITE_MIN_RATIO = 0.11    # 맨아래 ROI 흰색 비율 하한 (정면크로싱 0.29~0.53 / 도로 0.11~0.13)
 
 
 def detect_start_line(image):

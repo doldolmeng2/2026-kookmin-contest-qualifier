@@ -17,9 +17,8 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy, qos_profile_
 
 from std_msgs.msg import Bool, Int32, Int32MultiArray
 from sensor_msgs.msg import Image, Imu, LaserScan
-from cv_bridge import CvBridge
-
 import cv2
+import numpy as np
 
 # 로직 모듈
 from perception.yolo_detector import YoloDetector
@@ -39,6 +38,7 @@ from perception.obstacle import detect_obstacle_front, left_min, sector_min
 from perception.left_car import car_in_left
 from perception.school_zone import SchoolZoneDetector
 from perception.turn_done import detect_turn_done
+from perception.s_curve import detect_s_curve_end, draw_s_curve_debug
 
 # 시뮬레이터는 카메라/라이다를 RELIABLE 로 발행하므로 맞춰서 구독
 # (BEST_EFFORT 로 받으면 큰 이미지가 UDP 조각 유실로 대부분 드롭됨)
@@ -63,7 +63,8 @@ IDX_SCHOOL_ZONE    = 8   # 0=아님, 1=보호구역 주행 중
 IDX_TRAFFIC_PRESENT = 9  # 0=신호등 미검출, 1=트랙 신호등 검출
 IDX_POLICE_READY    = 10  # 0=검출기 비활성/실패, 1=YOLO 모델 준비 완료
 IDX_TURN_DONE       = 11  # 0=아직, 1=IMU yaw 기준 좌회전 완료
-STATUS_LEN = 12
+IDX_S_CURVE         = 12  # 0=S자 아님, 1=S자 구간 끝 감지
+STATUS_LEN = 13
 
 # ===========================================================================
 # 🔧 튜닝 파라미터  (인식 임계값 — 여기만 고치면 됨)
@@ -85,6 +86,7 @@ POLICE_MIN_H = 0.08     # 박스 세로크기(0~1) 이 이상(가까움)일 때�
 # --- 방해차량 (라이다) ---  ※각도 규약: 0°=전방, +각도=좌측 (index=각도 0~359°)
 OBS_FRONT_DEG  = list(range(350, 360)) + list(range(0, 11))  # 전방 섹터(±10°) — 앞차 보는 방향
 OBS_FRONT_MAX  = 8.0    # 전방 이 거리(m) 이내에 차 있으면 → 앞차(data[2]=1, 충돌방지)
+OBS_FRONT_MIN_POINTS = 17  # 전방 섹터 내 유효 포인트 수 ≥ 이 값이면 앞차로 판정. 낮추면 민감↑
 OBS_LEFT_DEG   = list(range(60, 96))   # 좌측 섹터(60~95°) — 추월 중 옆 1차선 차 보는 방향
 OBS_CAR_BESIDE = 2.5    # 좌측이 이 거리(m) 이내면 → '옆에 차 붙음'
 OBS_PASSED_GAP = 1.0    # 붙었던 거리보다 이만큼(m) 더 멀어지면 → 추월완료(data[3]=1)
@@ -95,7 +97,7 @@ OBS_PED_SUPPRESS_BAND = (0.35, 0.65)  # 보행자 박스 중심 x 가 이 범위
 # --- 트랙 신호등 (4구) ---  키 이름은 traffic_light.BASE_PARAMS 와 일치해야 함
 TL_TRACK_PARAMS = dict(
     black_min_count=120,       # ROI 내 검은 픽셀 총량 하한
-    black_min_blob_area=21500,  # ★ 하우징 박스 면적 ≥ 이 값(=가까움)이면 인식. 로그 blob= 보고 튜닝
+    black_min_blob_area=19500,  # ★ 하우징 박스 면적 ≥ 이 값(=가까움)이면 인식. 로그 blob= 보고 튜닝
     color_min_count=50,       # 게이트 통과 후 색 구분 최소 픽셀
     bbox_pad=0,
     aspect_min=2.0,            # 하우징 가로/세로 비 하한 (세로 기둥/나무 배제)
@@ -110,8 +112,8 @@ TL_START_PARAMS = dict(
 )
 
 # --- 어린이 보호구역 (하단 ROI 노랑/흰색 상태기계) ---
-SZ_ROI_TOP      = 0.80   # 하단 ROI 시작(0~1). 차에 가까운 노면만
-SZ_YELLOW_ENTER = 10000  # 노란 픽셀 ≥ → 시작(감속, data[8]=1)
+SZ_ROI_TOP      = 0.55   # 하단 ROI 시작(0~1). 차에 가까운 노면만
+SZ_YELLOW_ENTER = 11500  # 노란 픽셀 ≥ → 시작(감속, data[8]=1)
 SZ_WHITE_EXIT   = 3000   # (보호구역 안) 흰 픽셀 ≥ → 일반도로 복귀(data[8]=0)
 
 # --- 좌회전 완료 (IMU yaw) ---
@@ -122,7 +124,9 @@ VIZ_DEFAULT = True     # perception 창(카메라+bbox+status) 기본 표시 여
 
 # main 모드 정의 (퍼셉션이 모드별로 인식 항목을 골라 켜기 위해 참조)
 MODE_WAIT, MODE_CONE, MODE_LANE, MODE_LEFT_TURN, \
-    MODE_LANE_CHANGE, MODE_FOLLOW, MODE_SIGNAL_WAIT = range(7)
+    MODE_LANE_CHANGE, MODE_FOLLOW, MODE_SIGNAL_WAIT, \
+    MODE_SCHOOL_ZONE = range(8)
+MODE_S_CURVE = 8
 
 
 class Perception(Node):
@@ -130,7 +134,6 @@ class Perception(Node):
     def __init__(self):
         super().__init__('perception')
 
-        self._bridge = CvBridge()
         self._detector = YoloDetector(conf_threshold=YOLO_CONF)  # CPU 추론, weights/perception.pt
         self._police_detector_ready = False
         # 첫 추론 지연(수 초)을 주행 중이 아니라 시작 시점에 미리 처리.
@@ -161,6 +164,7 @@ class Perception(Node):
         #   팀원들이 인식 상태를 눈으로 확인용. 끄려면: -p viz:=false
         self.declare_parameter('viz', VIZ_DEFAULT)
         self._viz = self.get_parameter('viz').value
+
 
         # 최신 입력 버퍼
         self._img_front = None
@@ -227,10 +231,16 @@ class Perception(Node):
     # 콜백: 최신 데이터만 저장
     # ------------------------------------------------------------------
     def _front_cb(self, msg):
-        self._img_front = self._bridge.imgmsg_to_cv2(msg, 'bgr8')
+        img = np.frombuffer(bytes(msg.data), dtype=np.uint8).reshape((msg.height, msg.width, 3))
+        if msg.encoding == 'rgb8':
+            img = img[:, :, ::-1]
+        self._img_front = img
 
     def _left_cb(self, msg):
-        self._img_left = self._bridge.imgmsg_to_cv2(msg, 'bgr8')
+        img = np.frombuffer(bytes(msg.data), dtype=np.uint8).reshape((msg.height, msg.width, 3))
+        if msg.encoding == 'rgb8':
+            img = img[:, :, ::-1]
+        self._img_left = img
 
     def _scan_cb(self, msg):
         self._scan = msg
@@ -305,7 +315,8 @@ class Perception(Node):
             self._status[IDX_SHORTCUT_EXIT] = self._detect_shortcut_exit(det)
 
         # 어린이 보호구역: 노랑(시작)→1, 흰색(일반도로 복귀)→0 상태기계
-        if self._mode == MODE_LANE:
+        # MODE_LANE에서 진입 감지, MODE_SCHOOL_ZONE에서 해제 감지
+        if self._mode in (MODE_LANE, MODE_SCHOOL_ZONE):
             self._status[IDX_SCHOOL_ZONE] = self._school_zone.update(self._img_front)
 
         self._status[IDX_POLICE_READY] = int(
@@ -320,6 +331,12 @@ class Perception(Node):
             )
         else:
             self._status[IDX_TURN_DONE] = 0
+
+        # S자 커브 끝 감지 — MODE_S_CURVE 일 때만 실행
+        if self._mode == MODE_S_CURVE:
+            self._status[IDX_S_CURVE] = self._detect_s_curve_end()
+        else:
+            self._status[IDX_S_CURVE] = 0
 
         # 정지선은 차선 주행 및 신호 대기 중에만 검사한다.
         if self._mode in (MODE_LANE, MODE_SIGNAL_WAIT):
@@ -447,6 +464,9 @@ class Perception(Node):
             # 방해차량(라이다) 조감도 창
             if self._scan is not None:
                 self._draw_lidar_viz(self._scan)
+            # S커브 디버그 창 — MODE_S_CURVE 일 때만 표시
+            if self._mode == MODE_S_CURVE:
+                draw_s_curve_debug(self._img_front, self._scan)
             cv2.waitKey(1)
         except Exception as e:
             self.get_logger().warn(f'viz 실패: {e}')
@@ -584,10 +604,10 @@ class Perception(Node):
                 if items
             }
 
-            if detected_labels:
-                self.get_logger().info(
-                    f'[PED] danger=0 detected_labels={detected_labels}'
-                )
+            # if detected_labels:
+            #     self.get_logger().info(
+            #         f'[PED] danger=0 detected_labels={detected_labels}'
+            #     )
 
             return 0
 
@@ -607,16 +627,16 @@ class Perception(Node):
             )
             danger = pass_height and pass_center
 
-            self.get_logger().info(
-                '[PED] '
-                f'label={label_name} '
-                f'conf={d.confidence:.2f} '
-                f'h={h_norm:.3f} '
-                f'cx={cx_norm:.3f} '
-                f'height_ok={int(pass_height)} '
-                f'center_ok={int(pass_center)} '
-                f'danger={int(danger)}'
-            )
+            # self.get_logger().info(
+            #     '[PED] '
+            #     f'label={label_name} '
+            #     f'conf={d.confidence:.2f} '
+            #     f'h={h_norm:.3f} '
+            #     f'cx={cx_norm:.3f} '
+            #     f'height_ok={int(pass_height)} '
+            #     f'center_ok={int(pass_center)} '
+            #     f'danger={int(danger)}'
+            # )
 
             if danger:
                 return 1
@@ -625,7 +645,7 @@ class Perception(Node):
 
     def _detect_obstacle_front(self, det, scan):
         # 라이다 전방 섹터에 가까운 물체가 있으면 앞차 후보 (임계값은 OBS_* 중앙 파라미터)
-        if not detect_obstacle_front(scan, OBS_FRONT_DEG, OBS_FRONT_MAX):
+        if not detect_obstacle_front(scan, OBS_FRONT_DEG, OBS_FRONT_MAX, OBS_FRONT_MIN_POINTS):
             return 0
         # 단, 그 물체가 '보행자'(전방 경로에 가까이)면 앞차로 치지 않음 → data[7]이 처리
         if self._ped_in_front_path(det):
@@ -668,6 +688,15 @@ class Perception(Node):
     def _detect_shortcut_exit(self, det):
         # 숏컷(직선) 끝 삼거리: 정면에 잔디(길 끝남)가 차면 1 → main이 좌회전 시작
         return 1 if detect_shortcut_exit(self._img_front) else 0
+
+    def _detect_s_curve_end(self):
+        # 1초(30틱)마다 디버그 로그 출력 — 임계값 튜닝용
+        result, wht, grn, lidar = detect_s_curve_end(self._img_front, self._scan)
+        if self._tick_n % 30 == 0:
+            self.get_logger().info(
+                f'[SCURVE] wht={wht:.3f} grn={grn:.3f} lidar={lidar} => {int(result)}'
+            )
+        return int(result)
 
     def _detect_lap_line(self, img):
         # 출발선(흑백 체커보드)이 하단에 가까이 보이면 1

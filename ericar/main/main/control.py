@@ -17,31 +17,34 @@ from xycar_msgs.msg import XycarMotor
 # 모드 정의 (README 와 동일)
 # ---------------------------------------------------------------------------
 MODE_WAIT, MODE_CONE, MODE_LANE, MODE_LEFT_TURN, \
-    MODE_LANE_CHANGE, MODE_FOLLOW, MODE_SIGNAL_WAIT, MODE_SCHOOL_ZONE = range(8)
+    MODE_LANE_CHANGE, MODE_FOLLOW, MODE_SIGNAL_WAIT, MODE_SCHOOL_ZONE, \
+    MODE_S_CURVE = range(9)
 
 # 모드별 offset → angle 비례 계수 (angle = offset * ratio, -100~100 로 clip)
 # MODE_SCHOOL_ZONE: offset은 라디안 단위 yaw 오차 → 30 곱하면 최대 ±94 수준
 MODE_RATIO = {
     MODE_WAIT:          0.0,
     MODE_CONE:        250.0,
-    MODE_LANE:          0.35,
-    MODE_LEFT_TURN:     1.0,
-    MODE_LANE_CHANGE:   0.45,
-    MODE_FOLLOW:        0.45,
+    MODE_LANE:          0.5,
+    MODE_LEFT_TURN:     100.0,
+    MODE_LANE_CHANGE:   0.40,
+    MODE_FOLLOW:        0.50,
     MODE_SIGNAL_WAIT:   0.0,
     MODE_SCHOOL_ZONE:  200.0,
+    MODE_S_CURVE:       1.4,
 }
 
 # 모드별 speed (-50~50)
 SPEED_TABLE = {
     MODE_WAIT:          0,
     MODE_CONE:         15,
-    MODE_LANE:         13,
+    MODE_LANE:         18,
     MODE_LEFT_TURN:    12,
     MODE_LANE_CHANGE:  12,
-    MODE_FOLLOW:       10,
+    MODE_FOLLOW:       12,
     MODE_SIGNAL_WAIT:   0,
-    MODE_SCHOOL_ZONE:   5,
+    MODE_SCHOOL_ZONE:   16,
+    MODE_S_CURVE:      12,
 }
 
 ANGLE_LIMIT = 100.0
