@@ -166,9 +166,6 @@ class Perception(Node):
         self.declare_parameter('viz', VIZ_DEFAULT)
         self._viz = self.get_parameter('viz').value
 
-        # S자 커브 테스트 모드 (런치 시 -p s_curve_test:=true 로 켬)
-        self.declare_parameter('s_curve_test', False)
-        self._s_curve_test = self.get_parameter('s_curve_test').value
 
         # 최신 입력 버퍼
         self._img_front = None
@@ -330,11 +327,8 @@ class Perception(Node):
         else:
             self._status[IDX_TURN_DONE] = 0
 
-        # S자 커브 끝 감지 — s_curve_test 파라미터가 true 일 때만 실행 (테스트용)
-        if self._s_curve_test:
-            self._status[IDX_S_CURVE] = self._detect_s_curve_end()
-        else:
-            self._status[IDX_S_CURVE] = 0
+        # S자 커브 끝 감지 — 항상 실행
+        self._status[IDX_S_CURVE] = self._detect_s_curve_end()
 
         # 정지선은 차선 주행 및 신호 대기 중에만 검사한다.
         if self._mode in (MODE_LANE, MODE_SIGNAL_WAIT):
@@ -462,9 +456,8 @@ class Perception(Node):
             # 방해차량(라이다) 조감도 창
             if self._scan is not None:
                 self._draw_lidar_viz(self._scan)
-            # S커브 테스트 모드: 별도 디버그 창
-            if self._s_curve_test:
-                draw_s_curve_debug(self._img_front, self._scan)
+            # S커브 디버그 창
+            draw_s_curve_debug(self._img_front, self._scan)
             cv2.waitKey(1)
         except Exception as e:
             self.get_logger().warn(f'viz 실패: {e}')
