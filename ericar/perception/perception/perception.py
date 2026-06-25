@@ -16,7 +16,7 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy, qos_profile_sensor_data
 
 from std_msgs.msg import Bool, Int32, Int32MultiArray
-from sensor_msgs.msg import Image, LaserScan
+from sensor_msgs.msg import Image, Imu, LaserScan
 from cv_bridge import CvBridge
 
 import cv2
@@ -38,6 +38,7 @@ from perception.shortcut_exit import detect_shortcut_exit
 from perception.obstacle import detect_obstacle_front, left_min, sector_min
 from perception.left_car import car_in_left
 from perception.school_zone import SchoolZoneDetector
+from perception.turn_done import detect_turn_done
 
 # 시뮬레이터는 카메라/라이다를 RELIABLE 로 발행하므로 맞춰서 구독
 # (BEST_EFFORT 로 받으면 큰 이미지가 UDP 조각 유실로 대부분 드롭됨)
@@ -61,7 +62,8 @@ IDX_PEDESTRIAN     = 7   # 0=무시(없음/멀리/옆), 1=바로 앞 위험 → 
 IDX_SCHOOL_ZONE    = 8   # 0=아님, 1=보호구역 주행 중
 IDX_TRAFFIC_PRESENT = 9  # 0=신호등 미검출, 1=트랙 신호등 검출
 IDX_POLICE_READY    = 10  # 0=검출기 비활성/실패, 1=YOLO 모델 준비 완료
-STATUS_LEN = 11
+IDX_TURN_DONE       = 11  # 0=아직, 1=IMU yaw 기준 좌회전 완료
+STATUS_LEN = 12
 
 # ===========================================================================
 # 🔧 튜닝 파라미터  (인식 임계값 — 여기만 고치면 됨)
@@ -183,6 +185,8 @@ class Perception(Node):
         #   → 그보다 확 멀어지면 추월완료 (도로변 절대거리 무관). FOLLOW 진입시 리셋.
         self._left_beside_min = None
 
+        self._yaw = 0.0
+
         # ---- 구독 ----
         # 시뮬이 RELIABLE 로 발행 → RELIABLE 로 받아야 이미지 유실 없음
         self.create_subscription(
@@ -198,6 +202,8 @@ class Perception(Node):
             Int32, '/main/mode', self._mode_cb, 10)
         self.create_subscription(
             Int32MultiArray, '/main/stage', self._stage_cb, 10)
+        self.create_subscription(
+            Imu, '/imu', self._imu_cb, qos_profile_sensor_data)
 
         # ---- 발행 ----
         self._status_pub = self.create_publisher(
@@ -225,6 +231,12 @@ class Perception(Node):
 
     def _scan_cb(self, msg):
         self._scan = msg
+
+    def _imu_cb(self, msg):
+        q = msg.orientation
+        siny = 2.0 * (q.w * q.z + q.x * q.y)
+        cosy = 1.0 - 2.0 * (q.y * q.y + q.z * q.z)
+        self._yaw = math.atan2(siny, cosy)
 
     def _mode_cb(self, msg):
         # FOLLOW(2차선 추월) 진입 시 추월완료 추적 상태 초기화 (이번 추월 새로)
@@ -254,6 +266,8 @@ class Perception(Node):
 
         if self._mode == MODE_WAIT:
             self._status[IDX_START_SIGNAL] = self._detect_start_signal(det)
+        else:
+            self._status[IDX_START_SIGNAL] = 0
 
         if self._mode in (MODE_LANE, MODE_SIGNAL_WAIT):
             self._status[IDX_TRAFFIC_SIGNAL] = self._detect_traffic_signal(det)
@@ -294,6 +308,15 @@ class Perception(Node):
         self._status[IDX_POLICE_READY] = int(
             self._police_detector_ready
         )
+
+        # 좌회전 중에만 yaw 기반으로 완료 여부를 판정한다.
+        if self._mode == MODE_LEFT_TURN:
+            turn_type = self._stage[1]  # STAGE_TURN_TYPE
+            self._status[IDX_TURN_DONE] = int(
+                detect_turn_done(turn_type, self._yaw)
+            )
+        else:
+            self._status[IDX_TURN_DONE] = 0
 
         # 정지선은 차선 주행 및 신호 대기 중에만 검사한다.
         if self._mode in (MODE_LANE, MODE_SIGNAL_WAIT):
@@ -347,6 +370,7 @@ class Perception(Node):
                 'school',
                 'tlPre',
                 'policeReady',
+                'turnDone',
             ]
             txt = ' '.join(f'{n}:{v}' for n, v in zip(names, self._status))
             cv2.putText(vis, txt, (6, 18), cv2.FONT_HERSHEY_SIMPLEX,
