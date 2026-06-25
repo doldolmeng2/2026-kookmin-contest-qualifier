@@ -25,6 +25,7 @@ import numpy as np
 
 # 하단 ROI (차에 가장 가까운 노면)
 ROI_TOP_FRAC = 0.80
+ROI_BOTTOM_FRAC = 1.00
 
 # 노란색 / 흰색 HSV 범위 (시뮬 기준)
 HSV_YEL_LO = (15, 80, 120);  HSV_YEL_HI = (40, 255, 255)
@@ -39,13 +40,14 @@ class SchoolZoneDetector:
     """update(image) → 0(아님) / 1(주행중). 2단계 상태기계."""
 
     def __init__(self, logger=None, debug=False, show=False,
-                 roi_top=ROI_TOP_FRAC, yellow_enter=YELLOW_ENTER,
-                 white_exit=WHITE_EXIT):
+                 roi_top=ROI_TOP_FRAC, roi_bottom=ROI_BOTTOM_FRAC,
+                 yellow_enter=YELLOW_ENTER, white_exit=WHITE_EXIT):
         self.logger = logger
         self.debug = debug
         self.show = show
         # 임계값 (perception.py 의 SZ_* 에서 주입; 미지정 시 모듈 기본값)
         self.roi_top = roi_top
+        self.roi_bottom = roi_bottom
         self.yellow_enter = yellow_enter
         self.white_exit = white_exit
         self.state = 'out'      # 'out' / 'in'
@@ -58,7 +60,8 @@ class SchoolZoneDetector:
 
         h, w = image.shape[:2]
         y0 = int(h * self.roi_top)
-        roi = image[y0:, :]
+        y1 = int(h * self.roi_bottom)
+        roi = image[y0:y1, :]
         hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
         ymask = cv2.inRange(hsv, HSV_YEL_LO, HSV_YEL_HI)
         wmask = cv2.inRange(hsv, HSV_WHT_LO, HSV_WHT_HI)
@@ -87,23 +90,24 @@ class SchoolZoneDetector:
                 f'state={self.state} signal={self.signal}')
 
         if self.show:
-            self._show(image, y0, ymask, wmask, yellow, white)
+            self._show(image, y0, y1, ymask, wmask, yellow, white)
         return self.signal
 
     def draw(self, image):
         """하단 ROI 경계 + 현재 신호(0/1)를 full-image 위에 그린다 (통합 창용)."""
         h, w = image.shape[:2]
         y0 = int(h * self.roi_top)
-        cv2.rectangle(image, (0, y0), (w, h), (255, 0, 255), 1)
+        y1 = int(h * self.roi_bottom)
+        cv2.rectangle(image, (0, y0), (w, y1), (255, 0, 255), 1)
         cv2.putText(image, f'school:{self.signal}', (8, max(12, y0 - 6)),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
 
-    def _show(self, image, y0, ymask, wmask, yellow, white):
+    def _show(self, image, y0, y1, ymask, wmask, yellow, white):
         try:
             vis = image.copy()
             h, w = image.shape[:2]
-            cv2.rectangle(vis, (0, y0), (w, h), (255, 0, 255), 2)
-            sub = vis[y0:, :]
+            cv2.rectangle(vis, (0, y0), (w, y1), (255, 0, 255), 2)
+            sub = vis[y0:y1, :]
             sub[ymask > 0] = (0, 255, 255)    # 노랑
             sub[wmask > 0] = (255, 255, 255)  # 흰색
             cv2.putText(vis, f'Y={yellow} W={white} {self.state} sig={self.signal}',

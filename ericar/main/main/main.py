@@ -81,7 +81,7 @@ _YELLOW_LOWER = np.array([25, 205,  80])
 _YELLOW_UPPER = np.array([31, 255, 255])
 _YELLOW_ROI_Y1 = 270
 _YELLOW_ROI_Y2 = 310
-_CONE_YELLOW_MIN = 400   # ROI 내 노란 픽셀 수 ≥ 이 값이면 중앙 차선 검출 완료
+_CONE_YELLOW_MIN = 350   # ROI 내 노란 픽셀 수 ≥ 이 값이면 중앙 차선 검출 완료
 
 # lane → s_curve 전환: offset 절대값이 CURVE_OFFSET_TOL 이상이면 S자 구간 진입
 CURVE_OFFSET_TOL = 43 

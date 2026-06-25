@@ -14,6 +14,7 @@ main 으로부터 현재 모드(/main/mode)와 스테이지(/main/stage)를 받�
 
 import math
 
+import cv2
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
@@ -42,6 +43,10 @@ STAGE_TURN_TYPE = 1     # 0=좌회전A(진입), 1=좌회전B(탈출)
 LANE_CHANGE_DONE_TOL    = 20   # offset 허용 범위 (픽셀)
 LANE_CHANGE_MIN_ENTRY   = 15   # 모드 진입 후 무시할 틱 수 (0.5s @30Hz) — 오래된 offset 버림
 LANE_CHANGE_STABLE_TICKS = 10  # 연속으로 조건을 만족해야 하는 틱 수 (~0.33s)
+
+# FOLLOW 모드 파라미터
+FOLLOW_LANE_SCALE = 1.0   # lane offset에 곱하는 비례값
+FOLLOW_YAW_SCALE  = 30.0  # yaw 오차(rad) → offset 단위 변환 스케일
 
 
 class Driving(Node):
@@ -135,12 +140,24 @@ class Driving(Node):
             offset = self._cone.compute_offset(self._scan)
             self._cone.visualize(self._scan)
 
-        elif self._mode in (MODE_LANE, MODE_FOLLOW):
+        elif self._mode == MODE_LANE:
             lane_target = self._stage[STAGE_LANE_TARGET]
             offset = self._lane.compute_offset(self._img_front, lane_target)
             if self._lane.reuse_reason:
                 self.get_logger().warn(
                     f'[LANE] reusing last offset={offset:.1f}  reason: {self._lane.reuse_reason}')
+
+        elif self._mode == MODE_FOLLOW:
+            lane_target = self._stage[STAGE_LANE_TARGET]
+            lane_offset = self._lane.compute_offset(self._img_front, lane_target)
+            if self._lane.reuse_reason:
+                self.get_logger().warn(
+                    f'[FOLLOW] reusing last offset={lane_offset:.1f}  reason: {self._lane.reuse_reason}')
+            yaw_err = self._normalize_angle(self._yaw + math.pi)
+            offset = lane_offset * FOLLOW_LANE_SCALE + yaw_err * FOLLOW_YAW_SCALE
+            self.get_logger().info(
+                f'[FOLLOW] lane={lane_offset:.1f}  yaw_err={math.degrees(yaw_err):+.1f}deg  offset={offset:.1f}')
+            self._visualize_follow(lane_offset, yaw_err, offset)
 
         elif self._mode == MODE_SCHOOL_ZONE:
             offset = self._school_zone_offset()
@@ -186,6 +203,81 @@ class Driving(Node):
             self._lane_change_sent = True
             self.get_logger().info(
                 f'lane change done (stable {LANE_CHANGE_STABLE_TICKS} ticks)')
+
+    def _visualize_follow(self, lane_offset, yaw_err, offset):
+        W, H = 360, 240
+        panel = np.zeros((H, W, 3), dtype=np.uint8)
+
+        # 제목
+        cv2.putText(panel, 'FOLLOW DEBUG', (10, 22),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 200, 255), 2)
+
+        # 바 그래프 그리기
+        BAR_CX   = 155   # 바 중앙 x
+        BAR_HALF = 120   # 바 절반 너비 (픽셀)
+
+        def draw_bar(y, label, value, max_val, color):
+            cv2.putText(panel, label, (10, y),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.38, (170, 170, 170), 1)
+            # 배경 + 중앙선
+            cv2.rectangle(panel, (BAR_CX - BAR_HALF, y - 13),
+                          (BAR_CX + BAR_HALF, y + 3), (45, 45, 45), -1)
+            cv2.line(panel, (BAR_CX, y - 13), (BAR_CX, y + 3), (90, 90, 90), 1)
+            # 값 막대
+            fill = int(np.clip(value / max_val, -1.0, 1.0) * BAR_HALF)
+            if fill > 0:
+                cv2.rectangle(panel, (BAR_CX, y - 12),
+                              (BAR_CX + fill, y + 2), color, -1)
+            elif fill < 0:
+                cv2.rectangle(panel, (BAR_CX + fill, y - 12),
+                              (BAR_CX, y + 2), color, -1)
+            cv2.putText(panel, f'{value:+.1f}',
+                        (BAR_CX + BAR_HALF + 5, y),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.38, (220, 220, 220), 1)
+
+        draw_bar(55,  'Lane offset', lane_offset,              200.0, (100, 220, 100))
+        draw_bar(90,  'Yaw err(deg)', math.degrees(yaw_err),  180.0, (100, 180, 255))
+        draw_bar(125, 'Combined',     offset,                  300.0, (0, 200, 255))
+
+        # 스케일 표시
+        cv2.putText(panel,
+                    f'lane x{FOLLOW_LANE_SCALE:.1f}  +  yaw_err x{FOLLOW_YAW_SCALE:.1f}',
+                    (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.33, (90, 90, 90), 1)
+
+        # ── 미니 나침반 (imu_visualizer 와 동일 방향 규칙) ────────────────────
+        # tip = (cx - R*sin(yaw), cy - R*cos(yaw))
+        # yaw=0 → 위(N), yaw=±π → 아래(S=-180°)
+        CC = (290, 145)   # 나침반 중심
+        R  = 55
+        cv2.circle(panel, CC, R, (60, 60, 60), 2)
+
+        # N/S 눈금
+        for deg, lbl in [(0, 'N'), (180, 'S')]:
+            rad = math.radians(deg)
+            ex = int(CC[0] - R * math.sin(rad))
+            ey = int(CC[1] - R * math.cos(rad))
+            cv2.circle(panel, (ex, ey), 3, (70, 70, 70), -1)
+            cv2.putText(panel, lbl, (ex - 4, ey + 4),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.30, (90, 90, 90), 1)
+
+        # 목표(-180°=S) 강조 표시
+        target_pt = (CC[0], CC[1] + R)
+        cv2.circle(panel, target_pt, 5, (0, 80, 255), -1)
+        cv2.putText(panel, '-180', (target_pt[0] - 14, target_pt[1] + 13),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.28, (0, 80, 255), 1)
+
+        # 현재 yaw 화살표 (녹색)
+        tip = (int(CC[0] - (R - 10) * math.sin(self._yaw)),
+               int(CC[1] - (R - 10) * math.cos(self._yaw)))
+        cv2.arrowedLine(panel, CC, tip, (0, 220, 0), 2, tipLength=0.22)
+
+        # yaw 수치
+        cv2.putText(panel, f'{math.degrees(self._yaw):+.0f}',
+                    (CC[0] - 14, CC[1] + 14),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.38, (180, 180, 180), 1)
+
+        cv2.imshow('follow_debug', panel)
+        cv2.waitKey(1)
 
     def _school_zone_offset(self):
         # target yaw = ±180° (= ±π rad). offset이 0이면 정렬 완료.

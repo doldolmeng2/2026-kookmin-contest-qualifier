@@ -97,7 +97,7 @@ OBS_PED_SUPPRESS_BAND = (0.35, 0.65)  # 보행자 박스 중심 x 가 이 범위
 # --- 트랙 신호등 (4구) ---  키 이름은 traffic_light.BASE_PARAMS 와 일치해야 함
 TL_TRACK_PARAMS = dict(
     black_min_count=120,       # ROI 내 검은 픽셀 총량 하한
-    black_min_blob_area=19500,  # ★ 하우징 박스 면적 ≥ 이 값(=가까움)이면 인식. 로그 blob= 보고 튜닝
+    black_min_blob_area=17500,  # ★ 하우징 박스 면적 ≥ 이 값(=가까움)이면 인식. 로그 blob= 보고 튜닝
     color_min_count=50,       # 게이트 통과 후 색 구분 최소 픽셀
     bbox_pad=0,
     aspect_min=2.0,            # 하우징 가로/세로 비 하한 (세로 기둥/나무 배제)
@@ -112,9 +112,10 @@ TL_START_PARAMS = dict(
 )
 
 # --- 어린이 보호구역 (하단 ROI 노랑/흰색 상태기계) ---
-SZ_ROI_TOP      = 0.55   # 하단 ROI 시작(0~1). 차에 가까운 노면만
-SZ_YELLOW_ENTER = 11500  # 노란 픽셀 ≥ → 시작(감속, data[8]=1)
-SZ_WHITE_EXIT   = 3000   # (보호구역 안) 흰 픽셀 ≥ → 일반도로 복귀(data[8]=0)
+SZ_ROI_TOP      = 0.53   # 하단 ROI 시작(0~1). 차에 가까운 노면만
+SZ_ROI_BOTTOM   = 0.70   # 하단 ROI 끝(0~1). 1.0이면 화면 최하단
+SZ_YELLOW_ENTER = 2800  # 9300  # 노란 픽셀 ≥ → 시작(감속, data[8]=1)
+SZ_WHITE_EXIT   = 3600   # (보호구역 안) 흰 픽셀 ≥ → 일반도로 복귀(data[8]=0)
 
 # --- 좌회전 완료 (IMU yaw) ---
 TURN_YAW_TOLERANCE = math.radians(1)  # 목표 yaw 도달 허용 오차. 노이즈 많으면 ↑
@@ -157,8 +158,8 @@ class Perception(Node):
         # 어린이 보호구역 (하단 ROI 노랑/흰색 상태기계)
         self._school_zone = SchoolZoneDetector(
             logger=self.get_logger(), debug=True, show=False,
-            roi_top=SZ_ROI_TOP, yellow_enter=SZ_YELLOW_ENTER,
-            white_exit=SZ_WHITE_EXIT)
+            roi_top=SZ_ROI_TOP, roi_bottom=SZ_ROI_BOTTOM,
+            yellow_enter=SZ_YELLOW_ENTER, white_exit=SZ_WHITE_EXIT)
 
         # 디버그 시각화: 카메라 + YOLO bbox + status 를 'perception' 창에 표시
         #   팀원들이 인식 상태를 눈으로 확인용. 끄려면: -p viz:=false
@@ -282,7 +283,7 @@ class Perception(Node):
         else:
             self._status[IDX_START_SIGNAL] = 0
 
-        if self._mode in (MODE_LANE, MODE_SIGNAL_WAIT):
+        if self._mode in (MODE_LANE, MODE_SIGNAL_WAIT, MODE_LEFT_TURN):
             self._status[IDX_TRAFFIC_SIGNAL] = self._detect_traffic_signal(det)
             self._status[IDX_POLICE_DETECTED] = self._detect_police(det)
 
