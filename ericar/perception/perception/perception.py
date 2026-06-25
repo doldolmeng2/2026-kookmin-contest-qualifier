@@ -127,6 +127,7 @@ VIZ_DEFAULT = True     # perception 창(카메라+bbox+status) 기본 표시 여
 MODE_WAIT, MODE_CONE, MODE_LANE, MODE_LEFT_TURN, \
     MODE_LANE_CHANGE, MODE_FOLLOW, MODE_SIGNAL_WAIT, \
     MODE_SCHOOL_ZONE = range(8)
+MODE_S_CURVE = 8
 
 
 class Perception(Node):
@@ -327,8 +328,11 @@ class Perception(Node):
         else:
             self._status[IDX_TURN_DONE] = 0
 
-        # S자 커브 끝 감지 — 항상 실행
-        self._status[IDX_S_CURVE] = self._detect_s_curve_end()
+        # S자 커브 끝 감지 — MODE_S_CURVE 일 때만 실행
+        if self._mode == MODE_S_CURVE:
+            self._status[IDX_S_CURVE] = self._detect_s_curve_end()
+        else:
+            self._status[IDX_S_CURVE] = 0
 
         # 정지선은 차선 주행 및 신호 대기 중에만 검사한다.
         if self._mode in (MODE_LANE, MODE_SIGNAL_WAIT):
@@ -456,8 +460,9 @@ class Perception(Node):
             # 방해차량(라이다) 조감도 창
             if self._scan is not None:
                 self._draw_lidar_viz(self._scan)
-            # S커브 디버그 창
-            draw_s_curve_debug(self._img_front, self._scan)
+            # S커브 디버그 창 — MODE_S_CURVE 일 때만 표시
+            if self._mode == MODE_S_CURVE:
+                draw_s_curve_debug(self._img_front, self._scan)
             cv2.waitKey(1)
         except Exception as e:
             self.get_logger().warn(f'viz 실패: {e}')
