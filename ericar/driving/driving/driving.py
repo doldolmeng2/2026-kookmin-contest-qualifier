@@ -33,7 +33,7 @@ from driving.turn_left import LeftTurner
 # ---------------------------------------------------------------------------
 MODE_WAIT, MODE_CONE, MODE_LANE, MODE_LEFT_TURN, \
     MODE_LANE_CHANGE, MODE_FOLLOW, MODE_SIGNAL_WAIT, MODE_SCHOOL_ZONE, \
-    MODE_S_CURVE = range(9)
+    MODE_S_CURVE, MODE_SHORTCUT = range(10)
 
 # stage 인덱스
 STAGE_LANE_TARGET = 0   # 0=1차선, 1=2차선
@@ -46,7 +46,10 @@ LANE_CHANGE_STABLE_TICKS = 10  # 연속으로 조건을 만족해야 하는 틱 
 
 # FOLLOW 모드 파라미터
 FOLLOW_LANE_SCALE = 1.0   # lane offset에 곱하는 비례값
-FOLLOW_YAW_SCALE  = 30.0  # yaw 오차(rad) → offset 단위 변환 스케일
+FOLLOW_YAW_SCALE  = 43.0  # yaw 오차(rad) → offset 단위 변환 스케일
+
+# SHORTCUT 모드: 첫 좌회전 후 yaw 90도 방향으로 직진
+SHORTCUT_TARGET_YAW = math.radians(90)
 
 
 class Driving(Node):
@@ -71,6 +74,9 @@ class Driving(Node):
         self._lane_change_sent = False
         self._lane_change_entry_ticks = 0   # 모드 진입 후 경과 틱
         self._lane_change_stable_count = 0  # 연속 조건 만족 틱
+
+        # FOLLOW 모드: lane_offset 이상값 필터용 이전 값
+        self._last_follow_lane_offset = 0.0
 
         # ---- 구독 ----
         self.create_subscription(
@@ -153,6 +159,12 @@ class Driving(Node):
             if self._lane.reuse_reason:
                 self.get_logger().warn(
                     f'[FOLLOW] reusing last offset={lane_offset:.1f}  reason: {self._lane.reuse_reason}')
+            if lane_offset >= 400:
+                self.get_logger().warn(
+                    f'[FOLLOW] lane_offset={lane_offset:.1f} >= 400, using prev={self._last_follow_lane_offset:.1f}')
+                lane_offset = self._last_follow_lane_offset
+            else:
+                self._last_follow_lane_offset = lane_offset
             yaw_err = self._normalize_angle(self._yaw + math.pi)
             offset = lane_offset * FOLLOW_LANE_SCALE + yaw_err * FOLLOW_YAW_SCALE
             self.get_logger().info(
@@ -176,6 +188,12 @@ class Driving(Node):
 
         elif self._mode == MODE_LEFT_TURN:
             offset = self._turn.compute_offset(self._yaw)
+
+        elif self._mode == MODE_SHORTCUT:
+            offset = self._shortcut_offset()
+            self.get_logger().info(
+                f'[SHORTCUT] yaw={math.degrees(self._yaw):.1f}deg  '
+                f'offset={math.degrees(offset):.1f}deg')
 
         if self._img_front is not None:
             self._lane.visualize_yellow(self._img_front)
@@ -282,6 +300,10 @@ class Driving(Node):
     def _school_zone_offset(self):
         # target yaw = ±180° (= ±π rad). offset이 0이면 정렬 완료.
         return self._normalize_angle(self._yaw + math.pi)
+
+    def _shortcut_offset(self):
+        # target yaw = 90° (= π/2 rad). offset이 0이면 정렬 완료.
+        return self._normalize_angle(self._yaw - SHORTCUT_TARGET_YAW)
 
     @staticmethod
     def _normalize_angle(angle):

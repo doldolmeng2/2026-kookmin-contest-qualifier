@@ -30,7 +30,7 @@ from xycar_msgs.msg import XycarMotor
 # ---------------------------------------------------------------------------
 MODE_WAIT, MODE_CONE, MODE_LANE, MODE_LEFT_TURN, \
     MODE_LANE_CHANGE, MODE_FOLLOW, MODE_SIGNAL_WAIT, MODE_SCHOOL_ZONE, \
-    MODE_S_CURVE = range(9)
+    MODE_S_CURVE, MODE_SHORTCUT = range(10)
 
 MODE_NAME = {
     MODE_WAIT: 'WAIT',
@@ -42,6 +42,7 @@ MODE_NAME = {
     MODE_SIGNAL_WAIT: 'SIGNAL_WAIT',
     MODE_SCHOOL_ZONE: 'SCHOOL_ZONE',
     MODE_S_CURVE: 'S_CURVE',
+    MODE_SHORTCUT: 'SHORTCUT',
 }
 
 # stage 인덱스
@@ -81,7 +82,7 @@ _YELLOW_LOWER = np.array([25, 205,  80])
 _YELLOW_UPPER = np.array([31, 255, 255])
 _YELLOW_ROI_Y1 = 270
 _YELLOW_ROI_Y2 = 310
-_CONE_YELLOW_MIN = 350   # ROI 내 노란 픽셀 수 ≥ 이 값이면 중앙 차선 검출 완료
+_CONE_YELLOW_MIN = 400   # ROI 내 노란 픽셀 수 ≥ 이 값이면 중앙 차선 검출 완료
 
 # lane → s_curve 전환: offset 절대값이 CURVE_OFFSET_TOL 이상이면 S자 구간 진입
 CURVE_OFFSET_TOL = 43 
@@ -222,6 +223,11 @@ class Main(Node):
                 self._stage[STAGE_LANE_TARGET] = 1
                 self._set_mode(MODE_FOLLOW)
 
+        elif self._mode == MODE_SHORTCUT:
+            if s[IDX_SHORTCUT_EXIT] == 1:
+                self._stage[STAGE_TURN_TYPE] = 1
+                self._set_mode(MODE_LEFT_TURN)
+
         self._publish_mode_stage()
 
     def _fsm_lane(self):
@@ -282,13 +288,6 @@ class Main(Node):
                 self._set_mode(MODE_LANE_CHANGE)
                 return
 
-            # 시나리오2: LEFT_TURN A 이후 숏컷 주행 중 출구 감지 → LEFT_TURN B
-            if self._left_exit_flag == 1 and s[IDX_SHORTCUT_EXIT] == 1:
-                self._left_exit_flag = 0
-                self._stage[STAGE_TURN_TYPE] = 1
-                self._set_mode(MODE_LEFT_TURN)
-                return
-
             # 스쿨존 진입 (1차선에서 감지되더라도 2차선 모드로 전환)
             if s[IDX_SCHOOL_ZONE] == 1:
                 self._stage[STAGE_LANE_TARGET] = 1
@@ -322,11 +321,13 @@ class Main(Node):
 
     def _after_left_turn(self):
         if self._stage[STAGE_TURN_TYPE] == 0:
-            # A 완료(진입) → 2차선 숏컷 주행
+            # A 완료(진입) → yaw 90도 유지로 숏컷 주행
             self._stage[STAGE_LANE_TARGET] = 1
-            self._set_mode(MODE_LANE)
+            self._left_exit_flag = 1
+            self._set_mode(MODE_SHORTCUT)
         else:
             # B 완료(탈출) → 스쿨존 진입 (2차선 유지)
+            self._left_exit_flag = 0
             self._set_mode(MODE_SCHOOL_ZONE)
 
     # ------------------------------------------------------------------
@@ -355,10 +356,10 @@ class Main(Node):
         self._mode = mode
 
     def _publish_mode_stage(self):
-        self._mode_pub.publish(Int32(data=int(self._mode)))
         m = Int32MultiArray()
         m.data = [int(v) for v in self._stage]
         self._stage_pub.publish(m)
+        self._mode_pub.publish(Int32(data=int(self._mode)))
 
     # ==================================================================
     # 디버그 시각화
@@ -416,7 +417,7 @@ class Main(Node):
 
         cv2.imshow('ericar_debug', img)
         key = cv2.waitKey(1) & 0xFF
-        if ord('0') <= key <= ord('7'):
+        if ord('0') <= key <= ord('9'):
             self._set_mode(key - ord('0'))
 
     # ------------------------------------------------------------------

@@ -28,7 +28,7 @@ ROI_TOP_FRAC = 0.80
 ROI_BOTTOM_FRAC = 1.00
 
 # 노란색 / 흰색 HSV 범위 (시뮬 기준)
-HSV_YEL_LO = (15, 80, 120);  HSV_YEL_HI = (40, 255, 255)
+HSV_YEL_LO = (25, 205, 80);  HSV_YEL_HI = (31, 255, 255)
 HSV_WHT_LO = (0, 0, 190);    HSV_WHT_HI = (179, 40, 255)   # 저채도 + 고명도 = 흰색
 
 # 임계값 (실측 기반)
@@ -67,7 +67,7 @@ class SchoolZoneDetector:
         wmask = cv2.inRange(hsv, HSV_WHT_LO, HSV_WHT_HI)
         yellow = int(cv2.countNonZero(ymask))
         white = int(cv2.countNonZero(wmask))
-        print(f"yellow pixel count: {yellow}, white pixel count: {white}")
+        # print(f"yellow pixel count: {yellow}, white pixel count: {white}")
         if self.state == 'out':
             # 일반도로/진입 전: 노랑 급증으로만 진입 (흰색 무시 → 일반 흰차선 무시)
             if yellow >= self.yellow_enter:

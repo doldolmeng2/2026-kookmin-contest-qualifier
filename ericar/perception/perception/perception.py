@@ -97,7 +97,7 @@ OBS_PED_SUPPRESS_BAND = (0.35, 0.65)  # 보행자 박스 중심 x 가 이 범위
 # --- 트랙 신호등 (4구) ---  키 이름은 traffic_light.BASE_PARAMS 와 일치해야 함
 TL_TRACK_PARAMS = dict(
     black_min_count=120,       # ROI 내 검은 픽셀 총량 하한
-    black_min_blob_area=17500,  # ★ 하우징 박스 면적 ≥ 이 값(=가까움)이면 인식. 로그 blob= 보고 튜닝
+    black_min_blob_area=16000,  # ★ 하우징 박스 면적 ≥ 이 값(=가까움)이면 인식. 로그 blob= 보고 튜닝
     color_min_count=50,       # 게이트 통과 후 색 구분 최소 픽셀
     bbox_pad=0,
     aspect_min=2.0,            # 하우징 가로/세로 비 하한 (세로 기둥/나무 배제)
@@ -114,20 +114,19 @@ TL_START_PARAMS = dict(
 # --- 어린이 보호구역 (하단 ROI 노랑/흰색 상태기계) ---
 SZ_ROI_TOP      = 0.53   # 하단 ROI 시작(0~1). 차에 가까운 노면만
 SZ_ROI_BOTTOM   = 0.70   # 하단 ROI 끝(0~1). 1.0이면 화면 최하단
-SZ_YELLOW_ENTER = 2800  # 9300  # 노란 픽셀 ≥ → 시작(감속, data[8]=1)
+SZ_YELLOW_ENTER = 2700  # 9300  # 노란 픽셀 ≥ → 시작(감속, data[8]=1)
 SZ_WHITE_EXIT   = 3600   # (보호구역 안) 흰 픽셀 ≥ → 일반도로 복귀(data[8]=0)
 
 # --- 좌회전 완료 (IMU yaw) ---
 TURN_YAW_TOLERANCE = math.radians(1)  # 목표 yaw 도달 허용 오차. 노이즈 많으면 ↑
 
 # --- 디버그 시각화 ---
-VIZ_DEFAULT = True     # perception 창(카메라+bbox+status) 기본 표시 여부
+VIZ_DEFAULT = False     # perception 창(카메라+bbox+status) 기본 표시 여부
 
 # main 모드 정의 (퍼셉션이 모드별로 인식 항목을 골라 켜기 위해 참조)
 MODE_WAIT, MODE_CONE, MODE_LANE, MODE_LEFT_TURN, \
     MODE_LANE_CHANGE, MODE_FOLLOW, MODE_SIGNAL_WAIT, \
-    MODE_SCHOOL_ZONE = range(8)
-MODE_S_CURVE = 8
+    MODE_SCHOOL_ZONE, MODE_S_CURVE, MODE_SHORTCUT = range(10)
 
 
 class Perception(Node):
@@ -312,8 +311,10 @@ class Perception(Node):
         if self._mode == MODE_FOLLOW:
             self._status[IDX_OBSTACLE_PASSED] = self._detect_obstacle_passed(self._scan)
 
-        if self._mode == MODE_LANE and self._stage[0] == 1:
+        if self._mode == MODE_SHORTCUT:
             self._status[IDX_SHORTCUT_EXIT] = self._detect_shortcut_exit(det)
+        else:
+            self._status[IDX_SHORTCUT_EXIT] = 0
 
         # 어린이 보호구역: 노랑(시작)→1, 흰색(일반도로 복귀)→0 상태기계
         # MODE_LANE에서 진입 감지, MODE_SCHOOL_ZONE에서 해제 감지
