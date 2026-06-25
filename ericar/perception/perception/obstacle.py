@@ -35,12 +35,23 @@ def _sector_min(scan, degs):
     return min(vals) if vals else float('inf')
 
 
-def detect_obstacle_front(scan, degs=FRONT_DEG, max_dist=FRONT_OBSTACLE_MAX):
-    """전방 섹터(degs)에 앞차가 max_dist 이내로 있으면 True.
+def _sector_point_count(scan, degs, max_dist):
+    """전방 섹터에서 max_dist 이내 유효 포인트 개수를 반환한다."""
+    r = scan.ranges
+    n = len(r)
+    return sum(
+        1 for d in degs
+        if d < n and math.isfinite(r[d]) and _SELF_MIN < r[d] < max_dist
+    )
+
+
+def detect_obstacle_front(scan, degs=FRONT_DEG, max_dist=FRONT_OBSTACLE_MAX,
+                          min_points=1):
+    """전방 섹터(degs)에 앞차가 max_dist 이내로 min_points 개 이상 있으면 True.
     (임계값은 perception.py 의 OBS_* 에서 넘겨줌)"""
     if scan is None:
         return False
-    return _sector_min(scan, degs) < max_dist
+    return _sector_point_count(scan, degs, max_dist) >= min_points
 
 
 def left_min(scan, degs=LEFT_DEG):
