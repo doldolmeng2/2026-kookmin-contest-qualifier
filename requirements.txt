@@ -1,0 +1,12 @@
+# Python dependencies shared by the ERICAR ROS2 packages.
+#
+# ROS Humble/Ubuntu 22.04 cv_bridge is built against the NumPy 1.x ABI.
+# Keep NumPy below 2.0; NumPy 2.x commonly breaks cv_bridge imports with
+# messages such as "_ARRAY_API not found" or "numpy.core.multiarray failed".
+numpy>=1.24,<2.0
+
+# Object detection used by ericar/perception/perception/yolo_detector.py.
+ultralytics>=8.0,<9.0
+
+# Install OpenCV and cv_bridge from apt/rosdep, not pip:
+#   sudo apt install ros-humble-cv-bridge python3-opencv
