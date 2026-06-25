@@ -9,7 +9,6 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import Image
-from cv_bridge import CvBridge
 import cv2
 import numpy as np
 
@@ -23,7 +22,6 @@ class HsvTuner(Node):
 
     def __init__(self):
         super().__init__('hsv_tuner')
-        self._bridge = CvBridge()
         self._img = None
 
         self._setup_windows()
@@ -51,7 +49,10 @@ class HsvTuner(Node):
         cv2.createTrackbar('V max', WIN_MASK,  255, 255, nothing)
 
     def _image_cb(self, msg):
-        self._img = self._bridge.imgmsg_to_cv2(msg, 'bgr8')
+        img = np.frombuffer(bytes(msg.data), dtype=np.uint8).reshape((msg.height, msg.width, 3))
+        if msg.encoding == 'rgb8':
+            img = img[:, :, ::-1]
+        self._img = img
 
     def _tick(self):
         if self._img is None:

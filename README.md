@@ -41,6 +41,8 @@ ericar/
   현재 모드(텍스트 변환)·stage(차선/좌회전 종류)·perception 상황·
   `/xycar_motor` 의 angle/speed·lap 수·현재 offset 을 표시한다.
   (`main` 은 모터값 표시를 위해 `/xycar_motor` 를 구독만 한다.)
+- `ericar_debug` 창에 포커스를 두고 **숫자 키 `0`~`6`** 을 누르면
+  해당 모드 enum 값으로 즉시 강제 전환된다 (테스트/디버그용).
 
 ---
 

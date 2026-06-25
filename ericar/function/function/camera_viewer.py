@@ -3,15 +3,14 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import Image
-from cv_bridge import CvBridge
 import cv2
+import numpy as np
 
 
 class CameraViewer(Node):
 
     def __init__(self):
         super().__init__('camera_viewer')
-        self._bridge = CvBridge()
         self._mouse_x = 0
         self._mouse_y = 0
         cv2.namedWindow('Front Camera')
@@ -26,7 +25,9 @@ class CameraViewer(Node):
         self._mouse_y = y
 
     def _image_cb(self, msg):
-        img = self._bridge.imgmsg_to_cv2(msg, 'bgr8')
+        img = np.frombuffer(bytes(msg.data), dtype=np.uint8).reshape((msg.height, msg.width, 3))
+        if msg.encoding == 'rgb8':
+            img = img[:, :, ::-1]
         text = f'({self._mouse_x}, {self._mouse_y})'
         cv2.putText(img, text, (self._mouse_x + 10, self._mouse_y - 10),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 255, 0), 1, cv2.LINE_AA)

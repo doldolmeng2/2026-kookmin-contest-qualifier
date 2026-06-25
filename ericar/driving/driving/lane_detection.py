@@ -1,428 +1,151 @@
 #!/usr/bin/env python3
-"""
-lane_detection.py
------------------
-노란색 차선을 검출하여 차량 중심 대비 lateral offset(-1.0 ~ +1.0)을 계산한다.
+"""차선 인식 → 조향 오프셋 계산.
 
-알고리즘 개요:
-  1. HSV + HLS 이중 마스킹으로 노란색 픽셀 추출
-  2. Blob 필터로 소형 노이즈(교차로 화살표, 점선 등) 제거
-  3. 2단 ROI:
-     - 하단 ROI (차 바로 앞): 히스토그램 peak로 현재 차선 위치 정밀 추정
-     - 원거리 ROI (앞쪽 도로): centroid(mean)으로 커브 방향 조기 감지
-  4. 커브 boost: 원거리 ROI가 하단 ROI보다 같은 방향으로 더 큰 error를 보이면
-     error를 CURVE_BOOST배로 증폭 → 커브 진입 전 핸들을 더 빨리 꺾음
-  5. Velocity prediction: 차선이 일시적으로 사라졌을 때 직전 이동속도(dx)로
-     최대 MAX_PRED_FRAMES 프레임 동안 위치를 예측해 offset 유지
-  6. NO_LINE 턴 유지: 차선 완전 소실 시 턴 중(|offset|>0.2)이면 핸들 유지,
-     직진 중이면 서서히 0으로 감쇠
-  7. Normalized PID: error를 화면 폭 기준으로 정규화(-1~1) 후 PID 적용
+driving.py 에서 import 해서 사용한다. ROS 토픽은 다루지 않고,
+"카메라 이미지 + 목표 차선 → offset(float)" 변환만 책임진다.
+
+offset 부호 약속:
+    음수 = 좌측으로 조향 필요, 양수 = 우측으로 조향 필요 (control 의 비례식과 합의 필요)
 """
+
 import cv2
 import numpy as np
-import sys
-import time
 
-# ── 색상 범위 ────────────────────────────────────────────────────────────────
-# HSV + HLS 이중 조건으로 조명 변화에 강인하게 노란색 검출
-# HSV: 색상(H) 15~40, 채도(S) 70+, 명도(V) 70+
-# HLS: 색상(H) 15~45, 밝기(L) 45+, 채도(S) 60+
-YELLOW_HSV_LOWER = np.array([15,  70,  70], dtype=np.uint8)
-YELLOW_HSV_UPPER = np.array([40, 255, 255], dtype=np.uint8)
-YELLOW_HLS_LOWER = np.array([15,  45,  60], dtype=np.uint8)
-YELLOW_HLS_UPPER = np.array([45, 255, 255], dtype=np.uint8)
+ROI_Y1 = 270
+ROI_Y2 = 310
 
-# ── 타겟 / 탐색 파라미터 ─────────────────────────────────────────────────────
-# LANE1_TARGET_X: 1차선 주행 시 차선이 위치해야 할 이미지 x좌표 (직선 보정값)
-# LANE2_TARGET_X: 2차선 주행 시 타겟 x좌표
-# MIN_YELLOW_PX : 유효 차선으로 인정하는 최소 노란 픽셀 수
-# YELLOW_MAX_RATIO: 이 비율 이상이면 교차로/오탐지로 판단하여 스킵
-# HIST_KERNEL   : 히스토그램 스무딩 커널 크기 (클수록 peak가 부드러워짐)
-# SEARCH_HALF   : 히스토그램 peak 탐색 범위 (target_x ± SEARCH_HALF px)
-# BLOB_MIN_AREA : 이 면적(px²) 미만인 연결요소는 노이즈로 제거
-LANE1_TARGET_X   = 310
-LANE2_TARGET_X   = 420
-MIN_YELLOW_PX    = 30
-YELLOW_MAX_RATIO = 0.30
-HIST_KERNEL      = 40
-SEARCH_HALF      = 150
-BLOB_MIN_AREA    = 80
-
-# ── ROI ──────────────────────────────────────────────────────────────────────
-# 이미지 높이를 기준으로 비율로 지정 (0.0 = 이미지 상단, 1.0 = 이미지 하단)
-# ROI_NEAR_START: 하단 ROI 시작 위치 (차 바로 앞 노면, 이미지 50%~100%)
-#   → 히스토그램 peak로 현재 차선 중심 정밀 추정
-ROI_NEAR_START   = 0.50   # 하단 ROI: 이미지 50%~100% (차 바로 앞)
+# HSV 노란색 범위
+YELLOW_LOWER = np.array([25, 205, 80])
+YELLOW_UPPER = np.array([35, 255, 255])
 
 
-# ── velocity prediction ──────────────────────────────────────────────────────
-# 차선이 일시적으로 사라졌을 때 (예: S자 커브 중간, 그림자 등)
-# 직전 프레임들의 이동 속도(dx)를 지수이동평균으로 추정하고,
-# 그 속도로 최대 MAX_PRED_FRAMES 프레임 동안 위치를 외삽하여 offset 유지
-# DX_ALPHA: EMA 계수 (클수록 최신 dx 반영 강함)
-MAX_PRED_FRAMES  = 20
-DX_ALPHA         = 0.3
+LANE_REF_X = {0: 377, 1: 225}  # 차선별 기준 cx (offset=0 기준점)
 
-# ── NO_LINE 처리 ─────────────────────────────────────────────────────────────
-# velocity prediction도 불가능한 완전 차선 소실 시
-# NO_LINE_MAX 프레임 이후부터 offset을 서서히 0으로 감쇠
-# 단, 턴 중(|last_offset| > 0.2)이면 감쇠 없이 마지막 핸들각 유지
-# → S자 2번째 커브 진입 시 1번째 턴 관성을 보존
-NO_LINE_DECAY    = 0.95
-NO_LINE_MAX      = 15
-
-# ── PID 파라미터 ─────────────────────────────────────────────────────────────
-# error_norm = error_px / (w/2)로 정규화 (-1.0 ~ +1.0)
-# KP: 비례항 - 현재 오차에 즉각 반응
-# KI: 적분항 - 지속적 편향 보정 (현재 비활성)
-# KD: 미분항 - 급격한 변화 억제 (±0.15 클램핑으로 폭발 방지)
-# PID_DERIVATIVE_ALPHA: 미분항 EMA 계수 (노이즈 스무딩)
-PID_KP               = 0.55
-PID_KI               = 0.0
-PID_KD               = 0.20
-PID_INTEGRAL_LIMIT   = 1.0
-PID_DERIVATIVE_ALPHA = 0.60
-CONTROL_PERIOD       = 1.0 / 30.0   # 제어 주기 30Hz
+# 노이즈 필터용 사다리꼴 ROI (좌상→우상→우하→좌하, 시계방향)
+TRAP_PTS = np.array([[290, 190], [350, 190], [400, 250], [240, 250]], dtype=np.int32)
+TRAP_PIXEL_MIN = 60
+TRAP_SPAN_MIN  = 300
 
 
 class LaneDetector:
+
     def __init__(self):
-        self.last_offset      = 0.0   # 마지막으로 계산된 offset (소실 시 반환용)
-        self.last_debug_img   = None  # driving.py가 /lane_debug로 퍼블리시할 이미지
-        self._no_line_cnt     = 0     # 연속 차선 소실 프레임 수
-        # PID 상태
-        self._pid_integral    = 0.0
-        self._pid_prev_error  = None
-        self._pid_prev_time   = None
-        self._pid_prev_deriv  = 0.0
-        # peak 이동 속도 제한
-        self._prev_peak       = None
-        # velocity prediction 상태
-        self._prev_yellow_x   = None  # 직전 프레임 차선 x좌표
-        self._last_dx         = 0.0   # EMA로 추정된 프레임당 x이동량
-        self._missing_frames  = 0     # 연속으로 차선 미검출된 프레임 수
-
-    def _reset_pid(self):
-        """PID 내부 상태 초기화 (차선 완전 소실 시 호출)"""
-        self._pid_integral   = 0.0
-        self._pid_prev_error = None
-        self._pid_prev_time  = None
-        self._pid_prev_deriv = 0.0
-
-    def _compute_pid(self, error_norm: float) -> float:
-        """
-        정규화된 오차(-1~1)를 입력받아 PID 출력(-1~1)을 반환한다.
-        미분항은 EMA 필터를 거쳐 노이즈를 억제한다.
-        """
-        now = time.monotonic()
-        dt  = CONTROL_PERIOD if self._pid_prev_time is None else (now - self._pid_prev_time)
-        if dt < 1e-4:
-            dt = CONTROL_PERIOD
-
-        # P항: 현재 오차에 비례
-        p_term = PID_KP * error_norm
-
-        # I항: 오차 누적 (wind-up 방지를 위해 클리핑)
-        self._pid_integral = max(-PID_INTEGRAL_LIMIT,
-                                  min(PID_INTEGRAL_LIMIT,
-                                      self._pid_integral + error_norm * dt))
-        i_term = PID_KI * self._pid_integral
-
-        # D항: 오차 변화율 (EMA로 스무딩)
-        raw_d  = 0.0 if self._pid_prev_error is None else (error_norm - self._pid_prev_error) / dt
-        deriv  = PID_DERIVATIVE_ALPHA * self._pid_prev_deriv + (1 - PID_DERIVATIVE_ALPHA) * raw_d
-        d_term = PID_KD * deriv
-        d_term = max(-0.15, min(0.15, d_term))  # D항 폭발 방지
-
-        self._pid_prev_error = error_norm
-        self._pid_prev_time  = now
-        self._pid_prev_deriv = deriv
-        return p_term + i_term + d_term
-
-    def _yellow_mask(self, roi: np.ndarray) -> np.ndarray:
-        """
-        HSV + HLS 이중 마스킹으로 노란색 픽셀을 검출한다.
-        두 조건의 AND를 취해 오탐지를 줄인다.
-        morphology close → 차선 내부 구멍 메우기
-        morphology open  → 단독 픽셀 노이즈 제거
-        """
-        hsv  = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
-        hls  = cv2.cvtColor(roi, cv2.COLOR_BGR2HLS)
-        mask = cv2.bitwise_and(
-            cv2.inRange(hsv, YELLOW_HSV_LOWER, YELLOW_HSV_UPPER),
-            cv2.inRange(hls, YELLOW_HLS_LOWER, YELLOW_HLS_UPPER)
-        )
-        mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8))
-        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN,  np.ones((3, 3), np.uint8))
-        return mask
-
-
-    def _white_mask(self, roi):
-        """흰색 차선 마스크 (HSV: 낮은 채도 + 높은 명도)"""
-        hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
-        return cv2.inRange(hsv, np.array([0, 0, 190]), np.array([180, 25, 255]))
-
-    def _detect_white_edges(self, image, w):
-        """흰 차선 양쪽 경계 x좌표 반환 (없으면 None)"""
-        h = image.shape[0]
-        roi_top = int(h * 0.80)
-        roi = image[roi_top:, :]
-        hist = np.sum(self._white_mask(roi), axis=0).astype(np.float32)
-        hist = np.convolve(hist, np.ones(20, dtype=np.float32), mode='same')
-        WHITE_MIN_SUM = 300
-        # 왼쪽 경계
-        lh = hist[:w//2]
-        lp = int(np.argmax(lh))
-        left_x = lp if lh[lp] > WHITE_MIN_SUM else None
-        # 오른쪽 경계
-        rh = hist[w//2:]
-        rp = int(np.argmax(rh)) + w//2
-        right_x = rp if hist[rp] > WHITE_MIN_SUM else None
-        print(f"[WHITE] left={left_x} right={right_x} hist_max_l={lh[lp]:.0f} hist_max_r={hist[rp]:.0f}", flush=True)
-        # ── 흰선 히스토그램 시각화용으로 저장 ──
-        self._white_debug = {
-            'left': left_x, 'right': right_x,
-            'lmax': float(lh[lp]), 'rmax': float(hist[rp])
-        }
-        print(f"[WHITE] left={left_x} right={right_x} "
-              f"hist_l={lh[lp]:.0f} hist_r={hist[rp]:.0f}", flush=True)
-        return left_x, right_x
-
-    def _blob_filter(self, mask: np.ndarray) -> np.ndarray:
-        """
-        연결요소(blob) 분석으로 BLOB_MIN_AREA 미만의 작은 덩어리를 제거한다.
-        교차로 화살표, 점선 노이즈, 신호등 반사 등 소형 오탐지 제거에 효과적.
-        """
-        n, labels, stats, _ = cv2.connectedComponentsWithStats(mask)
-        out = np.zeros_like(mask)
-        for i in range(1, n):  # 0은 배경
-            if stats[i, cv2.CC_STAT_AREA] >= BLOB_MIN_AREA:
-                out[labels == i] = 255
-        return out
-
-    def _histogram_peak(self, xs: np.ndarray, width: int, target_x: int) -> float:
-        """
-        x좌표 배열로 히스토그램을 생성하고 커널 스무딩 후 peak를 반환한다.
-        탐색 범위를 target_x ± SEARCH_HALF로 제한해 반대편 차선 오탐지 방지.
-        peak가 없으면 target_x를 그대로 반환 (offset=0 유지).
-        """
-        hist   = np.zeros(width, dtype=np.float32)
-        np.add.at(hist, xs.clip(0, width - 1), 1.0)
-        # 박스 커널 컨볼루션으로 스무딩 (HIST_KERNEL 크기 슬라이딩 합산)
-        kernel = np.ones(HIST_KERNEL, dtype=np.float32)
-        hist_s = np.convolve(hist, kernel, mode='same')
-        lo = max(0, target_x - SEARCH_HALF)
-        hi = min(width, target_x + SEARCH_HALF)
-        local = hist_s[lo:hi]
-        if local.max() == 0:
-            return float(target_x)
-        return float(lo + np.argmax(local))
+        self.lane1_center_x = LANE_REF_X[0]
+        self.lane2_center_x = LANE_REF_X[1]
+        self._last_offset = 0.0
+        self.reuse_reason = None  # None=fresh, str=재활용 이유
 
     def compute_offset(self, image, lane_target):
-        """
-        입력 이미지에서 노란 차선을 검출하고 정규화된 lateral offset을 반환한다.
-        offset > 0: 차선이 타겟보다 오른쪽 → 우회전 필요
-        offset < 0: 차선이 타겟보다 왼쪽  → 좌회전 필요
+        """노란색 차선 cx - 기준 cx = offset 으로 반환.
+
+        Args:
+            image: BGR 이미지 (없으면 None)
+            lane_target: 0=1차선(기준 cx=400), 1=2차선(기준 cx=220)
+        Returns:
+            float offset (양수=오른쪽, 음수=왼쪽), 검출 실패 시 이전 값 유지
         """
         if image is None:
-            return self.last_offset
+            self.reuse_reason = 'no image (topic not received)'
+            return self._last_offset
 
-        h, w     = image.shape[:2]
-        # lane_target: 0=1차선(LANE1), 1=2차선(LANE2)
-        target_x = LANE1_TARGET_X if lane_target == 0 else LANE2_TARGET_X
+        if self._is_wide_noise_in_trapezoid(image):
+            self.reuse_reason = 'wide noise in trapezoid'
+            return self._last_offset
 
-        # ── 하단 ROI: 차 바로 앞 노면에서 현재 차선 위치 정밀 추정 ──────────
-        # 이미지 하단 30% 구간만 사용 → 직선 구간 안정적, 교차로 체커보드 영향 최소화
-        n_top  = int(h * ROI_NEAR_START)
-        n_mask = self._blob_filter(self._yellow_mask(image[n_top:, :]))
-        _, n_xs = np.where(n_mask > 0)
+        cx = self._yellow_cx(image)
+        if cx is None:
+            self.reuse_reason = 'yellow lane not detected'
+            return self._last_offset
 
-        # ── 디버그 이미지 생성 ────────────────────────────────────────────────
-        debug = image.copy()
-        cv2.line(debug, (0, n_top), (w, n_top), (255, 255, 255), 2)  # 하단 ROI 경계 (흰색)
-        debug[n_top:][n_mask > 0]         = [0, 255, 0]    # 하단 검출 픽셀: 초록
-        cv2.line(debug, (target_x, n_top), (target_x, h), (255, 100, 0), 2)  # 타겟 라인 (파란색)
+        self.reuse_reason = None
+        ref_x = LANE_REF_X.get(lane_target, LANE_REF_X[0])
+        self._last_offset = float(cx - ref_x)
+        return self._last_offset
 
-        # ── too-many-yellow: 교차로/오탐지 필터 ──────────────────────────────
-        # 노란 픽셀 비율이 YELLOW_MAX_RATIO를 초과하면 교차로나 이상 상황으로 판단
-        # 이전 offset을 유지하고 스킵
-        yellow_ratio = np.count_nonzero(n_mask) / float((h - n_top) * w + 1)
-        if yellow_ratio > YELLOW_MAX_RATIO:
-            cv2.putText(debug, f'TOO_MANY {yellow_ratio:.2f}',
-                        (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 165, 255), 2)
-            self.last_debug_img = debug
-            return self.last_offset
+    def detect_yellow(self, image):
+        """ROI(y=270~330) 에서 노란색 차선 픽셀을 검출해 마스크를 반환.
 
-        # ── NO_LINE / velocity prediction 처리 ───────────────────────────────
-        if n_xs.size < MIN_YELLOW_PX:
-            # 하단 ROI에서 차선을 충분히 검출하지 못한 경우
-            self._missing_frames += 1
-            self._no_line_cnt    += 1
+        Returns:
+            mask: ROI 크기의 이진 마스크 (uint8)
+            roi:  ROI 원본 BGR 이미지
+        """
+        roi = image[ROI_Y1:ROI_Y2, :]
+        hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+        mask = cv2.inRange(hsv, YELLOW_LOWER, YELLOW_UPPER)
+        return mask, roi
 
-            if self._prev_yellow_x is not None and self._missing_frames <= MAX_PRED_FRAMES:
-                # [velocity prediction] 직전 이동속도(dx)로 현재 위치 예측
-                yellow_x = self._prev_yellow_x + self._last_dx * self._missing_frames
-                yellow_x = max(0.0, min(float(w - 1), yellow_x))
-                source = 'predict'
-            else:
-                # prediction도 불가 → 완전 소실 처리
-                if self._no_line_cnt > NO_LINE_MAX:
-                    if abs(self.last_offset) > 0.2:
-                        # [턴 유지] S자 커브 1번째 턴 중에 차선 소실 시
-                        # 마지막 핸들각을 유지해 2번째 커브도 통과 가능하게 함
-                        pass
-                    else:
-                        # 직진 중 소실 → 서서히 0으로 감쇠
-                        self.last_offset *= NO_LINE_DECAY
-                self._reset_pid()
-                cv2.putText(debug, f'NO_LINE({self._no_line_cnt}) out={self.last_offset:.2f}',
-                            (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-                self.last_debug_img = debug
-                print(f'[LANE] NO_LINE({self._no_line_cnt}) -> {self.last_offset:.3f}', file=sys.stderr, flush=True)
-                return self.last_offset
-        else:
-            # 정상 검출: 히스토그램 peak로 현재 차선 x좌표 추정
-            self._missing_frames = 0
-            self._no_line_cnt    = 0
-            yellow_x = self._histogram_peak(n_xs, w, target_x)
-            source   = 'hist'
-            # velocity prediction을 위해 dx 업데이트 (EMA)
-            if self._prev_yellow_x is not None:
-                dx = yellow_x - self._prev_yellow_x
-                self._last_dx = (1 - DX_ALPHA) * self._last_dx + DX_ALPHA * dx
-            self._prev_yellow_x = yellow_x
+    def visualize_yellow(self, image):
+        """노란색 차선 검출 결과를 화면에 표시. 확인용."""
+        mask, roi = self.detect_yellow(image)
 
-        # ── error 계산 ────────────────────────────────────────────────────────
-        # ── peak 이동 속도 제한 ──────────────────────────────────────────────
-        # 직선(이전 프레임 양쪽 감지): 30px/frame - 오감지 방지
-        # 커브(이전 프레임 한쪽만): 60px/frame - 빠른 추종 허용
-        prev_in_curve = getattr(self, '_prev_in_curve', False)
-        MAX_DELTA = 60 if prev_in_curve else 30
-        if self._prev_peak is not None:
-            delta = yellow_x - self._prev_peak
-            if abs(delta) > MAX_DELTA:
-                yellow_x = int(self._prev_peak + MAX_DELTA * (1 if delta > 0 else -1))
-                print(f"[SPD_LIMIT({MAX_DELTA})] delta={delta:+.0f} → peak={yellow_x}", flush=True)
-        self._prev_peak = yellow_x
+        vis = image.copy()
 
-        # ── 큰 에러 지속 시 감속 플래그 ──────────────────────────
-        abs_err = abs(yellow_x - target_x)
-        if abs_err > 50:
-            self._large_err_count = getattr(self, '_large_err_count', 0) + 1
-        else:
-            self._large_err_count = 0
-        self.slow_down = self._large_err_count >= 3
+        # 사다리꼴 픽셀 수 + 차선 ROI x 스팬 계산
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        yellow_full = cv2.inRange(hsv, YELLOW_LOWER, YELLOW_UPPER)
 
-        error_px = yellow_x - target_x
+        trap_bg = np.zeros(image.shape[:2], dtype=np.uint8)
+        cv2.fillPoly(trap_bg, [TRAP_PTS], 255)
+        trap_count = int(np.count_nonzero(cv2.bitwise_and(yellow_full, trap_bg)))
 
-        # ── PID 제어 ──────────────────────────────────────────────────────────
-        # error_px를 화면 폭의 절반으로 나눠 -1~1로 정규화
-        # → 해상도가 바뀌어도 동일한 PID 게인 사용 가능
-        error_norm = max(-1.0, min(1.0, error_px / (w / 2.0)))
-        offset     = max(-1.0, min(1.0, self._compute_pid(error_norm)))
+        roi_mask = yellow_full[ROI_Y1:ROI_Y2, :]
+        roi_cols = np.where(roi_mask.any(axis=0))[0]
+        roi_span = int(roi_cols[-1] - roi_cols[0]) if len(roi_cols) > 0 else 0
 
-        # ── 흰선 가드레일 (상태 기반) ────────────────────────────────────────
-        # 직선: 양쪽 흰선 모두 감지 → 가드레일 OFF
-        # 커브: 한쪽만 감지         → 그쪽이 위험 경계 → 강제 반발
-        left_white, right_white = self._detect_white_edges(image, w)
-        both_visible = (left_white is not None) and (right_white is not None)
-        only_right   = (left_white is None)     and (right_white is not None)
-        only_left    = (left_white is not None) and (right_white is None)
+        noise_detected = trap_count >= TRAP_PIXEL_MIN and roi_span >= TRAP_SPAN_MIN
+        trap_color = (0, 0, 255) if noise_detected else (0, 255, 0)
+        cv2.polylines(vis, [TRAP_PTS], isClosed=True, color=trap_color, thickness=2)
+        label = f'trap={trap_count}px roi_span={roi_span} {"IGNORED" if noise_detected else "OK"}'
+        cv2.putText(vis, label, (TRAP_PTS[:, 0].min(), TRAP_PTS[:, 1].min() - 6),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.45, trap_color, 1)
 
-        CAR_X         = w // 2   # 320 (차 중앙 기준)
-        GUARD_WARN_PX = 80       # 이내: 하드 오버라이드 (절대 못 넘음)
-        GUARD_SOFT_PX = 160      # 이내: 소프트 보정 시작
-        HARD_FORCE    = 0.8      # 하드 구간 최소 조향 강도
-        SOFT_MAX      = 0.5      # 소프트 구간 최대 보정량
+        # 차선 ROI 박스
+        cv2.rectangle(vis, (0, ROI_Y1), (image.shape[1] - 1, ROI_Y2), (0, 255, 0), 2)
 
-        guard_state = 'STRAIGHT' if both_visible else 'WHITE_NONE'
+        # 마스크에서 윤곽선 추출 → 원본 이미지에 오버레이
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        for cnt in contours:
+            if cv2.contourArea(cnt) < 50:
+                continue
+            cnt_shifted = cnt + np.array([[[0, ROI_Y1]]])
+            cv2.drawContours(vis, [cnt_shifted], -1, (0, 0, 255), 2)
 
-        # 커브 방향 보조 조향 (lookahead boost)
-        # 가드레일이 한쪽만 감지하면 = 커브 중. 즉시 그 방향으로 boost.
-        CURVE_BOOST = 0.12   # 커브 진입 시 미리 추가할 조향량
+        # 무게중심 x 표시
+        M = cv2.moments(mask)
+        if M['m00'] > 0:
+            cx = int(M['m10'] / M['m00'])
+            cy = int(M['m01'] / M['m00']) + ROI_Y1
+            cv2.circle(vis, (cx, cy), 6, (255, 0, 0), -1)
+            cv2.putText(vis, f'cx={cx}', (cx + 8, cy),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
 
-        if not both_visible:
-            if only_right:
-                dist = right_white - CAR_X
-                if dist < GUARD_WARN_PX:
-                    offset = min(offset, -HARD_FORCE)
-                    guard_state = f'GUARD-R HARD d={dist:.0f}'
-                elif dist < GUARD_SOFT_PX:
-                    t = (GUARD_SOFT_PX - dist) / (GUARD_SOFT_PX - GUARD_WARN_PX)
-                    offset = max(-1.0, offset - t * SOFT_MAX)
-                    guard_state = f'GUARD-R soft d={dist:.0f}'
-                else:
-                    offset = max(-1.0, offset - CURVE_BOOST)
-                    guard_state = f'GUARD-R idle d={dist:.0f}'
-                print(f"[{guard_state}] rw={right_white}", flush=True)
+        # cv2.imshow('yellow_mask', mask)
+        cv2.imshow('yellow_detect', vis)
+        cv2.waitKey(1)
 
-            elif only_left:
-                dist = CAR_X - left_white
-                if dist < GUARD_WARN_PX:
-                    offset = max(offset, HARD_FORCE)
-                    guard_state = f'GUARD-L HARD d={dist:.0f}'
-                elif dist < GUARD_SOFT_PX:
-                    t = (GUARD_SOFT_PX - dist) / (GUARD_SOFT_PX - GUARD_WARN_PX)
-                    offset = min(1.0, offset + t * SOFT_MAX)
-                    guard_state = f'GUARD-L soft d={dist:.0f}'
-                else:
-                    offset = min(1.0, offset + CURVE_BOOST)
-                    guard_state = f'GUARD-L idle d={dist:.0f}'
-                print(f"[{guard_state}] lw={left_white}", flush=True)
+    def _is_wide_noise_in_trapezoid(self, image):
+        """사다리꼴 픽셀 수 >= 100 AND 차선 ROI x 스팬 >= 100 이면 True."""
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        yellow_mask = cv2.inRange(hsv, YELLOW_LOWER, YELLOW_UPPER)
 
-        self.last_offset = offset
+        # 조건1: 사다리꼴 안 노란색 픽셀 수
+        trap_mask = np.zeros(image.shape[:2], dtype=np.uint8)
+        cv2.fillPoly(trap_mask, [TRAP_PTS], 255)
+        trap_count = int(np.count_nonzero(cv2.bitwise_and(yellow_mask, trap_mask)))
+        if trap_count < TRAP_PIXEL_MIN:
+            return False
 
-        # ── 디버그 오버레이 ───────────────────────────────────────────────────
-        overlay = debug.copy()
+        # 조건2: 차선 ROI(ROI_Y1~ROI_Y2) 안 노란색 x 스팬
+        roi_mask = yellow_mask[ROI_Y1:ROI_Y2, :]
+        cols = np.where(roi_mask.any(axis=0))[0]
+        if len(cols) == 0:
+            return False
+        return int(cols[-1] - cols[0]) >= TRAP_SPAN_MIN
 
-        # 가드레일 위험 구역 반투명 채색
-        if only_right and right_white is not None:
-            dist = right_white - CAR_X
-            if dist < GUARD_WARN_PX:
-                color = (0, 0, 200)    # 빨강: HARD 구간
-            elif dist < GUARD_SOFT_PX:
-                color = (0, 100, 220)  # 주황: soft 구간
-            else:
-                color = (0, 180, 180)  # 노랑: idle
-            cv2.rectangle(overlay, (right_white, n_top), (w, h), color, -1)
-            cv2.addWeighted(overlay, 0.35, debug, 0.65, 0, debug)
-            # 흰선: 굵은 보라색
-            cv2.line(debug, (right_white, n_top), (right_white, h), (255, 0, 255), 3)
-            # 밀어내는 방향 화살표
-            ax = right_white - 40
-            ay = n_top + (h - n_top) // 2
-            cv2.arrowedLine(debug, (right_white - 10, ay), (ax, ay), (0, 0, 255), 3, tipLength=0.4)
-
-        elif only_left and left_white is not None:
-            dist = CAR_X - left_white
-            if dist < GUARD_WARN_PX:
-                color = (0, 0, 200)
-            elif dist < GUARD_SOFT_PX:
-                color = (0, 100, 220)
-            else:
-                color = (0, 180, 180)
-            cv2.rectangle(overlay, (0, n_top), (left_white, h), color, -1)
-            cv2.addWeighted(overlay, 0.35, debug, 0.65, 0, debug)
-            cv2.line(debug, (left_white, n_top), (left_white, h), (255, 0, 255), 3)
-            ax = left_white + 40
-            ay = n_top + (h - n_top) // 2
-            cv2.arrowedLine(debug, (left_white + 10, ay), (ax, ay), (0, 0, 255), 3, tipLength=0.4)
-
-        elif both_visible:
-            # 양쪽 다 보임 → 회색 선으로 표시 (직선)
-            if left_white is not None:
-                cv2.line(debug, (left_white, n_top), (left_white, h), (160, 160, 160), 1)
-            if right_white is not None:
-                cv2.line(debug, (right_white, n_top), (right_white, h), (160, 160, 160), 1)
-
-        # 가드레일 상태 텍스트
-        g_color = (0, 0, 255) if 'HARD' in guard_state else (0, 200, 255) if 'soft' in guard_state else (180, 180, 180)
-        cv2.putText(debug, guard_state, (10, 45), cv2.FONT_HERSHEY_SIMPLEX, 0.5, g_color, 2)
-
-        cv2.line(debug, (int(yellow_x), n_top), (int(yellow_x), h), (255, 255, 0), 2)
-        label = f'peak={int(yellow_x)}({source}) tgt={target_x} err={int(error_px)} out={offset:.2f}'
-        cv2.putText(debug, label, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.52, (0, 255, 255), 2)
-        self.last_debug_img = debug
-        print(f'[LANE] peak={yellow_x:.0f} tgt={target_x} err={error_px:.1f} out={offset:.3f}',
-              file=sys.stderr, flush=True)
-        return self.last_offset
+    def _yellow_cx(self, image):
+        """ROI 노란색 마스크의 무게중심 x를 반환. 검출 실패 시 None."""
+        mask, _ = self.detect_yellow(image)
+        M = cv2.moments(mask)
+        if M['m00'] == 0:
+            return None
+        return int(M['m10'] / M['m00'])
