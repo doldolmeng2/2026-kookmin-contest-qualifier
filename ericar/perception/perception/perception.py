@@ -99,7 +99,7 @@ TL_TRACK_PARAMS = dict(
     aspect_min=2.0,            # 하우징 가로/세로 비 하한 (세로 기둥/나무 배제)
 )
 
-# --- 시작 신호등 (3구) ---  가까이·정면이라 게이트 높게
+# --- 시작 신호등 (3구) ---  가까이·정면이라 게이트 높게 #
 TL_START_PARAMS = dict(
     black_min_count=600,
     black_min_blob_area=400,
