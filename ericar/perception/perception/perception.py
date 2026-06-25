@@ -122,7 +122,8 @@ VIZ_DEFAULT = True     # perception 창(카메라+bbox+status) 기본 표시 여
 
 # main 모드 정의 (퍼셉션이 모드별로 인식 항목을 골라 켜기 위해 참조)
 MODE_WAIT, MODE_CONE, MODE_LANE, MODE_LEFT_TURN, \
-    MODE_LANE_CHANGE, MODE_FOLLOW, MODE_SIGNAL_WAIT = range(7)
+    MODE_LANE_CHANGE, MODE_FOLLOW, MODE_SIGNAL_WAIT, \
+    MODE_SCHOOL_ZONE = range(8)
 
 
 class Perception(Node):
@@ -305,7 +306,8 @@ class Perception(Node):
             self._status[IDX_SHORTCUT_EXIT] = self._detect_shortcut_exit(det)
 
         # 어린이 보호구역: 노랑(시작)→1, 흰색(일반도로 복귀)→0 상태기계
-        if self._mode == MODE_LANE:
+        # MODE_LANE에서 진입 감지, MODE_SCHOOL_ZONE에서 해제 감지
+        if self._mode in (MODE_LANE, MODE_SCHOOL_ZONE):
             self._status[IDX_SCHOOL_ZONE] = self._school_zone.update(self._img_front)
 
         self._status[IDX_POLICE_READY] = int(
