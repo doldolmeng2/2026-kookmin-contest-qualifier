@@ -82,7 +82,7 @@ class TrackDriverNode(Node):
                 time.sleep(0.1)
 
             for _ in range(15):
-                self.drive(angle=0,speed=10)
+                self.drive(angle=0,speed=50)
                 time.sleep(0.1)
                 
 #=============================================
