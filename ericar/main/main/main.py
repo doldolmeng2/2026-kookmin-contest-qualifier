@@ -82,9 +82,10 @@ STATUS_LABEL = [
     'police_ready',
 ]
 
-TRAFFIC_WAIT = 0
+TRAFFIC_NONE = 0
 TRAFFIC_GREEN = 1
 TRAFFIC_LEFT = 2
+TRAFFIC_STOP = 3
 
 # 연속 프레임 기반 디바운스 값
 TRAFFIC_PRESENT_FRAMES = 5
