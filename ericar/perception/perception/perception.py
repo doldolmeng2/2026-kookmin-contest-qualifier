@@ -39,6 +39,7 @@ from perception.obstacle import detect_obstacle_front, left_min, sector_min
 from perception.left_car import car_in_left
 from perception.school_zone import SchoolZoneDetector
 from perception.turn_done import detect_turn_done
+from perception.s_curve import detect_s_curve_end, draw_s_curve_debug
 
 # 시뮬레이터는 카메라/라이다를 RELIABLE 로 발행하므로 맞춰서 구독
 # (BEST_EFFORT 로 받으면 큰 이미지가 UDP 조각 유실로 대부분 드롭됨)
@@ -63,7 +64,8 @@ IDX_SCHOOL_ZONE    = 8   # 0=아님, 1=보호구역 주행 중
 IDX_TRAFFIC_PRESENT = 9  # 0=신호등 미검출, 1=트랙 신호등 검출
 IDX_POLICE_READY    = 10  # 0=검출기 비활성/실패, 1=YOLO 모델 준비 완료
 IDX_TURN_DONE       = 11  # 0=아직, 1=IMU yaw 기준 좌회전 완료
-STATUS_LEN = 12
+IDX_S_CURVE         = 12  # 0=S자 아님, 1=S자 구간 끝 감지
+STATUS_LEN = 13
 
 # ===========================================================================
 # 🔧 튜닝 파라미터  (인식 임계값 — 여기만 고치면 됨)
@@ -163,6 +165,10 @@ class Perception(Node):
         #   팀원들이 인식 상태를 눈으로 확인용. 끄려면: -p viz:=false
         self.declare_parameter('viz', VIZ_DEFAULT)
         self._viz = self.get_parameter('viz').value
+
+        # S자 커브 테스트 모드 (런치 시 -p s_curve_test:=true 로 켬)
+        self.declare_parameter('s_curve_test', False)
+        self._s_curve_test = self.get_parameter('s_curve_test').value
 
         # 최신 입력 버퍼
         self._img_front = None
@@ -324,6 +330,12 @@ class Perception(Node):
         else:
             self._status[IDX_TURN_DONE] = 0
 
+        # S자 커브 끝 감지 — s_curve_test 파라미터가 true 일 때만 실행 (테스트용)
+        if self._s_curve_test:
+            self._status[IDX_S_CURVE] = self._detect_s_curve_end()
+        else:
+            self._status[IDX_S_CURVE] = 0
+
         # 정지선은 차선 주행 및 신호 대기 중에만 검사한다.
         if self._mode in (MODE_LANE, MODE_SIGNAL_WAIT):
             (
@@ -450,6 +462,9 @@ class Perception(Node):
             # 방해차량(라이다) 조감도 창
             if self._scan is not None:
                 self._draw_lidar_viz(self._scan)
+            # S커브 테스트 모드: 별도 디버그 창
+            if self._s_curve_test:
+                draw_s_curve_debug(self._img_front, self._scan)
             cv2.waitKey(1)
         except Exception as e:
             self.get_logger().warn(f'viz 실패: {e}')
@@ -587,10 +602,10 @@ class Perception(Node):
                 if items
             }
 
-            if detected_labels:
-                self.get_logger().info(
-                    f'[PED] danger=0 detected_labels={detected_labels}'
-                )
+            # if detected_labels:
+            #     self.get_logger().info(
+            #         f'[PED] danger=0 detected_labels={detected_labels}'
+            #     )
 
             return 0
 
@@ -610,16 +625,16 @@ class Perception(Node):
             )
             danger = pass_height and pass_center
 
-            self.get_logger().info(
-                '[PED] '
-                f'label={label_name} '
-                f'conf={d.confidence:.2f} '
-                f'h={h_norm:.3f} '
-                f'cx={cx_norm:.3f} '
-                f'height_ok={int(pass_height)} '
-                f'center_ok={int(pass_center)} '
-                f'danger={int(danger)}'
-            )
+            # self.get_logger().info(
+            #     '[PED] '
+            #     f'label={label_name} '
+            #     f'conf={d.confidence:.2f} '
+            #     f'h={h_norm:.3f} '
+            #     f'cx={cx_norm:.3f} '
+            #     f'height_ok={int(pass_height)} '
+            #     f'center_ok={int(pass_center)} '
+            #     f'danger={int(danger)}'
+            # )
 
             if danger:
                 return 1
@@ -671,6 +686,15 @@ class Perception(Node):
     def _detect_shortcut_exit(self, det):
         # 숏컷(직선) 끝 삼거리: 정면에 잔디(길 끝남)가 차면 1 → main이 좌회전 시작
         return 1 if detect_shortcut_exit(self._img_front) else 0
+
+    def _detect_s_curve_end(self):
+        # 1초(30틱)마다 디버그 로그 출력 — 임계값 튜닝용
+        result, wht, grn, lidar = detect_s_curve_end(self._img_front, self._scan)
+        if self._tick_n % 30 == 0:
+            self.get_logger().info(
+                f'[SCURVE] wht={wht:.3f} grn={grn:.3f} lidar={lidar} => {int(result)}'
+            )
+        return int(result)
 
     def _detect_lap_line(self, img):
         # 출발선(흑백 체커보드)이 하단에 가까이 보이면 1
