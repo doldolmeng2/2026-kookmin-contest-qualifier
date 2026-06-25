@@ -51,14 +51,14 @@ _QOS_RELIABLE = QoSProfile(
 # /perception/status data 인덱스 정의 (README 참고)
 # ---------------------------------------------------------------------------
 IDX_START_SIGNAL   = 0   # 0=대기, 1=초록불
-IDX_TRAFFIC_SIGNAL = 1   # 0=wait, 1=green(직진), 2=left_turn
+IDX_TRAFFIC_SIGNAL = 1   # 0=미검출, 1=green(직진), 2=left_turn, 3=red/yellow(정지)
 IDX_OBSTACLE_FRONT = 2   # 0=없음, 1=전방 방해차량 있음
 IDX_OBSTACLE_PASSED = 3  # 0=아직, 1=첫 번째 방해차량 지나침
 IDX_POLICE_DETECTED = 4  # 0=없음, 1=경찰차 있음
 IDX_SHORTCUT_EXIT  = 5   # 0=아직, 1=지름길 출구 위치 감지
 IDX_LAP_LINE       = 6   # 0=아직, 1=출발선 통과 감지
 IDX_PEDESTRIAN     = 7   # 0=무시(없음/멀리/옆), 1=바로 앞 위험 → 정지
-IDX_SCHOOL_ZONE    = 8   # 0=아님, 1=시작 인식(감속), 2=해제 인식(가속)
+IDX_SCHOOL_ZONE    = 8   # 0=아님, 1=보호구역 주행 중
 IDX_TRAFFIC_PRESENT = 9  # 0=신호등 미검출, 1=트랙 신호등 검출
 IDX_POLICE_READY    = 10  # 0=검출기 비활성/실패, 1=YOLO 모델 준비 완료
 STATUS_LEN = 11
@@ -93,7 +93,7 @@ OBS_PED_SUPPRESS_BAND = (0.35, 0.65)  # 보행자 박스 중심 x 가 이 범위
 # --- 트랙 신호등 (4구) ---  키 이름은 traffic_light.BASE_PARAMS 와 일치해야 함
 TL_TRACK_PARAMS = dict(
     black_min_count=120,       # ROI 내 검은 픽셀 총량 하한
-    black_min_blob_area=18000,  # ★ 하우징 박스 면적 ≥ 이 값(=가까움)이면 인식. 로그 blob= 보고 튜닝
+    black_min_blob_area=21500,  # ★ 하우징 박스 면적 ≥ 이 값(=가까움)이면 인식. 로그 blob= 보고 튜닝
     color_min_count=50,       # 게이트 통과 후 색 구분 최소 픽셀
     bbox_pad=0,
     aspect_min=2.0,            # 하우징 가로/세로 비 하한 (세로 기둥/나무 배제)
@@ -110,8 +110,7 @@ TL_START_PARAMS = dict(
 # --- 어린이 보호구역 (하단 ROI 노랑/흰색 상태기계) ---
 SZ_ROI_TOP      = 0.80   # 하단 ROI 시작(0~1). 차에 가까운 노면만
 SZ_YELLOW_ENTER = 10000  # 노란 픽셀 ≥ → 시작(감속, data[8]=1)
-SZ_WHITE_EXIT   = 1000   # (보호구역 안) 흰 픽셀 ≥ → 해제(data[8]=2)
-SZ_WHITE_NORMAL = 3000   # (해제 후) 흰 픽셀 ≥ → 일반도로 복귀(data[8]=0)
+SZ_WHITE_EXIT   = 3000   # (보호구역 안) 흰 픽셀 ≥ → 일반도로 복귀(data[8]=0)
 
 # --- 디버그 시각화 ---
 VIZ_DEFAULT = False     # perception 창(카메라+bbox+status) 기본 표시 여부
@@ -151,7 +150,7 @@ class Perception(Node):
         self._school_zone = SchoolZoneDetector(
             logger=self.get_logger(), debug=True, show=False,
             roi_top=SZ_ROI_TOP, yellow_enter=SZ_YELLOW_ENTER,
-            white_exit=SZ_WHITE_EXIT, white_normal=SZ_WHITE_NORMAL)
+            white_exit=SZ_WHITE_EXIT)
 
         # 디버그 시각화: 카메라 + YOLO bbox + status 를 'perception' 창에 표시
         #   팀원들이 인식 상태를 눈으로 확인용. 끄려면: -p viz:=false
@@ -288,7 +287,7 @@ class Perception(Node):
         if self._mode == MODE_LANE and self._stage[0] == 1:
             self._status[IDX_SHORTCUT_EXIT] = self._detect_shortcut_exit(det)
 
-        # 어린이 보호구역: 노랑(시작)→1, 흰색(해제)→2 상태기계
+        # 어린이 보호구역: 노랑(시작)→1, 흰색(일반도로 복귀)→0 상태기계
         if self._mode == MODE_LANE:
             self._status[IDX_SCHOOL_ZONE] = self._school_zone.update(self._img_front)
 
@@ -524,9 +523,11 @@ class Perception(Node):
 
         if sig == SIGNAL_LEFT:
             return 2
-        # 빨강·노랑은 정지 대기이며, NONE도 action 값은 0이다.
-        # 두 경우의 구분은 IDX_TRAFFIC_PRESENT가 담당한다.
-        return 0
+        if sig == SIGNAL_NONE:
+            return 0
+
+        # 빨강·노랑처럼 신호등은 보였지만 진행 신호가 아니면 정지한다.
+        return 3
 
     def _detect_police(self, det):
         # 경찰차 박스가 충분히 클 때(=가까울 때)만 1 → 너무 일찍 인식 방지
