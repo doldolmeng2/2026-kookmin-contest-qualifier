@@ -159,9 +159,9 @@ class Driving(Node):
             if self._lane.reuse_reason:
                 self.get_logger().warn(
                     f'[FOLLOW] reusing last offset={lane_offset:.1f}  reason: {self._lane.reuse_reason}')
-            if lane_offset >= 400:
+            if lane_offset >= 380:
                 self.get_logger().warn(
-                    f'[FOLLOW] lane_offset={lane_offset:.1f} >= 400, using prev={self._last_follow_lane_offset:.1f}')
+                    f'[FOLLOW] lane_offset={lane_offset:.1f} >= 380, using prev={self._last_follow_lane_offset:.1f}')
                 lane_offset = self._last_follow_lane_offset
             else:
                 self._last_follow_lane_offset = lane_offset

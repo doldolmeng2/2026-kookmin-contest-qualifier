@@ -25,9 +25,9 @@ MODE_WAIT, MODE_CONE, MODE_LANE, MODE_LEFT_TURN, \
 MODE_RATIO = {
     MODE_WAIT:          0.0,
     MODE_CONE:        250.0,
-    MODE_LANE:          0.5,
+    MODE_LANE:          0.48,
     MODE_LEFT_TURN:     100.0,
-    MODE_LANE_CHANGE:   0.40,
+    MODE_LANE_CHANGE:   0.37,
     MODE_FOLLOW:        0.45,
     MODE_SIGNAL_WAIT:   0.0,
     MODE_SCHOOL_ZONE:  200.0,
@@ -40,13 +40,13 @@ SPEED_TABLE = {
     MODE_WAIT:          0,
     MODE_CONE:         15,
     MODE_LANE:         17,
-    MODE_LEFT_TURN:    10,
-    MODE_LANE_CHANGE:  12,
+    MODE_LEFT_TURN:    11,
+    MODE_LANE_CHANGE:  13,
     MODE_FOLLOW:       12,
     MODE_SIGNAL_WAIT:   0,
     MODE_SCHOOL_ZONE:   16,
     MODE_S_CURVE:      12,
-    MODE_SHORTCUT:     16,
+    MODE_SHORTCUT:     18,
 }
 
 ANGLE_LIMIT = 100.0
